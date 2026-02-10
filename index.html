@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programación 4 - Portal de Clases</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --pastel-blue: #ebf4f6;
+            --pastel-pink: #f9f1f0;
+            --pastel-green: #e8f5e9;
+            --accent-blue: #b2d8d8;
+            --text-color: #555;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: var(--pastel-blue);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        .hero-section {
+            background-color: white;
+            padding: 60px 0;
+            margin-bottom: 40px;
+            border-bottom: 5px solid var(--accent-blue);
+            text-align: center;
+        }
+
+        .course-card {
+            background: white;
+            border: none;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            height: 100%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .course-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--accent-blue);
+        }
+
+        .btn-entry {
+            background-color: var(--accent-blue);
+            color: white;
+            border-radius: 50px;
+            padding: 8px 25px;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+
+        .btn-entry:hover {
+            background-color: #96c9c9;
+            color: white;
+        }
+
+        .badge-week {
+            background-color: var(--pastel-pink);
+            color: #d63384;
+            font-weight: 600;
+        }
+
+        footer {
+            margin-top: 50px;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero-section shadow-sm">
+        <div class="container">
+            <i class="fas fa-code-branch mb-3" style="font-size: 3rem; color: var(--accent-blue);"></i>
+            <h1 class="fw-bold">Programación 4</h1>
+            <p class="lead">Repositorio Central de Contenidos Interactivos</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="row g-4 justify-content-center">
+            
+            <div class="col-md-5 col-lg-4">
+                <div class="card course-card p-4">
+                    <div class="text-center">
+                        <div class="card-icon"><i class="fas fa-project-diagram"></i></div>
+                        <span class="badge badge-week mb-2 p-2 px-3 rounded-pill">Semanas 1 y 2</span>
+                        <h4 class="fw-bold mt-2">Introducción a Objetos y UML</h4>
+                        <p class="text-muted small">Procesos de desarrollo, el concepto de Clase, Objeto y modelado visual.</p>
+                        <a href="semana1-2/index.html" class="btn-entry mt-3">Ver Material <i class="fas fa-arrow-right ms-2"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-5 col-lg-4">
+                <div class="card course-card p-4 opacity-75" style="border: 2px dashed #ccc; background: transparent;">
+                    <div class="text-center">
+                        <div class="card-icon text-secondary"><i class="fas fa-lock"></i></div>
+                        <span class="badge bg-secondary mb-2 p-2 px-3 rounded-pill text-white">Semana 3</span>
+                        <h4 class="fw-bold mt-2 text-secondary">Herencia y Polimorfismo</h4>
+                        <p class="text-muted small">Contenido en preparación. Estará disponible próximamente.</p>
+                        <button class="btn btn-secondary btn-sm mt-3" disabled>Próximamente</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 - FING | INCO | CENUR LN<br>Material diseñado para estudiantes de Programación 4.</p>
+    </footer>
+
+</body>
+</html>
