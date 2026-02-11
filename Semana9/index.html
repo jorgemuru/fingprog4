@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P4 - Semana 9: GRASP y Visibilidad</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --pastel-blue: #ebf4f6;
+            --pastel-pink: #f9f1f0;
+            --pastel-green: #e8f5e9;
+            --pastel-yellow: #fff9e6;
+            --accent-blue: #b2d8d8;
+            --text-color: #555;
+        }
+
+        body { font-family: 'Quicksand', sans-serif; background-color: var(--pastel-blue); color: var(--text-color); }
+        .slide-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .card-slide { background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 850px; width: 100%; padding: 40px; border: none; display: none; }
+        .card-slide.active { display: block; }
+        .btn-pastel { background-color: var(--accent-blue); border: none; color: white; padding: 10px 25px; border-radius: 50px; transition: all 0.3s; }
+        .btn-pastel:hover { background-color: #96c9c9; transform: scale(1.05); }
+        .analogy-box { background-color: var(--pastel-yellow); border-left: 5px solid #f0ad4e; padding: 15px; margin-top: 20px; border-radius: 0 10px 10px 0; font-size: 0.95rem; }
+        .nav-dots { position: fixed; bottom: 20px; width: 100%; display: flex; justify-content: center; gap: 10px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; background: #ccc; cursor: pointer; }
+        .dot.active { background: var(--accent-blue); }
+        .concept-highlight { background-color: var(--pastel-green); padding: 3px 8px; border-radius: 5px; font-weight: bold; color: #2e7d32; }
+    </style>
+</head>
+<body>
+
+<div class="slide-container">
+    <div class="card-slide active animate__animated animate__fadeIn" id="slide0">
+        <div class="text-center">
+            <div class="mb-3" style="font-size: 4rem; color: var(--accent-blue);">
+                <i class="fas fa-chess-knight"></i>
+            </div>
+            <h1 class="fw-bold">Programación 4</h1>
+            <p class="lead">Semana 9: GRASP y Visibilidad</p>
+            <hr class="my-4">
+            <p>Aprenderemos las "reglas de oro" para decidir a qué objeto darle cada tarea y cómo los objetos se ven entre sí.</p>
+            <button class="btn btn-pastel mt-3" onclick="nextSlide()">Comenzar Estrategia <i class="fas fa-chevron-right ms-2"></i></button>
+        </div>
+    </div>
+
+    <div class="card-slide animate__animated animate__fadeIn" id="slide1">
+        <h3><i class="fas fa-tools me-2 text-primary"></i> Principios GRASP</h3>
+        <p>No basta con asignar tareas al azar. Los patrones GRASP nos ayudan a diseñar sistemas robustos y fáciles de mantener.</p>
+        <ul>
+            <li><span class="concept-highlight">Experto en Información:</span> Asigna la responsabilidad al que tiene los datos para resolverla.</li>
+            <li><span class="concept-highlight">Creador:</span> ¿Quién debe crear a quién? (quien lo usa, quien tiene los datos, etc.).</li>
+            <li><span class="concept-highlight">Controlador:</span> El primer objeto fuera de la interfaz que recibe mensajes del sistema.</li>
+        </ul>
+        <div class="analogy-box">
+            <i class="fas fa-briefcase me-2"></i><strong>Analogía:</strong> En una oficina, si necesitas saber cuánto dinero hay, le preguntas al **Contador** (Experto), no al de limpieza. Si necesitas un contrato nuevo, lo hace el **Abogado** (Creador).
+        </div>
+        <div class="mt-4 text-center">
+            <button class="btn btn-pastel" onclick="prevSlide()">Atrás</button>
+            <button class="btn btn-pastel" onclick="nextSlide()">Siguiente</button>
+        </div>
+    </div>
+
+    <div class="card-slide animate__animated animate__fadeIn" id="slide2">
+        <h3><i class="fas fa-balance-scale me-2 text-success"></i> Las Metas de Calidad</h3>
+        <p>Buscamos siempre el equilibrio perfecto entre dos conceptos:</p>
+        <div class="row text-center mt-3">
+            <div class="col-md-6">
+                <div class="p-3 border rounded" style="background-color: var(--pastel-pink);">
+                    <strong>Bajo Acoplamiento</strong>
+                    <p class="small mb-0">Que los objetos no dependan demasiado unos de otros. Si uno cambia, que no rompa todo.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-3 border rounded" style="background-color: var(--pastel-green);">
+                    <strong>Alta Cohesión</strong>
+                    <p class="small mb-0">Que cada objeto se concentre en hacer una sola cosa y hacerla muy bien.</p>
+                </div>
+            </div>
+        </div>
+        <div class="analogy-box">
+            <i class="fas fa-lego-block me-2"></i><strong>Analogía:</strong> Las piezas de **LEGO** tienen bajo acoplamiento (puedes cambiar una por otra fácilmente) y alta cohesión (cada pieza tiene una forma y función clara).
+        </div>
+        <div class="mt-4 text-center">
+            <button class="btn btn-pastel" onclick="prevSlide()">Atrás</button>
+            <button class="btn btn-pastel" onclick="nextSlide()">Siguiente</button>
+        </div>
+    </div>
+
+    <div class="card-slide animate__animated animate__fadeIn" id="slide3">
+        <h3><i class="fas fa-eye me-2 text-warning"></i> Visibilidad</h3>
+        <p>Para que un objeto A le envíe un mensaje a un objeto B, A debe poder "ver" a B.</p>
+        <div class="list-group list-group-flush">
+            <div class="list-group-item bg-transparent"><strong>1. Por Atributo:</strong> B es parte de los datos permanentes de A.</div>
+            <div class="list-group-item bg-transparent"><strong>2. Por Parámetro:</strong> B llega como argumento en un mensaje.</div>
+            <div class="list-group-item bg-transparent"><strong>3. Local:</strong> B se crea dentro de un método de A.</div>
+            <div class="list-group-item bg-transparent"><strong>4. Global:</strong> B es accesible desde cualquier lugar (Singleton).</div>
+        </div>
+        <div class="analogy-box">
+            <i class="fas fa-address-book me-2"></i><strong>Analogía:</strong> Ver a alguien que vive en tu casa es visibilidad por **Atributo**. Que te presenten a alguien en una fiesta es por **Parámetro**.
+        </div>
+        <div class="mt-4 text-center">
+            <button class="btn btn-pastel" onclick="prevSlide()">Atrás</button>
+            <button class="btn btn-pastel" onclick="nextSlide()">Siguiente</button>
+        </div>
+    </div>
+
+    <div class="card-slide animate__animated animate__fadeIn" id="slide4">
+        <div class="text-center">
+            <i class="fas fa-puzzle-piece mb-3" style="font-size: 3rem; color: #ffca28;"></i>
+            <h3>Test de Estrategia GRASP</h3>
+            <p>Demuestra que sabes asignar responsabilidades como un experto.</p>
+            <button class="btn btn-pastel btn-lg" onclick="startQuiz()">Empezar Test</button>
+            <hr>
+            <button class="btn btn-link text-secondary" onclick="goToSlide(0)">Volver a empezar</button>
+        </div>
+    </div>
+</div>
+
+<div class="nav-dots">
+    <div class="dot active" onclick="goToSlide(0)"></div>
+    <div class="dot" onclick="goToSlide(1)"></div>
+    <div class="dot" onclick="goToSlide(2)"></div>
+    <div class="dot" onclick="goToSlide(3)"></div>
+    <div class="dot" onclick="goToSlide(4)"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    let currentSlide = 0;
+    const totalSlides = 5;
+
+    function updateSlides() {
+        document.querySelectorAll('.card-slide').forEach((s, i) => s.classList.toggle('active', i === currentSlide));
+        document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+    }
+
+    function nextSlide() { if(currentSlide < totalSlides-1) { currentSlide++; updateSlides(); } }
+    function prevSlide() { if(currentSlide > 0) { currentSlide--; updateSlides(); } }
+    function goToSlide(n) { currentSlide = n; updateSlides(); }
+
+    async function startQuiz() {
+        const questions = [
+            { 
+                q: "¿Qué principio GRASP dice que la tarea debe ir al objeto que tiene los datos necesarios?", 
+                opts: { a: "Creador", b: "Experto en Información", c: "Bajo Acoplamiento" }, 
+                ans: "b" 
+            },
+            { 
+                q: "¿Cómo se llama la propiedad de que un objeto se concentre solo en una tarea específica?", 
+                opts: { a: "Cohesión", b: "Acoplamiento", c: "Visibilidad" }, 
+                ans: "a" 
+            },
+            { 
+                q: "Si un objeto B es pasado como argumento en un método de A, ¿qué visibilidad tiene A sobre B?", 
+                opts: { a: "Atributo", b: "Local", c: "Parámetro" }, 
+                ans: "c" 
+            },
+            { 
+                q: "¿Cuál es el objetivo de tener un 'Bajo Acoplamiento'?", 
+                opts: { a: "Que el sistema sea más rápido", b: "Reducir el impacto de los cambios", c: "Que los objetos no se hablen" }, 
+                ans: "b" 
+            },
+            { 
+                q: "El patrón que maneja los eventos de la interfaz hacia la lógica se llama:", 
+                opts: { a: "Creador", b: "Experto", c: "Controlador" }, 
+                ans: "c" 
+            }
+        ];
+
+        let hits = 0;
+        let summaryHTML = '<div style="text-align:left;"><hr>';
+
+        for (let i = 0; i < questions.length; i++) {
+            const { value: userAns } = await Swal.fire({
+                title: `Pregunta ${i+1}/5`,
+                text: questions[i].q,
+                input: 'radio',
+                inputOptions: questions[i].opts,
+                confirmButtonColor: '#b2d8d8'
+            });
+
+            if (userAns === questions[i].ans) hits++;
+            summaryHTML += `<p>${userAns === questions[i].ans ? '✅' : '❌'} P${i+1}: ${questions[i].opts[questions[i].ans]}</p>`;
+        }
+
+        Swal.fire({
+            title: `Resultado: ${hits}/5`,
+            html: summaryHTML + '</div>',
+            icon: hits >= 3 ? 'success' : 'info',
+            confirmButtonText: 'Finalizar',
+            confirmButtonColor: '#b2d8d8'
+        }).then(() => window.location.href = '../index.html');
+    }
+</script>
+
+</body>
+</html>
