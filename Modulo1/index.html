@@ -1,0 +1,1584 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Programación 4 · Módulo 1 </title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <!-- Animate.css -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    :root{
+      --bg: #fbfbff;
+      --ink: #223;
+      --muted: #566;
+      --card: #ffffffcc;
+      --stroke: #e8e7ff;
+      --pastel-1:#dff3ff;
+      --pastel-2:#ffe6ef;
+      --pastel-3:#e9ffe6;
+      --pastel-4:#fff6d6;
+      --accent:#6a6cff;
+      --accent2:#ff6aa2;
+      --shadow: 0 12px 30px rgba(30,30,60,.08);
+      --radius: 18px;
+    }
+    body{
+      background: radial-gradient(1200px 800px at 10% 10%, var(--pastel-1), transparent 55%),
+                  radial-gradient(1100px 700px at 90% 15%, var(--pastel-2), transparent 60%),
+                  radial-gradient(900px 700px at 20% 90%, var(--pastel-3), transparent 55%),
+                  radial-gradient(1000px 700px at 80% 85%, var(--pastel-4), transparent 60%),
+                  var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+    .app-shell{
+      display: grid;
+      grid-template-columns: 310px 1fr;
+      gap: 18px;
+      padding: 18px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    @media (max-width: 992px){
+      .app-shell{ grid-template-columns: 1fr; }
+      .sidebar{ position: static !important; }
+    }
+    .sidebar{
+      position: sticky;
+      top: 18px;
+      height: calc(100vh - 36px);
+      overflow: auto;
+      border: 1px solid var(--stroke);
+      background: linear-gradient(180deg, #ffffffcc, #ffffff99);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      padding: 14px;
+      backdrop-filter: blur(8px);
+    }
+    .brand{
+      border-radius: 14px;
+      padding: 12px 12px;
+      background: linear-gradient(135deg, rgba(106,108,255,.14), rgba(255,106,162,.12));
+      border: 1px solid var(--stroke);
+    }
+    .brand .title{
+      font-weight: 800;
+      letter-spacing: .2px;
+      margin: 0;
+      line-height: 1.2;
+    }
+    .brand .subtitle{
+      margin: 6px 0 0 0;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+    .navpill{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      color: var(--ink);
+      text-decoration:none;
+      transition: .18s ease;
+      margin: 6px 0;
+      background: rgba(255,255,255,.55);
+    }
+    .navpill:hover{ transform: translateY(-1px); border-color: var(--stroke); }
+    .navpill.active{
+      border-color: rgba(106,108,255,.35);
+      background: rgba(106,108,255,.10);
+    }
+    .navpill i{ color: var(--accent); width: 18px; text-align:center; }
+
+    .content{
+      border: 1px solid var(--stroke);
+      background: linear-gradient(180deg, #ffffffcc, #ffffffa6);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      padding: 16px;
+      backdrop-filter: blur(8px);
+      overflow: hidden;
+    }
+    .topbar{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap: wrap;
+      padding: 4px 4px 12px 4px;
+      border-bottom: 1px solid var(--stroke);
+      margin-bottom: 12px;
+    }
+    .progress{
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(106,108,255,.08);
+    }
+    .progress-bar{
+      background: linear-gradient(90deg, rgba(106,108,255,.85), rgba(255,106,162,.75));
+    }
+    .slide{
+      display:none;
+      padding: 8px 6px 14px 6px;
+      min-height: 60vh;
+    }
+    .slide.active{ display:block; }
+    .slide h2{
+      font-weight: 900;
+      letter-spacing: .2px;
+      margin-bottom: 10px;
+    }
+    .slide p, .slide li{ color: var(--muted); }
+    .card-soft{
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.70);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 22px rgba(30,30,60,.06);
+    }
+    .badge-soft{
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.60);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: .82rem;
+    }
+    .callout{
+      border-left: 6px solid rgba(106,108,255,.55);
+      background: rgba(106,108,255,.06);
+      border-radius: 14px;
+      padding: 12px 12px;
+    }
+    .callout .k{ font-weight: 800; color: var(--ink); }
+    .analogy{
+      border-left: 6px solid rgba(255,106,162,.55);
+      background: rgba(255,106,162,.06);
+      border-radius: 14px;
+      padding: 12px 12px;
+    }
+    .analogy .k{ font-weight: 800; color: var(--ink); }
+    .btn-soft{
+      border-radius: 999px;
+      border: 1px solid rgba(106,108,255,.25);
+      background: rgba(106,108,255,.08);
+      color: var(--ink);
+    }
+    .btn-soft:hover{ background: rgba(106,108,255,.14); }
+    .btn-accent{
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(106,108,255,.95), rgba(255,106,162,.85));
+      border: none;
+    }
+    .btn-accent:hover{ filter: brightness(1.03); }
+    code.kbd{
+      background: rgba(0,0,0,.06);
+      padding: 2px 6px;
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,.06);
+    }
+    .quiz-option{
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.62);
+      border-radius: 16px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: .15s ease;
+    }
+    .quiz-option:hover{ transform: translateY(-1px); border-color: rgba(106,108,255,.35); }
+    .quiz-option.selected{ border-color: rgba(255,106,162,.55); background: rgba(255,106,162,.08); }
+    .quiz-option.correct{ border-color: rgba(50,180,90,.55); background: rgba(50,180,90,.10); }
+    .quiz-option.wrong{ border-color: rgba(220,60,90,.55); background: rgba(220,60,90,.10); }
+    .small-muted{ color: var(--muted); font-size: .92rem; }
+    .footer-hint{ color: var(--muted); font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand animate__animated animate__fadeIn">
+        <div class="d-flex align-items-center gap-2">
+          <div class="p-2 rounded-3" style="background:rgba(106,108,255,.12); border:1px solid var(--stroke)">
+            <i class="fa-solid fa-diagram-project" style="color:var(--accent)"></i>
+          </div>
+          <div>
+            <p class="title mb-0">P4 · Módulo 1</p>
+            <p class="subtitle mb-0">Proceso de Desarrollo OO + UML + Conceptos básicos I</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <div class="d-flex align-items-center justify-content-between">
+			<a href="../index.html"
+			   class="badge-soft text-decoration-none">
+			   <i class="fa-solid fa-house me-2"></i>Home
+			</a>
+          <button class="btn btn-sm btn-soft" id="btnHelp">
+            <i class="fa-regular fa-circle-question me-1"></i>Ayuda
+          </button>
+        </div>
+
+        <div id="nav" class="mt-2"></div>
+      </div>
+
+      <div class="mt-3">
+        <div class="card-soft p-3">
+          <div class="d-flex align-items-start gap-2">
+            <i class="fa-solid fa-lightbulb mt-1" style="color:var(--accent2)"></i>
+            <div>
+              <div class="fw-bold">Tip</div>
+              <div class="small-muted">Cada sección tiene un botón <span class="badge-soft"><i class="fa-solid fa-mug-saucer me-1"></i>Analogía</span> para fijar ideas con un ejemplo de “vida real”.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+      <div class="topbar">
+        <div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge-soft" id="slideTag"><i class="fa-solid fa-layer-group me-2"></i>Sección</span>
+            <span class="badge-soft" id="slideCounter"><i class="fa-solid fa-hashtag me-2"></i>1/1</span>
+          </div>
+          <div class="mt-2">
+            <div class="progress" role="progressbar" aria-label="progreso">
+              <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-soft" id="btnPrev"><i class="fa-solid fa-arrow-left me-2"></i>Anterior</button>
+          <button class="btn btn-accent text-white" id="btnNext">Siguiente<i class="fa-solid fa-arrow-right ms-2"></i></button>
+        </div>
+      </div>
+
+      <!-- SLIDES -->
+      <section class="slide" data-title="Bienvenida" data-icon="fa-hand-sparkles">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-hand-sparkles me-2" style="color:var(--accent2)"></i>Bienvenida</h2>
+          <p class="lead small-muted mb-3">
+            Vamos a recorrer el <b>proceso de desarrollo</b>, el <b>enfoque orientado a objetos</b> y cómo <b>UML</b> ayuda en
+            <b>análisis</b>, <b>diseño</b> e <b>implementación</b>. Luego, veremos los <b>conceptos básicos de OO</b>.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="d-flex align-items-start gap-3">
+                  <div class="p-3 rounded-4" style="background:rgba(106,108,255,.10); border:1px solid var(--stroke)">
+                    <i class="fa-solid fa-route fa-lg" style="color:var(--accent)"></i>
+                  </div>
+                  <div>
+                    <div class="fw-bold mb-2">¿Qué vas a poder hacer al final?</div>
+                    <ul class="mb-0">
+                      <li>Explicar por qué necesitamos un <b>proceso de desarrollo</b>.</li>
+                      <li>Distinguir <b>tradicional</b> vs <b>orientado a objetos</b>.</li>
+                      <li>Ubicar dónde entra UML: <b>dominio</b>, <b>comportamiento</b>, <b>interacciones</b> y <b>estructura</b>.</li>
+                      <li>Definir: <b>objeto</b>, <b>clase</b>, <b>estado</b>, <b>herencia</b>, <b>polimorfismo</b> y <b>despacho</b>.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2"><i class="fa-solid fa-gamepad me-2" style="color:var(--accent)"></i>Modo interactivo</div>
+                <ul class="mb-3">
+                  <li>Usá la barra lateral para saltar.</li>
+                  <li><code class="kbd">←</code> y <code class="kbd">→</code> también navegan.</li>
+                  <li>Al final hay un <b>desafío de 10 preguntas</b>.</li>
+                </ul>
+                <button class="btn btn-soft w-100" onclick="toast('¡Listo! Empecemos con el proceso de desarrollo.')">
+                  <i class="fa-solid fa-play me-2"></i>Probar interacción
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 callout">
+            <span class="k">Caso guía del material:</span>
+            Biblioteca de música (canciones, artistas y géneros). Se usa como ejemplo para hablar de análisis/diseño en OO.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Proceso de Desarrollo" data-icon="fa-gears">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-gears me-2" style="color:var(--accent)"></i>Proceso de Desarrollo</h2>
+          <p>
+            Un <b>proceso de desarrollo</b> describe un enfoque para <b>construir</b>, <b>instalar</b> y <b>mantener</b> software.
+            Lo necesitamos para saber <b>qué actividades</b> debemos hacer y en qué orden.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Actividades típicas</div>
+                <ol class="mb-0">
+                  <li>Entrar en contexto con la realidad del problema</li>
+                  <li>Obtener descripción de lo esperado</li>
+                  <li>Comprender qué se debe hacer</li>
+                  <li>Determinar cómo se debe hacer</li>
+                  <li>Hacerlo</li>
+                  <li>Probar que esté bien hecho</li>
+                  <li>Entregar</li>
+                  <li>Retoques</li>
+                  <li>Mantener</li>
+                </ol>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Y además…</div>
+                <ul class="mb-0">
+                  <li>Estimar tiempo/costos/recursos</li>
+                  <li>Planificar</li>
+                  <li>Asegurar que se haga en tiempo y forma</li>
+                  <li>Administrar versiones</li>
+                  <li>Montar y mantener ambientes de desarrollo y prueba</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3 d-flex align-items-start gap-3">
+            <div class="p-2 rounded-4" style="background:rgba(255,106,162,.10); border:1px solid var(--stroke)">
+              <i class="fa-solid fa-mug-saucer" style="color:var(--accent2)"></i>
+            </div>
+            <div>
+              <div class="k mb-1">Analogía (vida real)</div>
+              <div class="small-muted">
+                Hacer software sin proceso es como <b>cocinar para mucha gente</b> sin receta ni plan:
+                arrancás “a ojo”, te olvidás ingredientes, y recién al final descubrís que faltaba sal.
+                Un proceso te da una <b>lista de pasos</b> y te permite <b>controlar</b> cómo va saliendo.
+              </div>
+              <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Proceso de Desarrollo','Es como cocinar para mucha gente: receta, pasos y control para que el resultado sea consistente.')">
+                <i class="fa-solid fa-mug-saucer me-2"></i>Ver en popup
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Modelos de Proceso" data-icon="fa-water">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-water me-2" style="color:var(--accent)"></i>Modelos de Proceso</h2>
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <span class="badge-soft"><i class="fa-solid fa-stairs me-2"></i>Cascada</span>
+                </div>
+                <p class="mb-2">Secuencia típica:</p>
+                <ul class="mb-0">
+                  <li>Relevamiento</li>
+                  <li>Análisis</li>
+                  <li>Diseño</li>
+                  <li>Implementación</li>
+                  <li>Testeo</li>
+                  <li>Liberación</li>
+                  <li>Mantenimiento</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Problema:</span>
+                  en problemas grandes/complexos, errores tempranos se descubren tarde y hay poca visibilidad hasta muy avanzado.
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <span class="badge-soft"><i class="fa-solid fa-rotate me-2"></i>Iterativo e Incremental (I&amp;I)</span>
+                </div>
+                <p class="mb-2">Se divide el problema en subproblemas y se resuelven en iteraciones (mini-cascadas).</p>
+                <ul class="mb-0">
+                  <li>Divide y vencerás: subproblemas</li>
+                  <li>En cada iteración: análisis → diseño → implementación → testeo del subproblema</li>
+                  <li>Se va acumulando progreso (sp1, sp2, …)</li>
+                </ul>
+                <div class="analogy mt-3">
+                  <span class="k">Analogía:</span>
+                  construir una casa por módulos: primero una habitación habitable, luego otra, mejorando cada vez.
+                  <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Iterativo e Incremental','Como construir una casa por módulos: cada etapa deja algo usable y aprendés para la siguiente.')">
+                    <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 callout">
+            <span class="k">En este curso:</span> nos concentramos en la “cascada” dentro de la construcción: <b>Análisis</b>, <b>Diseño</b> e <b>Implementación</b>.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Enfoque Orientado a Objetos" data-icon="fa-cubes">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-cubes me-2" style="color:var(--accent2)"></i>Enfoque Orientado a Objetos</h2>
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2"><i class="fa-solid fa-terminal me-2" style="color:var(--accent)"></i>Enfoque tradicional</div>
+                <p class="mb-2">Estructura típica: un tipo + funciones que operan sobre ese tipo.</p>
+                <div class="callout">
+                  <span class="k">Idea central:</span> el programa es “<b>funciones</b>” y los datos se pasan como parámetros.
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2"><i class="fa-solid fa-envelope-open-text me-2" style="color:var(--accent2)"></i>Orientado a objetos</div>
+                <p class="mb-2">
+                  Se organiza como una <b>colaboración de objetos</b> que interactúan por <b>mensajes</b>.
+                </p>
+                <div class="callout">
+                  <span class="k">Idea central:</span> el programa es una “<b>red de objetos</b>” coordinándose.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span>
+            tradicional = “una persona hace todo siguiendo una lista de tareas”; OO = “un equipo donde cada persona tiene un rol y se pasan mensajes”.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('OO vs Tradicional','Tradicional: 1 persona hace todo con una lista. OO: un equipo; cada rol se encarga de algo y se coordinan con mensajes.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Desarrollo OO + UML" data-icon="fa-diagram-project">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-diagram-project me-2" style="color:var(--accent)"></i>Desarrollo OO + UML</h2>
+          <p>
+            En OO, las etapas generales se mantienen, pero las actividades se vuelven:
+            <b>Análisis OO</b>, <b>Diseño OO</b> e <b>Implementación OO</b>.
+            UML es el estándar de modelado para ayudarnos a <b>pensar</b>, <b>visualizar</b>, <b>comunicar</b> y <b>documentar</b>.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-5">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">¿Por qué UML?</div>
+                <ul class="mb-0">
+                  <li>Ayuda a desarrollar (para uno mismo)</li>
+                  <li>Permite visualizar lo hecho</li>
+                  <li>Comunica avance (cliente/equipo)</li>
+                  <li>Documenta el sistema</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Caso guía (Biblioteca de música)</div>
+                <p class="mb-2">
+                  Un usuario agrega una canción indicando <b>título</b> y <b>año</b>, luego selecciona <b>géneros</b> y <b>artistas</b>, y se da de alta.
+                </p>
+                <div class="callout">
+                  <span class="k">Nota:</span> los requerimientos vienen dados por <b>Casos de Uso</b> y descripciones generales del sistema.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> UML es como el “<b>plano</b>” antes de construir: te deja hablar del sistema sin escribir código todavía.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('UML','Como un plano de construcción: te permite pensar y comunicar antes de programar.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Análisis OO" data-icon="fa-magnifying-glass">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-magnifying-glass me-2" style="color:var(--accent2)"></i>Análisis Orientado a Objetos</h2>
+          <p>
+            Se considera el <b>dominio</b> y su solución lógica como <b>conceptos</b> (cosas/entidades).
+            El concepto clave es la <b>abstracción</b>: encontrar y describir conceptos del dominio para comprender mejor la realidad y el problema.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Actividades del Análisis OO</div>
+                <ul class="mb-0">
+                  <li><b>Modelado de Dominio</b>: conceptos y relaciones significativas (herramienta: <b>Diagrama de Clases</b>).</li>
+                  <li><b>Especificación del Comportamiento</b>: qué se espera del sistema (herramientas: <b>DSS</b> + <b>Contratos</b>).</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Isomorfismo (idea clave)</div>
+                <p class="mb-2">
+                  En un sistema OO bien modelado, hay una correspondencia fuerte entre conceptos del dominio y elementos de la realidad.
+                </p>
+                <div class="callout">
+                  <span class="k">Resultado:</span> entendés “qué existe” y “cómo se relaciona” antes de decidir la solución técnica.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> es como hacer una lista de “cosas importantes” para organizar una mudanza: cajas, muebles, llaves, habitaciones y cómo se conectan.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Análisis OO','Como planear una mudanza: identificás cosas importantes (conceptos) y relaciones antes de mover nada.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Dominio, DSS y Contratos" data-icon="fa-sitemap">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-sitemap me-2" style="color:var(--accent)"></i>Dominio, DSS y Contratos</h2>
+          <div class="row g-3">
+            <div class="col-lg-4">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Modelo de Dominio</div>
+                <p class="small-muted mb-0">Contiene conceptos y relaciones significativas del problema, provistas por los Casos de Uso, y también restricciones.</p>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">DSS</div>
+                <p class="small-muted mb-0">Muestra cómo los actores realizan “invocaciones” sobre el sistema en los distintos escenarios del Caso de Uso.</p>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Contrato</div>
+                <p class="small-muted mb-0">Especifica en forma precisa el efecto de cada mensaje (precondiciones y postcondiciones).</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 card-soft p-4">
+            <div class="fw-bold mb-2">Ejemplo rápido (Agregar Canción)</div>
+            <div class="row g-3">
+              <div class="col-lg-6">
+                <div class="callout h-100">
+                  <span class="k">DSS (idea):</span>
+                  Usuario invoca <b>ingresarCancion(título, año)</b>, luego solicita listas de géneros y artistas, agrega los seleccionados, y finaliza.
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="callout h-100">
+                  <span class="k">Contrato (idea):</span>
+                  <b>Pre:</b> no existe canción con mismo nombre; el año no es mayor al actual. <br/>
+                  <b>Post:</b> el sistema recuerda título y año para usarlos después.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> DSS = “guion” de la interacción; Contrato = “reglas del juego” (qué debe ser cierto antes y qué queda cierto después).
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('DSS y Contratos','DSS: guion de una charla. Contrato: reglas: qué debe pasar antes y qué queda garantizado después.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Diseño OO" data-icon="fa-compass-drafting">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-compass-drafting me-2" style="color:var(--accent2)"></i>Diseño Orientado a Objetos</h2>
+          <p>
+            Objetivo: definir objetos lógicos (de software) y cómo se comunican para poder programar después.
+            Concepto clave: <b>responsabilidades</b>.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Decisiones típicas</div>
+                <ul class="mb-0">
+                  <li>Qué conceptos del análisis pasan a ser objetos de la solución.</li>
+                  <li>Cómo se comunican para lograr el resultado.</li>
+                  <li>A veces aparecen “ayudantes” (objetos extra) para cumplir tareas.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Actividades del Diseño OO</div>
+                <ul class="mb-0">
+                  <li><b>Diseño de Interacciones</b> (herramienta: <b>Diagrama de Comunicación</b>)</li>
+                  <li><b>Diseño de Estructura</b> (herramienta: <b>Diagrama de Clases de Diseño</b>)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> es como armar un equipo de trabajo: definís <b>roles</b> (responsabilidades) y <b>cómo se coordinan</b> (comunicación).
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Diseño OO','Como armar un equipo: definís roles (responsabilidades) y cómo se pasan información para terminar el trabajo.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Interacciones y Estructura" data-icon="fa-comments">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-comments me-2" style="color:var(--accent)"></i>Interacciones y Estructura</h2>
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Diagrama de Comunicación</div>
+                <ul class="mb-0">
+                  <li>Se hace <b>uno por operación del sistema</b>.</li>
+                  <li>Los objetos protagonistas se sugieren en el Modelo de Dominio.</li>
+                  <li>El resultado esperado está en el contrato.</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">En simple:</span> “¿Quién le pide qué a quién, y en qué orden?”
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Diagrama de Clases de Diseño</div>
+                <ul class="mb-0">
+                  <li>Resume información de los diagramas de comunicación.</li>
+                  <li>La estructura está guiada por el Modelo de Dominio.</li>
+                  <li>Generalmente se realiza un único diagrama “resumen”.</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">En simple:</span> “¿Qué clases existen en el software y qué tienen adentro?”
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> comunicación = “chat del equipo”; clases de diseño = “organigrama + fichas de rol” de cada miembro.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Interacciones vs Estructura','Interacciones: el chat (mensajes). Estructura: el organigrama y la ficha de qué hace cada rol.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Implementación OO" data-icon="fa-code">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-code me-2" style="color:var(--accent2)"></i>Implementación OO</h2>
+          <p>
+            Objetivo: codificar en un lenguaje OO las construcciones definidas en el diseño.
+            Definir objetos y su intercambio de mensajes requiere construcciones del lenguaje (clases, métodos, etc.).
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Puente Diseño → Código</div>
+                <ul class="mb-0">
+                  <li>Clases de diseño → <b>clases en el lenguaje</b></li>
+                  <li>Operaciones → <b>métodos</b></li>
+                  <li>Relaciones/visibilidad → <b>atributos / referencias / colecciones</b></li>
+                  <li>Mensajes (interacción) → <b>invocaciones de métodos</b></li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Analogía</div>
+                <div class="small-muted">
+                  Es como pasar del plano de una casa al trabajo real: el plano guía, pero hay que “hacer la obra” con herramientas concretas.
+                </div>
+                <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Implementación OO','Como construir: el plano guía, pero en la obra usás herramientas concretas (lenguaje, clases, métodos).')">
+                  <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 callout">
+            <span class="k">Idea clave:</span> el diseño decide “qué objetos y responsabilidades”; la implementación lo convierte en código ejecutable.
+          </div>
+        </div>
+      </section>
+
+      <!-- Conceptos básicos de OO (parte 1) -->
+      <section class="slide" data-title="Objeto e Identidad" data-icon="fa-circle-nodes">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-circle-nodes me-2" style="color:var(--accent)"></i>Objeto e Identidad</h2>
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Objeto</div>
+                <ul class="mb-0">
+                  <li>Entidad discreta con límites e identidad bien definidos.</li>
+                  <li>Encapsula <b>estado</b> y <b>comportamiento</b>.</li>
+                  <li>Es instancia de una clase.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Identidad</div>
+                <ul class="mb-0">
+                  <li>Propiedad inherente: un objeto es distinguible de otros.</li>
+                  <li>Dos objetos pueden tener los mismos valores y aun así ser distintos.</li>
+                  <li>Se puede implementar con direcciones de memoria o claves (infraestructura del lenguaje).</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> dos llaves idénticas (mismo “valor”) pueden ser objetos distintos: si las apoyás en la mesa, son 2 llaves diferentes.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Identidad','Dos llaves idénticas pueden verse iguales, pero siguen siendo dos objetos distintos (tienen identidad).')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Clase y Construcción" data-icon="fa-box">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-box me-2" style="color:var(--accent2)"></i>Clase y Construcción</h2>
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Clase</div>
+                <ul class="mb-0">
+                  <li>Descriptor de objetos con mismos <b>atributos</b>, <b>operaciones</b>, <b>métodos</b>, <b>relaciones</b> y comportamiento.</li>
+                  <li>Representa un concepto del sistema.</li>
+                  <li>En análisis: puede ser concepto del mundo real; en diseño: entidad de software.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Crear y destruir</div>
+                <ul class="mb-0">
+                  <li>Para crear objetos se usan <b>constructores</b>.</li>
+                  <li>Para destruir, <b>destructores</b> (según el lenguaje).</li>
+                  <li>Puede haber constructor por defecto, con parámetros o por copia.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> clase = “molde”; objeto = “galleta”. Constructor = “hornear”; destructor = “tirar/limpiar” (liberar recursos).
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Clase/Objeto','Clase = molde; objeto = galleta. Constructor = hornear; destructor = limpiar/liberar.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Atributo, Operación y Método" data-icon="fa-sliders">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-sliders me-2" style="color:var(--accent)"></i>Atributo, Operación y Método</h2>
+          <div class="row g-3">
+            <div class="col-lg-4">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Atributo</div>
+                <ul class="mb-0">
+                  <li>Compartimiento dentro de una clase con un tipo.</li>
+                  <li><b>De instancia:</b> cada objeto tiene su propio valor.</li>
+                  <li><b>De clase:</b> valor compartido por todos (ej: <code class="kbd">static</code>).</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Operación</div>
+                <ul class="mb-0">
+                  <li>Especificación de una transformación/consulta que un objeto puede ejecutar.</li>
+                  <li>Tiene nombre, parámetros y tipo de retorno.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Método</div>
+                <ul class="mb-0">
+                  <li>Implementación de una operación para una clase.</li>
+                  <li>Define el algoritmo/procedimiento real.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> operación = “pedido” (qué se quiere); método = “receta” (cómo se hace); atributo = “ingredientes guardados”.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Operación vs Método','Operación = pedido (qué). Método = receta (cómo). Atributos = ingredientes que el objeto guarda.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Estado, Comportamiento y Accesos" data-icon="fa-lock">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-lock me-2" style="color:var(--accent2)"></i>Estado, Comportamiento y Accesos</h2>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Estado</div>
+                <ul class="mb-0">
+                  <li>Almacena efectos de operaciones.</li>
+                  <li>Implementado por <b>atributos</b> y <b>links</b> (relaciones).</li>
+                  <li>Es el valor de todos los atributos y links en un instante.</li>
+                </ul>
+                <div class="fw-bold mt-3 mb-2">Comportamiento</div>
+                <div class="small-muted">Efecto observable de una operación, incluyendo su resultado.</div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Acceso a propiedades</div>
+                <ul class="mb-0">
+                  <li><b>public</b>: accesible desde cualquier lugar con visibilidad.</li>
+                  <li><b>private</b>: accesible solo desde métodos de la clase.</li>
+                  <li><b>protected</b>: visible para la clase y derivadas (en C++).</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Recomendación:</span> atributos privados y operaciones públicas (encapsulación).
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> “tablero” interno de una máquina (estado) y botones visibles (operaciones públicas). No metés la mano adentro (atributos privados).
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Encapsulación','Como una máquina: tablero interno (estado) y botones públicos. Atributos privados evitan que toquen lo delicado.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Data Types y Data Values" data-icon="fa-tag">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-tag me-2" style="color:var(--accent)"></i>Data Types y Data Values</h2>
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Data Type</div>
+                <ul class="mb-0">
+                  <li>Descriptor de valores que <b>carecen de identidad</b>.</li>
+                  <li>Ejemplos: strings, números, fechas, enumerados.</li>
+                  <li>Si se implementa como clase, para ser “datatype” sus operaciones no deben modificar estado; deben devolver uno nuevo.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Data Value</div>
+                <ul class="mb-0">
+                  <li>Valor único sin identidad, instancia de un data type.</li>
+                  <li>No cambia su estado: operaciones son “funciones puras” o consultas.</li>
+                  <li>Se usan típicamente como valores de atributos.</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Ejemplo:</span> el “4” no se convierte en “5”; se aplica suma(1) y el resultado es “5”.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> un número es como un “valor escrito en papel”: no lo cambiás; si querés otro, escribís otro papel.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Data values','Como números en papel: no cambiás el 4; escribís 5 en otro papel como resultado.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Asociación y Link" data-icon="fa-link">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-link me-2" style="color:var(--accent2)"></i>Asociación y Link</h2>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Asociación</div>
+                <ul class="mb-0">
+                  <li>Relación semántica entre clasificadores (clases o data types).</li>
+                  <li>Sus instancias son <b>links</b> (tuplas que conectan instancias).</li>
+                  <li>Una tupla aparece como máximo una vez en el conjunto.</li>
+                  <li>Los elementos pueden variar con el tiempo.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Link</div>
+                <ul class="mb-0">
+                  <li>Tupla de referencias a instancias (objetos o data values).</li>
+                  <li>Instancia de una asociación.</li>
+                  <li>Permite visibilidad entre las instancias participantes.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 card-soft p-4">
+            <div class="fw-bold mb-2">Representación en código (idea)</div>
+            <p class="small-muted mb-2">
+              Casi ningún lenguaje implementa asociaciones “tal cual” el modelo conceptual. Se suelen usar <b>pseudoatributos</b>
+              (por ejemplo, colecciones de referencias) en las clases.
+            </p>
+            <div class="callout">
+              <span class="k">Detalle:</span> un pseudoatributo suele ser de tipo clase (referencia/colección), mientras que un atributo es de tipo data type.
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> asociación = “ser amigo de”; link = “Juan es amigo de Ana” (una conexión concreta).
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Asociación/Link','Asociación: “ser amigo de”. Link: “Juan es amigo de Ana” (conexión concreta).')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Generalización, Herencia y Subsumption" data-icon="fa-sitemap">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-sitemap me-2" style="color:var(--accent)"></i>Generalización, Herencia y Subsumption</h2>
+
+          <div class="row g-3">
+            <div class="col-lg-4">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Generalización</div>
+                <div class="small-muted">
+                  Relación taxonómica entre una clase más general y otra más específica.
+                  La específica es consistente con la general y puede agregar información.
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Herencia</div>
+                <div class="small-muted">
+                  Mecanismo para compartir propiedades entre una clase y sus descendientes.
+                  Una clase derivada tiene sus propiedades + las heredadas de ancestros.
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Subsumption</div>
+                <div class="small-muted">
+                  Intercambiabilidad: un objeto de clase derivada puede usarse donde se espera uno de la clase base.
+                  (Si B &lt;: A, entonces b:B implica b:A).
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 callout">
+            <span class="k">Vocabulario:</span> clase base/superclase/padre · clase derivada/subclase/hijo · ancestros/descendientes.
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> “Todo perro es animal”: si un lugar acepta “animales”, un “perro” también entra (intercambiabilidad).
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Subsumption','Si algo acepta “Animal”, un “Perro” sirve: es intercambiable porque es un tipo más específico.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Polimorfismo y Redefinición" data-icon="fa-shapes">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-shapes me-2" style="color:var(--accent2)"></i>Polimorfismo y Redefinición</h2>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Polimorfismo</div>
+                <ul class="mb-0">
+                  <li>Capacidad de asociar diferentes <b>métodos</b> a la misma <b>operación</b>.</li>
+                  <li>No alcanza con “mismo nombre”: debe ser realmente la misma operación (en una jerarquía relacionada).</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Redefinición de operaciones</div>
+                <ul class="mb-0">
+                  <li>En una jerarquía, si hay más de un método para la misma operación, está redefinida.</li>
+                  <li>El método asociado a una clase es el más próximo en la jerarquía.</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Ojo:</span> <b>sobrecarga</b> = mismo nombre para operaciones diferentes (distintos parámetros).
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> misma orden “presentate()”:
+            una persona se presenta de una forma, una banda de otra. La orden es la misma, la forma concreta cambia.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Polimorfismo','Misma orden “presentate()”. Persona y Banda responden distinto, pero la operación es la misma.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Abstracción (Clases y Operaciones)" data-icon="fa-ghost">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-ghost me-2" style="color:var(--accent)"></i>Abstracción: Operación y Clase Abstracta</h2>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Operación abstracta</div>
+                <ul class="mb-0">
+                  <li>Una operación es abstracta si <b>no tiene método asociado</b>.</li>
+                  <li>Tener una operación abstracta es suficiente para que la clase sea abstracta.</li>
+                  <li>Una clase puede ser abstracta incluso sin operaciones abstractas (según diseño del sistema).</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Clase abstracta</div>
+                <ul class="mb-0">
+                  <li>No se pueden crear objetos directamente a partir de ella.</li>
+                  <li>Existe para que otras clases hereden propiedades.</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Idea:</span> define “qué debe existir” (operaciones), pero deja el “cómo” a las clases concretas.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> un “formulario” con campos obligatorios: te dice qué debe completarse, pero cada persona lo llena con su información.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Abstracción','Como un formulario: define qué campos existen; cada caso concreto lo completa distinto.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Referencias y Tipos" data-icon="fa-code-branch">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-code-branch me-2" style="color:var(--accent2)"></i>Referencias y Tipos (Estático/Dinámico)</h2>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Referencia</div>
+                <ul class="mb-0">
+                  <li>Valor en tiempo de ejecución: <b>void</b> o <b>attached</b>.</li>
+                  <li>Si es attached, identifica a un objeto.</li>
+                  <li>Si es void, no identifica a ninguno.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Tipo estático vs dinámico</div>
+                <ul class="mb-0">
+                  <li><b>Estático:</b> tipo declarado de la referencia (compilación).</li>
+                  <li><b>Dinámico:</b> tipo del cual el objeto es instancia directa (ejecución).</li>
+                  <li>Puede diferir gracias a subsumption: TipoDinámico(obj) &lt;: TipoEstático(obj).</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> tipo estático = “etiqueta en una caja”; tipo dinámico = “lo que realmente hay adentro”. A veces la etiqueta es más general.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Tipos','Etiqueta de caja (estático) vs contenido real (dinámico). La etiqueta puede decir “Fruta” y adentro hay “Manzana”.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Invocación y Despacho" data-icon="fa-bolt">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-bolt me-2" style="color:var(--accent)"></i>Invocación y Despacho (Estático/Dinámico)</h2>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Invocación</div>
+                <div class="small-muted">
+                  Ocurre al acceder a una operación en una instancia.
+                  El resultado es ejecutar el método asociado (eso es el <b>despacho</b>).
+                </div>
+                <div class="callout mt-3">
+                  <span class="k">Problema típico:</span> si A y B (B&lt;:A) asocian métodos distintos a f(), ¿cuál se ejecuta en b.f()?
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Despacho estático</div>
+                <ul class="mb-3">
+                  <li>Se decide en compilación cuando es posible.</li>
+                  <li>Se basa en el tipo estático.</li>
+                </ul>
+                <div class="fw-bold mb-2">Despacho dinámico</div>
+                <ul class="mb-0">
+                  <li>Necesario cuando el tipo dinámico difiere (ej: operación polimórfica).</li>
+                  <li>Se decide en ejecución usando el tipo real del objeto.</li>
+                  <li>En C++ se realiza si la operación es <code class="kbd">virtual</code>.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> llamar a un número de atención al cliente: la “etiqueta” dice “Soporte”, pero el sistema te deriva según tu caso real (tipo dinámico).
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Despacho dinámico','Como un call center: pedís “soporte”, pero te derivan al especialista correcto según tu caso real.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- QUIZ -->
+      <section class="slide" data-title="Desafío (10 preguntas)" data-icon="fa-circle-check">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-circle-check me-2" style="color:var(--accent2)"></i>Desafío final · 10 preguntas</h2>
+          <p class="small-muted">
+            Elegí una opción por pregunta. Al finalizar, verás para cada una la respuesta correcta y la que seleccionaste, y luego un resumen.
+          </p>
+
+          <div class="card-soft p-4">
+            <div id="quizRoot"></div>
+            <div class="d-flex flex-wrap gap-2 mt-3">
+              <button class="btn btn-accent text-white" id="btnFinishQuiz">
+                <i class="fa-solid fa-flag-checkered me-2"></i>Finalizar intento
+              </button>
+              <button class="btn btn-soft" id="btnResetQuiz">
+                <i class="fa-solid fa-rotate-right me-2"></i>Reiniciar
+              </button>
+            </div>
+            <div class="footer-hint mt-2">
+              Tip: si querés repasar, volvé a secciones anteriores con la barra lateral.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Cierre" data-icon="fa-heart">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-heart me-2" style="color:var(--accent2)"></i>Cierre</h2>
+          <div class="card-soft p-4">
+            <div class="fw-bold mb-2">Checklist mental (si podés explicar esto, vas muy bien):</div>
+            <ul class="mb-0">
+              <li>¿Qué problema resuelve un <b>proceso</b> y por qué I&amp;I da mejor visibilidad?</li>
+              <li>¿Qué significa “software como colaboración de <b>objetos</b>”?</li>
+              <li>¿Qué hace cada etapa OO: <b>análisis</b> (conceptos), <b>diseño</b> (responsabilidades), <b>implementación</b> (código)?</li>
+              <li>¿Cómo se conectan <b>clase</b>, <b>objeto</b>, <b>estado</b>, <b>operación</b> y <b>método</b>?</li>
+              <li>¿Qué es <b>subsumption</b> y por qué aparece el <b>despacho dinámico</b>?</li>
+            </ul>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Última analogía:</span> aprender OO es como aprender a organizar un taller: cada herramienta tiene su lugar y propósito; cuando todo encaja, trabajar se vuelve más fácil.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Cierre','OO es como organizar un taller: cada herramienta (concepto) tiene su lugar; cuando encaja, trabajar se vuelve más fácil.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // -----------------------
+    // Slides + Navigation
+    // -----------------------
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const nav = document.getElementById('nav');
+    const slideCounter = document.getElementById('slideCounter');
+    const slideTag = document.getElementById('slideTag');
+    const progressBar = document.getElementById('progressBar');
+
+    let idx = 0;
+
+    function renderNav(){
+      nav.innerHTML = '';
+      slides.forEach((s, i) => {
+        const title = s.dataset.title || `Sección ${i+1}`;
+        const icon = s.dataset.icon || 'fa-circle';
+        const a = document.createElement('a');
+        a.href = '#';
+        a.className = 'navpill';
+        a.innerHTML = `<i class="fa-solid ${icon}"></i><span>${title}</span>`;
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          goTo(i, true);
+        });
+        nav.appendChild(a);
+      });
+    }
+
+    function updateChrome(){
+      const total = slides.length;
+      slideCounter.innerHTML = `<i class="fa-solid fa-hashtag me-2"></i>${idx+1}/${total}`;
+      slideTag.innerHTML = `<i class="fa-solid fa-layer-group me-2"></i>${slides[idx].dataset.title || 'Sección'}`;
+      progressBar.style.width = `${Math.round(((idx+1)/total)*100)}%`;
+
+      const pills = Array.from(nav.querySelectorAll('.navpill'));
+      pills.forEach((p, i) => p.classList.toggle('active', i === idx));
+    }
+
+    function goTo(newIdx, animate=false){
+      if(newIdx < 0 || newIdx >= slides.length) return;
+      slides[idx].classList.remove('active');
+
+      idx = newIdx;
+      slides[idx].classList.add('active');
+
+      if(animate){
+        slides[idx].classList.remove('animate__fadeInUp');
+        void slides[idx].offsetWidth; // reflow
+        slides[idx].classList.add('animate__animated','animate__fadeInUp');
+      }
+      updateChrome();
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    function next(){ goTo(Math.min(idx+1, slides.length-1), true); }
+    function prev(){ goTo(Math.max(idx-1, 0), true); }
+
+    document.getElementById('btnNext').addEventListener('click', next);
+    document.getElementById('btnPrev').addEventListener('click', prev);
+
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'ArrowRight') next();
+      if(e.key === 'ArrowLeft') prev();
+    });
+
+    document.getElementById('btnHelp').addEventListener('click', () => {
+      Swal.fire({
+        title: 'Cómo usar esta presentación',
+        html: `
+          <div style="text-align:left">
+            <ul>
+              <li>Usá <b>Siguiente</b> / <b>Anterior</b> o las teclas <code>→</code> y <code>←</code>.</li>
+              <li>En la barra lateral podés saltar a cualquier tema.</li>
+              <li>En cada sección hay una <b>analogía</b> para fijar el concepto.</li>
+              <li>Al final tenés un <b>quiz</b> de 10 preguntas con corrección y resumen.</li>
+            </ul>
+          </div>`,
+        icon: 'info',
+        confirmButtonText: '¡Entendido!',
+        confirmButtonColor: '#6a6cff'
+      })
+    });
+
+    // -----------------------
+    // SweetAlert helpers
+    // -----------------------
+    function analogy(title, text){
+      Swal.fire({
+        title: `Analogía · ${title}`,
+        text,
+        icon: 'success',
+        confirmButtonText: 'Ok',
+        confirmButtonColor: '#6a6cff'
+      });
+    }
+    function toast(text){
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'info',
+        title: text,
+        showConfirmButton: false,
+        timer: 2300,
+        timerProgressBar: true
+      });
+    }
+
+    // -----------------------
+    // Quiz (10 preguntas)
+    // -----------------------
+    const quiz = [
+      {
+        q: "¿Para qué sirve un proceso de desarrollo de software?",
+        options: [
+          "Para escribir código más rápido sin planificar",
+          "Para describir un enfoque para construir, instalar y mantener software",
+          "Para evitar hacer pruebas",
+          "Para reemplazar a los casos de uso"
+        ],
+        correct: 1,
+        explain: "Un proceso describe el enfoque y las actividades necesarias para construir, instalar y mantener un sistema."
+      },
+      {
+        q: "¿Cuál es un problema típico del modelo en cascada en proyectos grandes?",
+        options: [
+          "Da demasiada visibilidad desde el inicio",
+          "Descubre errores tempranos muy tarde y hay poca visibilidad hasta avanzado el proyecto",
+          "No tiene etapa de mantenimiento",
+          "No permite definir requerimientos"
+        ],
+        correct: 1,
+        explain: "En cascada, al ser secuencial, los errores de etapas tempranas suelen verse tarde y el avance visible aparece tarde."
+      },
+      {
+        q: "En el enfoque OO, el software se organiza principalmente como…",
+        options: [
+          "Un conjunto de funciones sueltas",
+          "Una colaboración de objetos que interactúan por mensajes",
+          "Una única estructura global de datos",
+          "Un flujo lineal sin entidades"
+        ],
+        correct: 1,
+        explain: "OO se basa en objetos que colaboran y se comunican."
+      },
+      {
+        q: "En Análisis OO, el concepto clave es…",
+        options: [
+          "Compilación",
+          "Abstracción",
+          "Optimización",
+          "Sobrecarga"
+        ],
+        correct: 1,
+        explain: "El análisis OO busca conceptos del dominio usando abstracción."
+      },
+      {
+        q: "¿Qué herramienta se usa para modelar el dominio (conceptos y relaciones)?",
+        options: [
+          "Diagrama de Clases",
+          "Diagrama de Comunicación",
+          "Código fuente",
+          "Diagrama de Gantt"
+        ],
+        correct: 0,
+        explain: "El modelado de dominio se apoya en el diagrama de clases."
+      },
+      {
+        q: "¿Qué es un objeto, según los conceptos básicos?",
+        options: [
+          "Un valor sin identidad como un número",
+          "Una entidad discreta con identidad que encapsula estado y comportamiento",
+          "Una operación sin método",
+          "Una función global"
+        ],
+        correct: 1,
+        explain: "Un objeto tiene identidad y encapsula estado y comportamiento."
+      },
+      {
+        q: "¿Cuál afirmación sobre identidad es correcta?",
+        options: [
+          "Dos objetos con los mismos valores siempre son el mismo objeto",
+          "La identidad es inherente: dos objetos pueden ser distintos aunque tengan mismos valores",
+          "La identidad solo existe si el programador la define con un atributo",
+          "Los data values siempre tienen identidad"
+        ],
+        correct: 1,
+        explain: "La identidad distingue objetos, incluso si sus propiedades coinciden."
+      },
+      {
+        q: "¿Qué diferencia principal hay entre operación y método?",
+        options: [
+          "No hay diferencia",
+          "Operación es la especificación; método es la implementación en una clase",
+          "Operación es el código; método es el nombre",
+          "Método solo existe en análisis, operación solo en implementación"
+        ],
+        correct: 1,
+        explain: "Operación = qué hace; método = cómo lo hace en una clase."
+      },
+      {
+        q: "¿Qué es subsumption (intercambiabilidad)?",
+        options: [
+          "Que una clase no puede tener hijos",
+          "Que un objeto de clase base puede sustituirse por uno derivado",
+          "Que un objeto derivado puede usarse donde se espera uno de la clase base",
+          "Que las operaciones no pueden ser redefinidas"
+        ],
+        correct: 2,
+        explain: "Si B <: A, entonces un objeto B también puede tratarse como A."
+      },
+      {
+        q: "¿Cuándo suele ser necesario el despacho dinámico?",
+        options: [
+          "Cuando todas las invocaciones son a funciones globales",
+          "Cuando una operación polimórfica se invoca usando una referencia de tipo ancestro y el tipo dinámico puede variar",
+          "Cuando no hay herencia",
+          "Solo en data types"
+        ],
+        correct: 1,
+        explain: "Para elegir el método correcto según el tipo dinámico del objeto, especialmente en operaciones redefinidas."
+      }
+    ];
+
+    const state = {
+      answers: Array(quiz.length).fill(null),
+      finished: false
+    };
+
+    function renderQuiz(){
+      const root = document.getElementById('quizRoot');
+      root.innerHTML = '';
+      quiz.forEach((item, qi) => {
+        const block = document.createElement('div');
+        block.className = 'mb-4';
+        block.innerHTML = `
+          <div class="d-flex align-items-start justify-content-between gap-2">
+            <div class="fw-bold">${qi+1}. ${item.q}</div>
+            <span class="badge-soft"><i class="fa-solid fa-list-check me-2"></i>MCQ</span>
+          </div>
+          <div class="mt-2 d-grid gap-2" id="q-${qi}"></div>
+          <div class="small-muted mt-2" id="exp-${qi}" style="display:none"></div>
+        `;
+        root.appendChild(block);
+
+        const optWrap = block.querySelector(`#q-${qi}`);
+        item.options.forEach((opt, oi) => {
+          const optDiv = document.createElement('div');
+          optDiv.className = 'quiz-option';
+          optDiv.innerHTML = `<i class="fa-regular fa-circle me-2"></i>${opt}`;
+          optDiv.addEventListener('click', () => {
+            if(state.finished) return;
+            state.answers[qi] = oi;
+            refreshQuestion(qi);
+          });
+          optWrap.appendChild(optDiv);
+        });
+
+        refreshQuestion(qi);
+      });
+    }
+
+    function refreshQuestion(qi){
+      const optWrap = document.getElementById(`q-${qi}`);
+      const item = quiz[qi];
+      const chosen = state.answers[qi];
+
+      Array.from(optWrap.children).forEach((node, oi) => {
+        node.classList.toggle('selected', chosen === oi);
+        node.querySelector('i').className = chosen === oi ? 'fa-solid fa-circle-check me-2' : 'fa-regular fa-circle me-2';
+
+        // after finish: mark correct/wrong
+        node.classList.remove('correct','wrong');
+        if(state.finished){
+          if(oi === item.correct) node.classList.add('correct');
+          if(chosen === oi && chosen !== item.correct) node.classList.add('wrong');
+        }
+      });
+
+      const exp = document.getElementById(`exp-${qi}`);
+      if(state.finished){
+        exp.style.display = '';
+        const selText = (chosen === null) ? 'Sin responder' : item.options[chosen];
+        exp.innerHTML = `
+          <div class="callout">
+            <div><b>Correcta:</b> ${item.options[item.correct]}</div>
+            <div><b>Tu respuesta:</b> ${selText}</div>
+            <div class="mt-2">${item.explain}</div>
+          </div>
+        `;
+      }else{
+        exp.style.display = 'none';
+        exp.innerHTML = '';
+      }
+    }
+
+    function finishQuiz(){
+      const unanswered = state.answers.map((a,i)=>a===null?i:null).filter(x=>x!==null);
+      if(unanswered.length){
+        Swal.fire({
+          title: 'Te faltan preguntas',
+          text: `Te faltan ${unanswered.length} preguntas sin responder. ¿Querés finalizar igual?`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Finalizar igual',
+          cancelButtonText: 'Volver',
+          confirmButtonColor: '#ff6aa2'
+        }).then(r=>{
+          if(r.isConfirmed) doFinish();
+        });
+      }else{
+        doFinish();
+      }
+    }
+
+    function doFinish(){
+      state.finished = true;
+      for(let i=0;i<quiz.length;i++) refreshQuestion(i);
+
+      const correctCount = state.answers.reduce((acc,a,i)=> acc + (a===quiz[i].correct ? 1 : 0), 0);
+      const total = quiz.length;
+
+      // messages per question
+      let perQ = '';
+      for(let i=0;i<total;i++){
+        const chosen = state.answers[i];
+        const ok = (chosen === quiz[i].correct);
+        perQ += `<div style="text-align:left; margin-bottom:10px;">
+          <div><b>${i+1}. ${ok ? '✅ Correcto' : '❌ Incorrecto'}</b></div>
+          <div><b>Correcta:</b> ${quiz[i].options[quiz[i].correct]}</div>
+          <div><b>Tu respuesta:</b> ${chosen===null ? 'Sin responder' : quiz[i].options[chosen]}</div>
+        </div>`;
+      }
+
+      Swal.fire({
+        title: `Resultado: ${correctCount}/${total}`,
+        html: `
+          <div class="small-muted" style="text-align:left; margin-bottom:10px;">
+            Abajo tenés el detalle por pregunta (correcta vs tu respuesta).
+          </div>
+          <div style="max-height: 52vh; overflow:auto; padding-right:6px;">${perQ}</div>
+          <hr/>
+          <div style="text-align:left;">
+            <b>Resumen:</b> ${correctCount} correctas · ${total-correctCount} incorrectas.
+          </div>
+        `,
+        icon: correctCount >= 7 ? 'success' : 'info',
+        confirmButtonText: 'Ok',
+        confirmButtonColor: '#6a6cff'
+      });
+    }
+
+    function resetQuiz(){
+      state.answers = Array(quiz.length).fill(null);
+      state.finished = false;
+      renderQuiz();
+      toast('Quiz reiniciado.');
+    }
+
+    document.getElementById('btnFinishQuiz').addEventListener('click', finishQuiz);
+    document.getElementById('btnResetQuiz').addEventListener('click', resetQuiz);
+
+    // init
+    renderNav();
+    slides[0].classList.add('active');
+    updateChrome();
+    renderQuiz();
+  </script>
+</body>
+</html>
