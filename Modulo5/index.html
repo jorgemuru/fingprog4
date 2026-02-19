@@ -1,0 +1,1096 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Programación 4 · Módulo 5</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    :root{
+      --bg:#fbfbff; --ink:#223; --muted:#566; --stroke:#e8e7ff;
+      --p1:#dff3ff; --p2:#ffe6ef; --p3:#e9ffe6; --p4:#fff6d6;
+      --accent:#6a6cff; --accent2:#ff6aa2;
+      --shadow:0 12px 30px rgba(30,30,60,.08); --radius:18px;
+    }
+    body{
+      background:
+        radial-gradient(1200px 800px at 10% 10%, var(--p1), transparent 55%),
+        radial-gradient(1100px 700px at 90% 15%, var(--p2), transparent 60%),
+        radial-gradient(900px 700px at 20% 90%, var(--p3), transparent 55%),
+        radial-gradient(1000px 700px at 80% 85%, var(--p4), transparent 60%),
+        var(--bg);
+      color:var(--ink); min-height:100vh;
+    }
+    .app-shell{display:grid;grid-template-columns:320px 1fr;gap:18px;padding:18px;max-width:1450px;margin:0 auto;}
+    @media (max-width:992px){.app-shell{grid-template-columns:1fr}.sidebar{position:static!important;height:auto!important}}
+    .sidebar{
+      position:sticky;top:18px;height:calc(100vh - 36px);overflow:auto;
+      border:1px solid var(--stroke);background:linear-gradient(180deg,#ffffffcc,#ffffff99);
+      box-shadow:var(--shadow);border-radius:var(--radius);padding:14px;backdrop-filter:blur(8px);
+    }
+    .brand{border-radius:14px;padding:12px;background:linear-gradient(135deg,rgba(106,108,255,.14),rgba(255,106,162,.12));border:1px solid var(--stroke);}
+    .brand .title{font-weight:900;letter-spacing:.2px;margin:0;line-height:1.2}
+    .brand .subtitle{margin:6px 0 0 0;color:var(--muted);font-size:.92rem}
+    .navpill{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;border:1px solid transparent;color:var(--ink);text-decoration:none;transition:.18s ease;margin:6px 0;background:rgba(255,255,255,.55);}
+    .navpill:hover{transform:translateY(-1px);border-color:var(--stroke)}
+    .navpill.active{border-color:rgba(106,108,255,.35);background:rgba(106,108,255,.10)}
+    .navpill i{color:var(--accent);width:18px;text-align:center}
+    .content{
+      border:1px solid var(--stroke);background:linear-gradient(180deg,#ffffffcc,#ffffffa6);
+      box-shadow:var(--shadow);border-radius:var(--radius);padding:16px;backdrop-filter:blur(8px);overflow:hidden;
+    }
+    .topbar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:4px 4px 12px;border-bottom:1px solid var(--stroke);margin-bottom:12px;}
+    .progress{height:10px;border-radius:999px;background:rgba(106,108,255,.08)}
+    .progress-bar{background:linear-gradient(90deg,rgba(106,108,255,.85),rgba(255,106,162,.75))}
+    .slide{display:none;padding:8px 6px 14px;min-height:60vh}
+    .slide.active{display:block}
+    .slide h2{font-weight:900;letter-spacing:.2px;margin-bottom:10px}
+    .slide p,.slide li{color:var(--muted)}
+    .card-soft{border:1px solid var(--stroke);background:rgba(255,255,255,.70);border-radius:var(--radius);box-shadow:0 10px 22px rgba(30,30,60,.06)}
+    .badge-soft{border:1px solid var(--stroke);background:rgba(255,255,255,.60);color:var(--ink);border-radius:999px;padding:6px 10px;font-size:.82rem}
+    .callout{border-left:6px solid rgba(106,108,255,.55);background:rgba(106,108,255,.06);border-radius:14px;padding:12px}
+    .callout .k{font-weight:800;color:var(--ink)}
+    .analogy{border-left:6px solid rgba(255,106,162,.55);background:rgba(255,106,162,.06);border-radius:14px;padding:12px}
+    .analogy .k{font-weight:800;color:var(--ink)}
+    .btn-soft{border-radius:999px;border:1px solid rgba(106,108,255,.25);background:rgba(106,108,255,.08);color:var(--ink)}
+    .btn-soft:hover{background:rgba(106,108,255,.14)}
+    .btn-accent{border-radius:999px;background:linear-gradient(90deg,rgba(106,108,255,.95),rgba(255,106,162,.85));border:none}
+    .btn-accent:hover{filter:brightness(1.03)}
+    code.kbd{background:rgba(0,0,0,.06);padding:2px 6px;border-radius:10px;border:1px solid rgba(0,0,0,.06)}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    .pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:7px 10px;border:1px solid var(--stroke);background:rgba(255,255,255,.62)}
+    .quiz-option{border:1px solid var(--stroke);background:rgba(255,255,255,.62);border-radius:16px;padding:10px 12px;cursor:pointer;transition:.15s ease}
+    .quiz-option:hover{transform:translateY(-1px);border-color:rgba(106,108,255,.35)}
+    .quiz-option.selected{border-color:rgba(255,106,162,.55);background:rgba(255,106,162,.08)}
+    .quiz-option.correct{border-color:rgba(50,180,90,.55);background:rgba(50,180,90,.10)}
+    .quiz-option.wrong{border-color:rgba(220,60,90,.55);background:rgba(220,60,90,.10)}
+    .small-muted{color:var(--muted);font-size:.92rem}
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand animate__animated animate__fadeIn">
+        <div class="d-flex align-items-center gap-2">
+          <div class="p-2 rounded-3" style="background:rgba(106,108,255,.12); border:1px solid var(--stroke)">
+            <i class="fa-solid fa-handshake-angle" style="color:var(--accent)"></i>
+          </div>
+          <div>
+            <p class="title mb-0">P4 · Módulo 5</p>
+            <p class="subtitle mb-0">GRASP + Visibilidad</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <a class="badge-soft text-decoration-none" href="../index.html">
+            <i class="fa-solid fa-house me-2"></i>Home
+          </a>
+          <button class="btn btn-sm btn-soft" id="btnHelp">
+            <i class="fa-regular fa-circle-question me-1"></i>Ayuda
+          </button>
+        </div>
+        <div id="nav" class="mt-2"></div>
+      </div>
+
+      <div class="mt-3">
+        <div class="card-soft p-3">
+          <div class="d-flex align-items-start gap-2">
+            <i class="fa-solid fa-lightbulb mt-1" style="color:var(--accent2)"></i>
+            <div>
+              <div class="fw-bold">Idea central</div>
+              <div class="small-muted">
+                Diseñar es <b>asignar responsabilidades</b> (quién hace qué) y asegurar que los objetos
+                tengan <b>visibilidad</b> (referencias) para colaborar.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="content">
+      <div class="topbar">
+        <div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge-soft" id="slideTag"><i class="fa-solid fa-layer-group me-2"></i>Sección</span>
+            <span class="badge-soft" id="slideCounter"><i class="fa-solid fa-hashtag me-2"></i>1/1</span>
+          </div>
+          <div class="mt-2">
+            <div class="progress">
+              <div class="progress-bar" id="progressBar" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-soft" id="btnPrev"><i class="fa-solid fa-arrow-left me-2"></i>Anterior</button>
+          <button class="btn btn-accent text-white" id="btnNext">Siguiente<i class="fa-solid fa-arrow-right ms-2"></i></button>
+        </div>
+      </div>
+
+      <section class="slide" data-title="Bienvenida" data-icon="fa-hand-sparkles">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-hand-sparkles me-2" style="color:var(--accent2)"></i>Bienvenida</h2>
+          <p class="lead small-muted mb-3">
+            En este módulo vemos dos pilares del diseño OO:
+            <b>GRASP</b> (criterios para asignar responsabilidades) y <b>Visibilidad</b> (cómo un objeto “puede ver” a otro).
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2"><i class="fa-solid fa-bullseye me-2" style="color:var(--accent)"></i>Objetivos</div>
+                <ul class="mb-0">
+                  <li>Entender qué es una <b>responsabilidad</b> (saber/hacer).</li>
+                  <li>Aplicar criterios <b>GRASP</b> para elegir “quién hace qué”.</li>
+                  <li>Modelar la <b>visibilidad</b> necesaria para enviar mensajes.</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Frase clave:</span> “Buen diseño = responsabilidades bien repartidas + referencias claras”.
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2"><i class="fa-solid fa-gamepad me-2" style="color:var(--accent2)"></i>Interacción</div>
+                <ul class="mb-3">
+                  <li><code class="kbd">←</code> y <code class="kbd">→</code> navegan.</li>
+                  <li>Barra lateral para saltar.</li>
+                  <li>Al final: <b>quiz de 10 preguntas</b>.</li>
+                </ul>
+                <button class="btn btn-soft w-100" onclick="toast('Tip: si una clase “hace de todo”, tu diseño va a doler 😅')">
+                  <i class="fa-solid fa-play me-2"></i>Probar interacción
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> un equipo de fútbol funciona mejor cuando cada jugador tiene un rol claro
+            (responsabilidades) y puede pasar la pelota a quien corresponde (visibilidad).
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Responsabilidades" data-icon="fa-clipboard-check">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-clipboard-check me-2" style="color:var(--accent)"></i>Responsabilidades</h2>
+          <p class="small-muted">
+            Una responsabilidad es una “obligación” que un tipo tiene, entendida por el comportamiento de sus objetos.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">1) Saber / Conocer</div>
+                <ul class="mb-0">
+                  <li>Conocer datos propios.</li>
+                  <li>Conocer a otros objetos.</li>
+                  <li>Derivar/calcular información.</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Ejemplo típico:</span> una transacción “conoce” su fecha/hora.
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">2) Hacer</div>
+                <ul class="mb-0">
+                  <li>Hacer algo por sí mismo.</li>
+                  <li>Iniciar acciones en otros objetos.</li>
+                  <li>Coordinar actividades.</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Ejemplo típico:</span> una transacción “se imprime”.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> una persona “sabe” su DNI (dato) y “hace” un trámite (acción).
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Responsabilidad ↔ Método" data-icon="fa-envelope-open-text">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-envelope-open-text me-2" style="color:var(--accent2)"></i>Responsabilidades y Métodos</h2>
+          <p class="small-muted">
+            Para pedirle a un objeto que cumpla una responsabilidad, se le envía un <b>mensaje</b> (invocar una operación).
+            Esa operación suele ser el <b>punto de entrada</b>.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">¿Cómo se resuelve?</div>
+                <ul class="mb-0">
+                  <li>Usando su <b>estado</b> (lo resuelve “solo”).</li>
+                  <li>Delegando en <b>otros objetos</b>.</li>
+                  <li>Una mezcla de ambos.</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Clave:</span> delegar implica sub-responsabilidades → interacción entre varios objetos.
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-5">
+              <div class="analogy h-100">
+                <span class="k">Analogía:</span> cuando pedís “organizar una fiesta”, la persona responsable
+                hace algo y delega: música, comida, invitados…
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="¿Por qué GRASP?" data-icon="fa-compass">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-compass me-2" style="color:var(--accent)"></i>¿Por qué GRASP?</h2>
+          <p class="small-muted">
+            Para una misma operación, se pueden diseñar interacciones asignando responsabilidades de muchas formas…
+            pero la calidad del diseño no es la misma.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Si elegimos mal…</div>
+                <ul class="mb-0">
+                  <li>Sistemas frágiles.</li>
+                  <li>Difíciles de mantener, comprender, reutilizar y extender.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">GRASP sugiere</div>
+                <ul class="mb-0">
+                  <li>A quién asignar responsabilidades.</li>
+                  <li>Cómo mejorar cualidades: bajo acoplamiento, alta cohesión, etc.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> GRASP es como un “manual de buenas prácticas” para repartir tareas en un equipo.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Mapa GRASP" data-icon="fa-map">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-map me-2" style="color:var(--accent2)"></i>Mapa rápido de criterios GRASP</h2>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Tipo 1</div>
+                <div class="pill mb-2"><i class="fa-solid fa-user-graduate" style="color:var(--accent)"></i><b>Expert</b> (experto en información)</div>
+                <p class="small-muted mb-0">Asignar al que tiene la info necesaria.</p>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Tipo 2</div>
+                <div class="pill mb-2"><i class="fa-solid fa-traffic-light" style="color:var(--accent2)"></i><b>Controller</b></div>
+                <div class="pill mb-2"><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--accent2)"></i><b>Creator</b></div>
+                <p class="small-muted mb-0">Asignar quién maneja operaciones del sistema y quién crea objetos.</p>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="card-soft p-4">
+                <div class="fw-bold mb-2">Tipo 3 (siempre presentes)</div>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="pill"><i class="fa-solid fa-link" style="color:var(--accent)"></i><b>Bajo Acoplamiento</b></span>
+                  <span class="pill"><i class="fa-solid fa-puzzle-piece" style="color:var(--accent2)"></i><b>Alta Cohesión</b></span>
+                  <span class="pill"><i class="fa-solid fa-user-secret" style="color:var(--accent)"></i><b>No Hables con Extraños</b></span>
+                </div>
+                <p class="small-muted mt-3 mb-0">
+                  Sirven para elegir la alternativa “preferible” cuando hay varias opciones posibles.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> si hay dos caminos, elegí el que te deja menos “dependiente” de otros (bajo acoplamiento)
+            y que no te mezcle tareas sin relación (alta cohesión).
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Controller" data-icon="fa-traffic-light">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-traffic-light me-2" style="color:var(--accent)"></i>GRASP: Controller</h2>
+          <p class="small-muted">
+            ¿Quién maneja una <b>operación del sistema</b>? Un controlador coordina y delega.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Opciones de controlador</div>
+                <ul class="mb-0">
+                  <li><b>Façade Controller:</b> 1 por sistema/organización (todas las operaciones).</li>
+                  <li><b>Use-case Controller:</b> 1 por caso de uso (operaciones de ese caso).</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Buenas prácticas</div>
+                <ul class="mb-0">
+                  <li>Mantener estado de sesión en el mismo controlador del caso de uso.</li>
+                  <li>No sobrecargar al controlador: debe <b>coordinar</b>, no “hacer todo”.</li>
+                </ul>
+                <div class="callout mt-3"><span class="k">Señal de alarma:</span> controlador con baja cohesión y alto acoplamiento.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> el controlador es como el “coordinador” de un grupo: recibe la solicitud,
+            reparte tareas y controla el avance.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Expert" data-icon="fa-user-graduate">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-user-graduate me-2" style="color:var(--accent2)"></i>GRASP: Expert</h2>
+          <p class="small-muted">
+            Asignar una responsabilidad al “experto en información”: quien tiene/conoce los datos necesarios.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Cómo se aplica</div>
+                <ol class="mb-0">
+                  <li>Identificá qué información se necesita.</li>
+                  <li>Buscá qué clase la conoce.</li>
+                  <li>Asigná allí la responsabilidad.</li>
+                  <li>Si falta algo, aparece una nueva sub-responsabilidad (y se repite).</li>
+                </ol>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="callout h-100">
+                <span class="k">Ejemplo típico:</span> el total de una venta lo conoce <b>Venta</b> porque conoce sus líneas; el subtotal lo conoce
+                <b>LineaDeVenta</b>; el precio unitario lo conoce <b>EspProducto</b>.
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> para saber “cuánto gasté”, mirás tu “lista de compras” (líneas), y cada línea conoce su precio y cantidad.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Creator" data-icon="fa-wand-magic-sparkles">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-wand-magic-sparkles me-2" style="color:var(--accent)"></i>GRASP: Creator</h2>
+          <p class="small-muted">
+            ¿Quién crea objetos? Asignar la creación a B cuando B “tiene” o “registra” A, lo contiene, lo usa en exclusiva,
+            o es experto en crearlo.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Cuándo aplicar</div>
+                <ul class="mb-0">
+                  <li>A está agregado/contendido en B.</li>
+                  <li>B registra instancias de A.</li>
+                  <li>B usa A en forma “exclusiva”.</li>
+                  <li>B es experto en crear A.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Efecto deseable</div>
+                <ul class="mb-0">
+                  <li>Buen diseño de creación ayuda al <b>bajo acoplamiento</b>.</li>
+                </ul>
+                <div class="analogy mt-3">
+                  <span class="k">Analogía:</span> si “Venta” maneja sus “líneas”, tiene sentido que Venta cree LineaDeVenta.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Bajo acoplamiento" data-icon="fa-link">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-link me-2" style="color:var(--accent2)"></i>GRASP: Bajo Acoplamiento</h2>
+          <p class="small-muted">
+            Acoplamiento = cuánto una clase depende/conoce otras. Queremos que una clase dependa de pocas clases.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Problemas del alto acoplamiento</div>
+                <ul class="mb-0">
+                  <li>Si cambia una clase, rompe otras.</li>
+                  <li>Difícil de entender en forma aislada.</li>
+                  <li>Difícil de reutilizar.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Formas comunes de acoplamiento</div>
+                <ul class="mb-0">
+                  <li>Atributo de tipo Y.</li>
+                  <li>Parámetro/retorno/local de tipo Y.</li>
+                  <li>Herencia / implementación de interfaz.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> si para hacer una tarea necesitás llamar a 15 personas, cualquier cambio te complica.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Alta cohesión" data-icon="fa-puzzle-piece">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-puzzle-piece me-2" style="color:var(--accent)"></i>GRASP: Alta Cohesión</h2>
+          <p class="small-muted">
+            Cohesión = qué tan relacionadas están las responsabilidades dentro de una clase. Queremos responsabilidades relacionadas
+            y “no demasiado trabajo”.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Si una clase tiene baja cohesión…</div>
+                <ul class="mb-0">
+                  <li>Es difícil de comprender, mantener, reutilizar.</li>
+                  <li>Se ve afectada por cambios constantemente.</li>
+                  <li>Suele ser porque asumió demasiadas responsabilidades.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="callout h-100">
+                <span class="k">Regla práctica:</span> si una clase “crece” sin parar, probablemente necesita delegar.
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> una persona que es a la vez contador, chofer, cocinero y director… termina saturada.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="No hables con extraños" data-icon="fa-user-secret">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-user-secret me-2" style="color:var(--accent2)"></i>GRASP: No Hables con Extraños</h2>
+          <p class="small-muted">
+            Desde un método, enviar mensajes solo a: <b>self</b>, parámetros, atributos, elementos de colecciones propias,
+            objetos locales o globales. Evita ganar visibilidad sobre objetos “indirectos”.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">¿Qué evita?</div>
+                <ul class="mb-0">
+                  <li>Quedar acoplado a objetos indirectos.</li>
+                  <li>Conocer estructura interna de un objeto intermedio.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Idea simple</div>
+                <p class="small-muted mb-0">
+                  Si para llegar al dato necesitás pedir: A → B → C → D… probablemente te estás acoplando “de más”.
+                  Mejor pedirle a B un método que te devuelva <i>lo que necesitás</i>, no el objeto completo.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> en vez de pedirle a tu amigo “dame el teléfono del amigo de tu primo”,
+            pedile que él mismo haga el llamado o que te dé el dato final que necesitás.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Interfaces del Sistema" data-icon="fa-plug-circle-bolt">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-plug-circle-bolt me-2" style="color:var(--accent)"></i>Acceso a la capa lógica</h2>
+          <p class="small-muted">
+            Las operaciones del sistema implementadas por controladores deben ofrecerse en <b>interfaces</b> (Interfaces del Sistema),
+            para quebrar la dependencia entre presentación y controladores.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Propósito</div>
+                <ul class="mb-0">
+                  <li>Presentación depende de la <b>interfaz</b>, no del controlador concreto.</li>
+                  <li>Suele haber relación 1:1 (cada controlador realiza una interfaz).</li>
+                  <li>Organización similar a Controller: façade / por caso de uso / híbrida.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="analogy h-100">
+                <span class="k">Analogía:</span> enchufe (interfaz) vs electrodoméstico específico (clase).
+                Tu cargador funciona porque “encaja” en el estándar, no porque conozca una marca.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Fábricas" data-icon="fa-industry">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-industry me-2" style="color:var(--accent2)"></i>Fábricas</h2>
+          <p class="small-muted">
+            Definir una interfaz no alcanza para romper dependencia si la presentación hace <span class="mono">new Controlador()</span>.
+            Una <b>fábrica</b> crea instancias que realizan una interfaz (sin mencionar la clase concreta).
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Problema</div>
+                <div class="mono small-muted">
+                  Formulario() { i = new Controlador(); }
+                </div>
+                <p class="small-muted mt-2 mb-0">
+                  Aunque uses <span class="mono">ISistema</span>, el <b>new</b> te vuelve a acoplar.
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Solución</div>
+                <ul class="mb-0">
+                  <li>Formulario pide a la fábrica: <span class="mono">getISistema()</span>.</li>
+                  <li>Queda acoplado a la fábrica (aceptable) y no al controlador concreto.</li>
+                </ul>
+                <div class="callout mt-3"><span class="k">Resultado:</span> menos dependencias “duras”.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> en vez de “contratar a Juan”, pedís a RRHH “una persona con rol X”.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Instancias del Sistema" data-icon="fa-boxes-stacked">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-boxes-stacked me-2" style="color:var(--accent)"></i>Instancias del Sistema</h2>
+          <p class="small-muted">
+            ¿Quién “contiene” y da acceso a instancias de un tipo? Esa responsabilidad define el punto de acceso.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-4">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Opción 1</div>
+                <p class="small-muted mb-2"><b>Un controlador</b></p>
+                <ul class="mb-0">
+                  <li>Si tiene operaciones relacionadas.</li>
+                  <li>Común en façade o controlador único.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Opción 2</div>
+                <p class="small-muted mb-2"><b>Una clase del dominio</b></p>
+                <ul class="mb-0">
+                  <li>Si “tiene propiedad” sobre el tipo.</li>
+                  <li>Normalmente contiene “sus” instancias (no el universo).</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Opción 3</div>
+                <p class="small-muted mb-2"><b>Una clase ficticia</b></p>
+                <ul class="mb-0">
+                  <li>Para centralizar acceso y romper dependencias.</li>
+                  <li>Única instancia que funciona como “catálogo”.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> “catálogo” o “agenda” que centraliza el acceso a cierta información.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Visibilidad" data-icon="fa-eye">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-eye me-2" style="color:var(--accent2)"></i>Visibilidad</h2>
+          <p class="small-muted">
+            Para que un objeto A pueda enviar un mensaje a B, A debe tener <b>visibilidad</b> (una referencia) a B.
+          </p>
+
+          <div class="callout">
+            <span class="k">Definición:</span> visibilidad = capacidad de un objeto de tener referencia a otro.
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> para mandarle un WhatsApp a alguien, necesitás su contacto (referencia).
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="4 tipos de visibilidad" data-icon="fa-eye-low-vision">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-eye-low-vision me-2" style="color:var(--accent)"></i>Formas básicas de visibilidad</h2>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">1) Por atributo</div>
+                <ul class="mb-0">
+                  <li>B es un <b>pseudoatributo</b> de A.</li>
+                  <li>Visibilidad “permanente” mientras existan.</li>
+                  <li>Si la multiplicidad mínima es 0, no siempre es permanente.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">2) Por parámetro</div>
+                <ul class="mb-0">
+                  <li>B llega como parámetro en un método de A.</li>
+                  <li>Visibilidad <b>temporal</b> (en el alcance del método).</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">3) Local</div>
+                <ul class="mb-0">
+                  <li>B es una variable local dentro de un método.</li>
+                  <li>Temporal (alcance del método).</li>
+                  <li>Puede ser creado localmente o devuelto por un método y asignado.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">4) Global</div>
+                <ul class="mb-0">
+                  <li>B es visible globalmente.</li>
+                  <li>Menos común.</li>
+                  <li>Ejemplos: variable global o patrón <b>Singleton</b>.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span>
+            <ul class="mb-0 mt-2">
+              <li><b>Atributo:</b> “lo tengo en mi agenda”.</li>
+              <li><b>Parámetro:</b> “me lo pasaste para esta llamada”.</li>
+              <li><b>Local:</b> “lo encontré y lo guardé en una nota temporal”.</li>
+              <li><b>Global:</b> “está publicado para todos”.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Notación UML" data-icon="fa-pen-nib">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-pen-nib me-2" style="color:var(--accent2)"></i>Notación UML de visibilidad</h2>
+          <p class="small-muted">
+            En UML se puede indicar el tipo de visibilidad que habilita el envío de un mensaje:
+            <span class="mono">«association»</span>, <span class="mono">«parameter»</span>,
+            <span class="mono">«local»</span>, <span class="mono">«global»</span>.
+          </p>
+
+          <div class="card-soft p-4">
+            <div class="fw-bold mb-2">Interpretación rápida</div>
+            <ul class="mb-0">
+              <li><b>association</b> ≈ visibilidad por atributo (relación estructural).</li>
+              <li><b>parameter</b> ≈ me lo pasaron como parámetro.</li>
+              <li><b>local</b> ≈ variable local dentro del método.</li>
+              <li><b>global</b> ≈ referencia global (o singleton).</li>
+            </ul>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> etiquetas como “de dónde saco el contacto para enviar el mensaje”.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="GRASP + Visibilidad" data-icon="fa-bridge">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-bridge me-2" style="color:var(--accent)"></i>Cómo encajan juntas</h2>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">GRASP decide</div>
+                <ul class="mb-0">
+                  <li>Quién coordina (Controller).</li>
+                  <li>Quién conoce (Expert).</li>
+                  <li>Quién crea (Creator).</li>
+                  <li>Cómo mantener calidad (bajo acoplamiento, alta cohesión, no extraños).</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Visibilidad habilita</div>
+                <ul class="mb-0">
+                  <li>Cómo A obtiene referencia a B para enviar mensajes.</li>
+                  <li>Qué tipo de visibilidad conviene (atributo/parámetro/local/global).</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="callout mt-3">
+            <span class="k">Idea práctica:</span> si para que funcione el diagrama “inventás” visibilidad rara,
+            revisá el diseño: quizá la responsabilidad está en la clase incorrecta.
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> GRASP dice “a quién le toca llamar”, visibilidad dice “cómo consigue el número”.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Desafío (10 preguntas)" data-icon="fa-circle-check">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-circle-check me-2" style="color:var(--accent2)"></i>Desafío final · 10 preguntas</h2>
+          <p class="small-muted">
+            Elegí una opción por pregunta. Al finalizar verás la correcta y tu respuesta por pregunta, y un resumen.
+          </p>
+
+          <div class="card-soft p-4">
+            <div id="quizRoot"></div>
+            <div class="d-flex flex-wrap gap-2 mt-3">
+              <button class="btn btn-accent text-white" id="btnFinishQuiz">
+                <i class="fa-solid fa-flag-checkered me-2"></i>Finalizar intento
+              </button>
+              <button class="btn btn-soft" id="btnResetQuiz">
+                <i class="fa-solid fa-rotate-right me-2"></i>Reiniciar
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Cierre" data-icon="fa-heart">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-heart me-2" style="color:var(--accent2)"></i>Cierre</h2>
+          <div class="card-soft p-4">
+            <div class="fw-bold mb-2">Checklist final</div>
+            <ul class="mb-0">
+              <li>Responsabilidades: <b>saber</b> vs <b>hacer</b>.</li>
+              <li>GRASP: <b>Controller</b>, <b>Expert</b>, <b>Creator</b> + (bajo acoplamiento, alta cohesión, no extraños).</li>
+              <li>Interfaces del sistema + fábricas para <b>romper dependencias</b>.</li>
+              <li>Visibilidad: atributo, parámetro, local, global + notación UML.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const nav = document.getElementById('nav');
+    const slideCounter = document.getElementById('slideCounter');
+    const slideTag = document.getElementById('slideTag');
+    const progressBar = document.getElementById('progressBar');
+    let idx = 0;
+
+    function renderNav(){
+      nav.innerHTML = '';
+      slides.forEach((s, i) => {
+        const title = s.dataset.title || `Sección ${i+1}`;
+        const icon = s.dataset.icon || 'fa-circle';
+        const a = document.createElement('a');
+        a.href = '#';
+        a.className = 'navpill';
+        a.innerHTML = `<i class="fa-solid ${icon}"></i><span>${title}</span>`;
+        a.addEventListener('click', (e) => { e.preventDefault(); goTo(i, true); });
+        nav.appendChild(a);
+      });
+    }
+
+    function updateChrome(){
+      const total = slides.length;
+      slideCounter.innerHTML = `<i class="fa-solid fa-hashtag me-2"></i>${idx+1}/${total}`;
+      slideTag.innerHTML = `<i class="fa-solid fa-layer-group me-2"></i>${slides[idx].dataset.title || 'Sección'}`;
+      progressBar.style.width = `${Math.round(((idx+1)/total)*100)}%`;
+      Array.from(nav.querySelectorAll('.navpill')).forEach((p, i) => p.classList.toggle('active', i === idx));
+    }
+
+    function goTo(newIdx, animate=false){
+      if(newIdx < 0 || newIdx >= slides.length) return;
+      slides[idx].classList.remove('active');
+      idx = newIdx;
+      slides[idx].classList.add('active');
+      if(animate){
+        slides[idx].classList.remove('animate__fadeInUp');
+        void slides[idx].offsetWidth;
+        slides[idx].classList.add('animate__animated','animate__fadeInUp');
+      }
+      updateChrome();
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+    function next(){ goTo(Math.min(idx+1, slides.length-1), true); }
+    function prev(){ goTo(Math.max(idx-1, 0), true); }
+
+    document.getElementById('btnNext').addEventListener('click', next);
+    document.getElementById('btnPrev').addEventListener('click', prev);
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'ArrowRight') next();
+      if(e.key === 'ArrowLeft') prev();
+    });
+
+    document.getElementById('btnHelp').addEventListener('click', () => {
+      Swal.fire({
+        title: 'Cómo usar esta presentación',
+        html: `<div style="text-align:left">
+          <ul>
+            <li>Usá <b>Siguiente</b>/<b>Anterior</b> o <code>→</code>/<code>←</code>.</li>
+            <li>Barra lateral para saltar a cualquier tema.</li>
+            <li>Al final: <b>quiz</b> de 10 preguntas con corrección y resumen.</li>
+          </ul>
+        </div>`,
+        icon: 'info',
+        confirmButtonText: '¡Entendido!',
+        confirmButtonColor: '#6a6cff'
+      })
+    });
+
+    function toast(text){
+      Swal.fire({ toast:true, position:'top-end', icon:'info', title:text, showConfirmButton:false, timer:2200, timerProgressBar:true });
+    }
+
+    const quiz = [
+      { q:"¿Qué es una responsabilidad en OO?",
+        options:["Un diagrama UML","Una obligación que un tipo tiene (en términos de comportamiento)","Un atributo privado","Una pantalla"],
+        correct:1,
+        explain:"Responsabilidad: obligación de un tipo entendida por el comportamiento de sus objetos."
+      },
+      { q:"¿Cuáles son los dos tipos básicos de responsabilidades?",
+        options:["Públicas y privadas","Saber/Conocer y Hacer","Locales y globales","Atributos y métodos"],
+        correct:1,
+        explain:"Se distinguen responsabilidades de saber/conocer y de hacer."
+      },
+      { q:"GRASP Controller ayuda principalmente a decidir…",
+        options:["Quién calcula un subtotal","Quién maneja operaciones del sistema (coordina)","Qué BD usar","Cómo se documenta el código"],
+        correct:1,
+        explain:"Controller asigna quién maneja (coordina) una operación del sistema."
+      },
+      { q:"Un controlador debería…",
+        options:["Hacer toda la lógica él mismo","Delegar trabajo a otros objetos mientras coordina","Evitar tener métodos","Solo guardar datos"],
+        correct:1,
+        explain:"El controlador coordina y delega, evitando sobrecarga (alta cohesión, bajo acoplamiento)."
+      },
+      { q:"GRASP Expert sugiere asignar una responsabilidad…",
+        options:["Al controlador siempre","A quien tenga la información necesaria","A una clase ficticia siempre","Al último objeto creado"],
+        correct:1,
+        explain:"Expert: asignar al experto en información."
+      },
+      { q:"GRASP Creator recomienda que B cree A cuando…",
+        options:["A está agregado/contendido en B o B registra A, etc.","B no conoce a A","A es abstracta","A es un singleton"],
+        correct:0,
+        explain:"Creator aplica cuando B contiene/registra/usa en exclusiva o es experto en crear A."
+      },
+      { q:"¿Cuál es el objetivo de 'Bajo Acoplamiento'?",
+        options:["Que una clase dependa de muchas clases","Mantener la dependencia general baja","Que todo sea global","Evitar interfaces"],
+        correct:1,
+        explain:"Bajo acoplamiento busca reducir dependencias y facilitar cambios/reuso."
+      },
+      { q:"'No Hables con Extraños' intenta evitar…",
+        options:["Usar métodos","Enviar mensajes a objetos indirectos ganando visibilidad temporal","Crear objetos","Usar parámetros"],
+        correct:1,
+        explain:"Evita ganar visibilidad sobre objetos indirectos y acoplarse a su estructura."
+      },
+      { q:"¿Qué es 'visibilidad' en este contexto?",
+        options:["El color del diagrama","Capacidad de un objeto de tener referencia a otro","Un permiso de usuario","Una interfaz del sistema"],
+        correct:1,
+        explain:"Visibilidad = capacidad de tener referencia a otro objeto para enviar mensajes."
+      },
+      { q:"¿Cuál de estas NO es una forma básica de visibilidad?",
+        options:["Por atributo","Por parámetro","Por herencia","Local"],
+        correct:2,
+        explain:"Las cuatro básicas: atributo, parámetro, local, global."
+      }
+    ];
+
+    const state = { answers: Array(quiz.length).fill(null), finished:false };
+
+    function renderQuiz(){
+      const root = document.getElementById('quizRoot');
+      root.innerHTML = '';
+      quiz.forEach((item, qi) => {
+        const block = document.createElement('div');
+        block.className = 'mb-4';
+        block.innerHTML = `
+          <div class="d-flex align-items-start justify-content-between gap-2">
+            <div class="fw-bold">${qi+1}. ${item.q}</div>
+            <span class="badge-soft"><i class="fa-solid fa-list-check me-2"></i>MCQ</span>
+          </div>
+          <div class="mt-2 d-grid gap-2" id="q-${qi}"></div>
+          <div class="small-muted mt-2" id="exp-${qi}" style="display:none"></div>
+        `;
+        root.appendChild(block);
+
+        const optWrap = block.querySelector(`#q-${qi}`);
+        item.options.forEach((opt, oi) => {
+          const optDiv = document.createElement('div');
+          optDiv.className = 'quiz-option';
+          optDiv.innerHTML = `<i class="fa-regular fa-circle me-2"></i>${opt}`;
+          optDiv.addEventListener('click', () => {
+            if(state.finished) return;
+            state.answers[qi] = oi;
+            refreshQuestion(qi);
+          });
+          optWrap.appendChild(optDiv);
+        });
+
+        refreshQuestion(qi);
+      });
+    }
+
+    function refreshQuestion(qi){
+      const optWrap = document.getElementById(`q-${qi}`);
+      const item = quiz[qi];
+      const chosen = state.answers[qi];
+
+      Array.from(optWrap.children).forEach((node, oi) => {
+        node.classList.toggle('selected', chosen === oi);
+        node.querySelector('i').className = chosen === oi ? 'fa-solid fa-circle-check me-2' : 'fa-regular fa-circle me-2';
+        node.classList.remove('correct','wrong');
+        if(state.finished){
+          if(oi === item.correct) node.classList.add('correct');
+          if(chosen === oi && chosen !== item.correct) node.classList.add('wrong');
+        }
+      });
+
+      const exp = document.getElementById(`exp-${qi}`);
+      if(state.finished){
+        exp.style.display = '';
+        const selText = (chosen === null) ? 'Sin responder' : item.options[chosen];
+        exp.innerHTML = `
+          <div class="callout">
+            <div><b>Correcta:</b> ${item.options[item.correct]}</div>
+            <div><b>Tu respuesta:</b> ${selText}</div>
+            <div class="mt-2">${item.explain}</div>
+          </div>
+        `;
+      }else{
+        exp.style.display = 'none';
+        exp.innerHTML = '';
+      }
+    }
+
+    function finishQuiz(){
+      const unanswered = state.answers.filter(a => a === null).length;
+      if(unanswered){
+        Swal.fire({
+          title:'Te faltan preguntas',
+          text:`Te faltan ${unanswered} preguntas sin responder. ¿Querés finalizar igual?`,
+          icon:'warning',
+          showCancelButton:true,
+          confirmButtonText:'Finalizar igual',
+          cancelButtonText:'Volver',
+          confirmButtonColor:'#ff6aa2'
+        }).then(r => { if(r.isConfirmed) doFinish(); });
+      }else{
+        doFinish();
+      }
+    }
+
+    function doFinish(){
+      state.finished = true;
+      for(let i=0;i<quiz.length;i++) refreshQuestion(i);
+
+      const correctCount = state.answers.reduce((acc,a,i)=> acc + (a===quiz[i].correct ? 1 : 0), 0);
+      const total = quiz.length;
+
+      let perQ = '';
+      for(let i=0;i<total;i++){
+        const chosen = state.answers[i];
+        const ok = (chosen === quiz[i].correct);
+        perQ += `<div style="text-align:left; margin-bottom:10px;">
+          <div><b>${i+1}. ${ok ? '✅ Correcto' : '❌ Incorrecto'}</b></div>
+          <div><b>Correcta:</b> ${quiz[i].options[quiz[i].correct]}</div>
+          <div><b>Tu respuesta:</b> ${chosen===null ? 'Sin responder' : quiz[i].options[chosen]}</div>
+        </div>`;
+      }
+
+      Swal.fire({
+        title:`Resultado: ${correctCount}/${total}`,
+        html:`<div class="small-muted" style="text-align:left; margin-bottom:10px;">
+                Detalle por pregunta (correcta vs tu respuesta):
+              </div>
+              <div style="max-height:52vh; overflow:auto; padding-right:6px;">${perQ}</div>
+              <hr/>
+              <div style="text-align:left;"><b>Resumen:</b> ${correctCount} correctas · ${total-correctCount} incorrectas.</div>`,
+        icon: correctCount >= 7 ? 'success' : 'info',
+        confirmButtonText:'Ok',
+        confirmButtonColor:'#6a6cff'
+      });
+    }
+
+    function resetQuiz(){
+      state.answers = Array(quiz.length).fill(null);
+      state.finished = false;
+      renderQuiz();
+      toast('Quiz reiniciado.');
+    }
+
+    document.getElementById('btnFinishQuiz').addEventListener('click', finishQuiz);
+    document.getElementById('btnResetQuiz').addEventListener('click', resetQuiz);
+
+    renderNav();
+    slides[0].classList.add('active');
+    updateChrome();
+    renderQuiz();
+  </script>
+</body>
+</html>

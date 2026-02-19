@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Programación 4 · Módulo 4</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    :root{
+      --bg:#fbfbff; --ink:#223; --muted:#566; --stroke:#e8e7ff;
+      --p1:#dff3ff; --p2:#ffe6ef; --p3:#e9ffe6; --p4:#fff6d6;
+      --accent:#6a6cff; --accent2:#ff6aa2;
+      --shadow:0 12px 30px rgba(30,30,60,.08); --radius:18px;
+    }
+    body{
+      background:
+        radial-gradient(1200px 800px at 10% 10%, var(--p1), transparent 55%),
+        radial-gradient(1100px 700px at 90% 15%, var(--p2), transparent 60%),
+        radial-gradient(900px 700px at 20% 90%, var(--p3), transparent 55%),
+        radial-gradient(1000px 700px at 80% 85%, var(--p4), transparent 60%),
+        var(--bg);
+      color:var(--ink); min-height:100vh;
+    }
+    .app-shell{display:grid;grid-template-columns:320px 1fr;gap:18px;padding:18px;max-width:1450px;margin:0 auto;}
+    @media (max-width:992px){.app-shell{grid-template-columns:1fr}.sidebar{position:static!important;height:auto!important}}
+    .sidebar{
+      position:sticky;top:18px;height:calc(100vh - 36px);overflow:auto;
+      border:1px solid var(--stroke);background:linear-gradient(180deg,#ffffffcc,#ffffff99);
+      box-shadow:var(--shadow);border-radius:var(--radius);padding:14px;backdrop-filter:blur(8px);
+    }
+    .brand{border-radius:14px;padding:12px;background:linear-gradient(135deg,rgba(106,108,255,.14),rgba(255,106,162,.12));border:1px solid var(--stroke);}
+    .brand .title{font-weight:900;letter-spacing:.2px;margin:0;line-height:1.2}
+    .brand .subtitle{margin:6px 0 0 0;color:var(--muted);font-size:.92rem}
+    .navpill{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;border:1px solid transparent;color:var(--ink);text-decoration:none;transition:.18s ease;margin:6px 0;background:rgba(255,255,255,.55);}
+    .navpill:hover{transform:translateY(-1px);border-color:var(--stroke)}
+    .navpill.active{border-color:rgba(106,108,255,.35);background:rgba(106,108,255,.10)}
+    .navpill i{color:var(--accent);width:18px;text-align:center}
+    .content{
+      border:1px solid var(--stroke);background:linear-gradient(180deg,#ffffffcc,#ffffffa6);
+      box-shadow:var(--shadow);border-radius:var(--radius);padding:16px;backdrop-filter:blur(8px);overflow:hidden;
+    }
+    .topbar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:4px 4px 12px;border-bottom:1px solid var(--stroke);margin-bottom:12px;}
+    .progress{height:10px;border-radius:999px;background:rgba(106,108,255,.08)}
+    .progress-bar{background:linear-gradient(90deg,rgba(106,108,255,.85),rgba(255,106,162,.75))}
+    .slide{display:none;padding:8px 6px 14px;min-height:60vh}
+    .slide.active{display:block}
+    .slide h2{font-weight:900;letter-spacing:.2px;margin-bottom:10px}
+    .slide p,.slide li{color:var(--muted)}
+    .card-soft{border:1px solid var(--stroke);background:rgba(255,255,255,.70);border-radius:var(--radius);box-shadow:0 10px 22px rgba(30,30,60,.06)}
+    .badge-soft{border:1px solid var(--stroke);background:rgba(255,255,255,.60);color:var(--ink);border-radius:999px;padding:6px 10px;font-size:.82rem}
+    .callout{border-left:6px solid rgba(106,108,255,.55);background:rgba(106,108,255,.06);border-radius:14px;padding:12px}
+    .callout .k{font-weight:800;color:var(--ink)}
+    .analogy{border-left:6px solid rgba(255,106,162,.55);background:rgba(255,106,162,.06);border-radius:14px;padding:12px}
+    .analogy .k{font-weight:800;color:var(--ink)}
+    .btn-soft{border-radius:999px;border:1px solid rgba(106,108,255,.25);background:rgba(106,108,255,.08);color:var(--ink)}
+    .btn-soft:hover{background:rgba(106,108,255,.14)}
+    .btn-accent{border-radius:999px;background:linear-gradient(90deg,rgba(106,108,255,.95),rgba(255,106,162,.85));border:none}
+    .btn-accent:hover{filter:brightness(1.03)}
+    code.kbd{background:rgba(0,0,0,.06);padding:2px 6px;border-radius:10px;border:1px solid rgba(0,0,0,.06)}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    .quiz-option{border:1px solid var(--stroke);background:rgba(255,255,255,.62);border-radius:16px;padding:10px 12px;cursor:pointer;transition:.15s ease}
+    .quiz-option:hover{transform:translateY(-1px);border-color:rgba(106,108,255,.35)}
+    .quiz-option.selected{border-color:rgba(255,106,162,.55);background:rgba(255,106,162,.08)}
+    .quiz-option.correct{border-color:rgba(50,180,90,.55);background:rgba(50,180,90,.10)}
+    .quiz-option.wrong{border-color:rgba(220,60,90,.55);background:rgba(220,60,90,.10)}
+    .small-muted{color:var(--muted);font-size:.92rem}
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand animate__animated animate__fadeIn">
+        <div class="d-flex align-items-center gap-2">
+          <div class="p-2 rounded-3" style="background:rgba(106,108,255,.12); border:1px solid var(--stroke)">
+            <i class="fa-solid fa-compass-drafting" style="color:var(--accent)"></i>
+          </div>
+          <div>
+            <p class="title mb-0">P4 · Módulo 4</p>
+            <p class="subtitle mb-0">Diseño + Diagramas de Comunicación</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <div class="d-flex align-items-center justify-content-between">
+			<a href="../index.html"
+			   class="badge-soft text-decoration-none">
+			   <i class="fa-solid fa-house me-2"></i>Home
+			</a>
+          <button class="btn btn-sm btn-soft" id="btnHelp">
+            <i class="fa-regular fa-circle-question me-1"></i>Ayuda
+          </button>
+        </div>
+        <div id="nav" class="mt-2"></div>
+      </div>
+
+      <div class="mt-3">
+        <div class="card-soft p-3">
+          <div class="d-flex align-items-start gap-2">
+            <i class="fa-solid fa-lightbulb mt-1" style="color:var(--accent2)"></i>
+            <div>
+              <div class="fw-bold">Tip</div>
+              <div class="small-muted">
+                En <b>Diseño</b> respondemos: “OK… ¿y <i>cómo</i> lo resolvemos por dentro?”
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="content">
+      <div class="topbar">
+        <div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge-soft" id="slideTag"><i class="fa-solid fa-layer-group me-2"></i>Sección</span>
+            <span class="badge-soft" id="slideCounter"><i class="fa-solid fa-hashtag me-2"></i>1/1</span>
+          </div>
+          <div class="mt-2">
+            <div class="progress">
+              <div class="progress-bar" id="progressBar" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-soft" id="btnPrev"><i class="fa-solid fa-arrow-left me-2"></i>Anterior</button>
+          <button class="btn btn-accent text-white" id="btnNext">Siguiente<i class="fa-solid fa-arrow-right ms-2"></i></button>
+        </div>
+      </div>
+
+      <section class="slide" data-title="Bienvenida" data-icon="fa-hand-sparkles">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-hand-sparkles me-2" style="color:var(--accent2)"></i>Bienvenida</h2>
+          <p class="lead small-muted mb-3">
+            En análisis definimos <b>qué</b> debe pasar (DSS + contratos).
+            En diseño definimos <b>cómo</b> lo hace el sistema internamente.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2"><i class="fa-solid fa-bullseye me-2" style="color:var(--accent)"></i>Objetivos</div>
+                <ul class="mb-0">
+                  <li>Definir la <b>estructura interna</b> del sistema.</li>
+                  <li>Diseñar las <b>operaciones del sistema</b>.</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Pista:</span> primero miramos arquitectura lógica (visión global) y luego bajamos al “bajo nivel”.
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2"><i class="fa-solid fa-gamepad me-2" style="color:var(--accent)"></i>Modo interactivo</div>
+                <ul class="mb-3">
+                  <li>Barra lateral para saltar.</li>
+                  <li><code class="kbd">←</code> y <code class="kbd">→</code> navegan.</li>
+                  <li>Al final: <b>quiz de 10 preguntas</b>.</li>
+                </ul>
+                <button class="btn btn-soft w-100" onclick="toast('En Diseño, el foco es la estructura interna y responsabilidades 🙂')">
+                  <i class="fa-solid fa-play me-2"></i>Probar interacción
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> si el análisis es “qué receta quiero”, el diseño es “qué ingredientes uso y cómo los combino en la cocina”.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Arquitectura: visión global" data-icon="fa-city">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-city me-2" style="color:var(--accent)"></i>Arquitectura de Software</h2>
+          <p class="small-muted">
+            La arquitectura expresa la <b>estructura global</b> de una aplicación (nivel alto), sin detallar toda la solución.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Arquitectura ≠ detalle</div>
+                <ul class="mb-0">
+                  <li>Mayor nivel de abstracción.</li>
+                  <li>Da una vista global para simplificar comprensión.</li>
+                  <li>Un punto de vista: estructura interna.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Arquitectura lógica</div>
+                <ul class="mb-0">
+                  <li>Estructura interna en componentes lógicos.</li>
+                  <li>Definir cómo se resuelven operaciones en esa estructura → <b>diseño de bajo nivel</b>.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> arquitectura es el “mapa del barrio”; diseño de bajo nivel es decidir “cómo se recorre cada cuadra”.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Arquitectura lógica (top-down)" data-icon="fa-diagram-predecessor">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-diagram-predecessor me-2" style="color:var(--accent2)"></i>Arquitectura Lógica</h2>
+          <p class="small-muted">
+            Conjunto de componentes lógicos relacionados, con responsabilidades específicas (partición top‑down).
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Estilos / patrones</div>
+                <ul class="mb-0">
+                  <li>Guías de particionamiento.</li>
+                  <li>Asignación de responsabilidades a componentes.</li>
+                  <li>Elección depende del tipo de sistema.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="card-soft p-4 h-100">
+                <div class="callout">
+                  <span class="k">Regla de oro:</span> separar aspectos permite que evolucionen independiente y simplifica el diseño de cada parte.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> dividir un trabajo grande en tareas pequeñas con responsables claros.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Separación de aspectos" data-icon="fa-layer-group">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-layer-group me-2" style="color:var(--accent)"></i>Separación de aspectos</h2>
+          <p class="small-muted">
+            En sistemas interactivos se distinguen tres aspectos: <b>presentación</b>, <b>lógica</b>, <b>persistencia</b>.
+            Mezclarlos en una clase reduce flexibilidad.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Tres aspectos</div>
+                <ul class="mb-0">
+                  <li><b>Presentación:</b> entrada/salida con el usuario.</li>
+                  <li><b>Lógica:</b> procesamiento para casos de uso.</li>
+                  <li><b>Persistencia:</b> almacenamiento de información.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Ventaja</div>
+                <ul class="mb-0">
+                  <li>Cambiar UI o BD sin reescribir la lógica.</li>
+                  <li>Menos dependencias cruzadas.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> separar “mostrar”, “decidir” y “guardar”, como roles distintos.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Arquitectura en capas" data-icon="fa-bars-staggered">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-bars-staggered me-2" style="color:var(--accent2)"></i>Arquitectura en Capas</h2>
+          <p class="small-muted">
+            Capas: Presentación → Lógica → Persistencia. Cada nivel atiende pedidos del nivel superior.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Reglas</div>
+                <ul class="mb-0">
+                  <li>Actores usan solamente la capa de presentación.</li>
+                  <li>Persistencia no necesita servicios de otra capa.</li>
+                  <li>La interfaz del sistema (operaciones del sistema) se expone “hacia arriba”.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="analogy">
+                <span class="k">Analogía:</span> restaurante:
+                <ul class="mb-0 mt-2">
+                  <li>Mozo (presentación)</li>
+                  <li>Cocina (lógica)</li>
+                  <li>Despensa (persistencia)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Lógica refinada" data-icon="fa-code-branch">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-code-branch me-2" style="color:var(--accent)"></i>Refinamiento de la capa lógica</h2>
+          <p class="small-muted">
+            Es común separar: <b>Servicios del Sistema</b> y <b>Acceso a Datos</b>, y exponer una interfaz del sistema.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Servicios del sistema</div>
+                <ul class="mb-0">
+                  <li>Coordina operaciones del sistema.</li>
+                  <li>Aplica reglas del negocio.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Acceso a datos</div>
+                <ul class="mb-0">
+                  <li>Encapsula leer/escribir datos.</li>
+                  <li>Reduce acoplamiento con BD/archivos.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> el encargado define “qué hacer”; el archivista sabe “dónde está” cada cosa.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Diseño de bajo nivel" data-icon="fa-microchip">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-microchip me-2" style="color:var(--accent2)"></i>Diseño de Bajo Nivel</h2>
+          <p class="small-muted">
+            Con arquitectura lógica definida, diseñamos cómo se resuelven internamente las operaciones.
+            El foco del curso está en la capa lógica, formando el <b>Modelo de Diseño</b>.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Objetivo central</div>
+                <ul class="mb-0">
+                  <li>Diseñar <b>colaboraciones</b> que realicen casos de uso.</li>
+                  <li>Una colaboración puede realizar uno o varios casos de uso.</li>
+                </ul>
+                <div class="callout mt-3"><span class="k">Relación:</span> Caso de Uso → Colaboración (realización).</div>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="analogy">
+                <span class="k">Analogía:</span> un “equipo” que cumple un objetivo: define miembros (estructura) y su coordinación (interacción).
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Colaboración" data-icon="fa-people-group">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-people-group me-2" style="color:var(--accent)"></i>Colaboración</h2>
+          <p class="small-muted">
+            Estructura = quién participa; Interacciones = cómo logran el resultado.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Estructura</div>
+                <ul class="mb-0">
+                  <li>Clases participantes.</li>
+                  <li>Atributos y relaciones.</li>
+                  <li>Operaciones invocables.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Interacciones</div>
+                <ul class="mb-0">
+                  <li>Mensajes entre instancias para obtener el resultado.</li>
+                  <li>Una interacción por operación del sistema (típicamente).</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> estructura = piezas de LEGO; interacción = cómo las encajás paso a paso.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Actividades y herramientas" data-icon="fa-list-ol">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-list-ol me-2" style="color:var(--accent2)"></i>Actividades</h2>
+          <p class="small-muted">
+            Dos actividades: interacciones (con diagramas de comunicación) y estructura (con diagrama de clases de diseño).
+            En el curso: primero se diseñan las interacciones, luego se “ajusta” la estructura.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">1) Interacciones</div>
+                <ul class="mb-0">
+                  <li>Mensajes “libres” entre protagonistas.</li>
+                  <li>Protagonistas sugeridos por el modelo de dominio.</li>
+                  <li>Resultado según el contrato.</li>
+                  <li><b>Herramienta:</b> diagrama de comunicación.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">2) Estructura</div>
+                <ul class="mb-0">
+                  <li>Definir atributos/relaciones/operaciones necesarias.</li>
+                  <li>Considerar todas las interacciones del caso de uso.</li>
+                  <li><b>Herramienta:</b> DCD (diagrama de clases de diseño).</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> primero definís la conversación; después definís qué “capacidad” necesita cada participante para sostenerla.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Diagramas de interacción" data-icon="fa-arrows-to-dot">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-arrows-to-dot me-2" style="color:var(--accent)"></i>Diagramas de Interacción</h2>
+          <p class="small-muted">
+            UML incluye diagramas de interacción: muestran cómo objetos interactúan por mensajes.
+            Secuencia y Comunicación son equivalentes semánticamente.
+          </p>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> misma historia contada como “línea de tiempo” (secuencia) o como “red numerada” (comunicación).
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Notación base" data-icon="fa-pen-ruler">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-pen-ruler me-2" style="color:var(--accent2)"></i>Notación (instancias, clases, links)</h2>
+
+          <div class="row g-3">
+            <div class="col-lg-4">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Instancias</div>
+                <ul class="mb-0">
+                  <li><span class="mono">:Clase</span> o <span class="mono">obj:Clase</span>.</li>
+                  <li>Instancia “cualquiera” (no real).</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Clases</div>
+                <ul class="mb-0">
+                  <li>Nombre dentro de un rectángulo.</li>
+                  <li>Representa el tipo.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Links</div>
+                <ul class="mb-0">
+                  <li>Conexión que indica visibilidad/navegabilidad.</li>
+                  <li>Relación cliente/servidor entre instancias.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> link = “tengo el contacto”; sin contacto, no podés enviar el mensaje.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Mensajes y sintaxis" data-icon="fa-paper-plane">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-paper-plane me-2" style="color:var(--accent)"></i>Mensajes</h2>
+          <p class="small-muted">
+            Mensaje = flecha sobre un link + etiqueta + número de secuencia.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Parámetros y retorno</div>
+                <ul class="mb-0">
+                  <li>Parámetros: <span class="mono">mensaje(p:Tipo)</span> (tipo opcional).</li>
+                  <li>Retorno: <span class="mono">ret := mensaje() : TipoRet</span> (opcional).</li>
+                  <li>Sintaxis: <span class="mono">[ret :=] mensaje([param [:Tipo]]) [:TipoRet]</span>.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="callout">
+                <span class="k">Orden</span>
+                <div class="small-muted mt-2">
+                  Se expresa con números: 1, 1.1, 2, 2.1, 2.2…
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Iteración, create, destroy" data-icon="fa-repeat">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-repeat me-2" style="color:var(--accent2)"></i>Iteración y ciclo de vida</h2>
+
+          <div class="row g-3">
+            <div class="col-lg-4">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Iteración</div>
+                <ul class="mb-0">
+                  <li><span class="mono">1* [i:=1..n]</span> indica loop.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">create</div>
+                <ul class="mb-0">
+                  <li>Mensaje para crear instancia.</li>
+                  <li>Suele asignarse nombre para usar luego.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">destroy</div>
+                <ul class="mb-0">
+                  <li>Mensaje para destruir instancia.</li>
+                  <li>Antes: eliminar links existentes con esa instancia.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> create/destroy como alta/baja; “quitar vínculos” antes de la baja.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Guardas y colecciones" data-icon="fa-filter-circle-dollar">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-filter-circle-dollar me-2" style="color:var(--accent)"></i>Guardas y colecciones</h2>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Mensajes condicionales</div>
+                <ul class="mb-0">
+                  <li>Guarda: <span class="mono">[condición]</span>.</li>
+                  <li>Se envía solo si se cumple.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Colecciones</div>
+                <ul class="mb-0">
+                  <li>Multiobjeto = colección de instancias.</li>
+                  <li>Mensaje a colección = al contenedor (no broadcast).</li>
+                  <li>Responsabilidad: administrar (add/remove/find/exists/member/next…).</li>
+                </ul>
+                <div class="callout mt-3"><span class="k">Cuidado:</span> no atribuir lógica de negocio a la colección.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> la lista de contactos no “procesa” a cada persona; solo guarda y permite buscar.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Datatypes" data-icon="fa-note-sticky">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-note-sticky me-2" style="color:var(--accent2)"></i>Datatypes</h2>
+          <p class="small-muted">
+            El procesamiento de datatypes no se dibuja: se usa una nota. Se puede iterar y acceder con “.”.
+          </p>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> un datatype es un “paquete de datos” (como un ticket). Se anota, no se trata como objeto con comportamiento complejo.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Reuso y consistencia" data-icon="fa-recycle">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-recycle me-2" style="color:var(--accent)"></i>Reuso y consistencia</h2>
+          <p class="small-muted">
+            Reutilizar clases/operaciones/atributos entre iteraciones y mantener consistencia global.
+          </p>
+
+          <div class="callout">
+            <span class="k">Regla práctica:</span> si una clase cambia, revisá diagramas de comunicación y DCDs que la mencionan.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Errores comunes" data-icon="fa-triangle-exclamation">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-triangle-exclamation me-2" style="color:var(--accent2)"></i>Errores comunes</h2>
+          <ul>
+            <li>Suponer links nunca generados.</li>
+            <li>Mensajes a multiobjeto como si procesara todos los elementos.</li>
+            <li>No especificar qué sucede con mensajes “triviales”.</li>
+            <li>Representar datatypes como instancias.</li>
+          </ul>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> creer que “mandar mensaje a la clase” manda mensaje a “todas las personas del mundo”.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Desafío (10 preguntas)" data-icon="fa-circle-check">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-circle-check me-2" style="color:var(--accent2)"></i>Desafío final · 10 preguntas</h2>
+          <p class="small-muted">
+            Elegí una opción por pregunta. Al finalizar verás la correcta y tu respuesta por pregunta, y un resumen.
+          </p>
+
+          <div class="card-soft p-4">
+            <div id="quizRoot"></div>
+            <div class="d-flex flex-wrap gap-2 mt-3">
+              <button class="btn btn-accent text-white" id="btnFinishQuiz">
+                <i class="fa-solid fa-flag-checkered me-2"></i>Finalizar intento
+              </button>
+              <button class="btn btn-soft" id="btnResetQuiz">
+                <i class="fa-solid fa-rotate-right me-2"></i>Reiniciar
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Cierre" data-icon="fa-heart">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-heart me-2" style="color:var(--accent2)"></i>Cierre</h2>
+          <div class="card-soft p-4">
+            <div class="fw-bold mb-2">Checklist final</div>
+            <ul class="mb-0">
+              <li>Arquitectura = vista global; Diseño = bajo nivel (cómo).</li>
+              <li>Separación de aspectos: presentación/lógica/persistencia.</li>
+              <li>Colaboración = estructura + interacciones.</li>
+              <li>Diagrama de comunicación: links, mensajes, números, guardas, iteración, create/destroy.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const nav = document.getElementById('nav');
+    const slideCounter = document.getElementById('slideCounter');
+    const slideTag = document.getElementById('slideTag');
+    const progressBar = document.getElementById('progressBar');
+    let idx = 0;
+
+    function renderNav(){
+      nav.innerHTML = '';
+      slides.forEach((s, i) => {
+        const title = s.dataset.title || `Sección ${i+1}`;
+        const icon = s.dataset.icon || 'fa-circle';
+        const a = document.createElement('a');
+        a.href = '#';
+        a.className = 'navpill';
+        a.innerHTML = `<i class="fa-solid ${icon}"></i><span>${title}</span>`;
+        a.addEventListener('click', (e) => { e.preventDefault(); goTo(i, true); });
+        nav.appendChild(a);
+      });
+    }
+
+    function updateChrome(){
+      const total = slides.length;
+      slideCounter.innerHTML = `<i class="fa-solid fa-hashtag me-2"></i>${idx+1}/${total}`;
+      slideTag.innerHTML = `<i class="fa-solid fa-layer-group me-2"></i>${slides[idx].dataset.title || 'Sección'}`;
+      progressBar.style.width = `${Math.round(((idx+1)/total)*100)}%`;
+      Array.from(nav.querySelectorAll('.navpill')).forEach((p, i) => p.classList.toggle('active', i === idx));
+    }
+
+    function goTo(newIdx, animate=false){
+      if(newIdx < 0 || newIdx >= slides.length) return;
+      slides[idx].classList.remove('active');
+      idx = newIdx;
+      slides[idx].classList.add('active');
+      if(animate){
+        slides[idx].classList.remove('animate__fadeInUp');
+        void slides[idx].offsetWidth;
+        slides[idx].classList.add('animate__animated','animate__fadeInUp');
+      }
+      updateChrome();
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+    function next(){ goTo(Math.min(idx+1, slides.length-1), true); }
+    function prev(){ goTo(Math.max(idx-1, 0), true); }
+
+    document.getElementById('btnNext').addEventListener('click', next);
+    document.getElementById('btnPrev').addEventListener('click', prev);
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'ArrowRight') next();
+      if(e.key === 'ArrowLeft') prev();
+    });
+
+    document.getElementById('btnHelp').addEventListener('click', () => {
+      Swal.fire({
+        title: 'Cómo usar esta presentación',
+        html: `<div style="text-align:left">
+          <ul>
+            <li>Usá <b>Siguiente</b>/<b>Anterior</b> o <code>→</code>/<code>←</code>.</li>
+            <li>Barra lateral para saltar a cualquier tema.</li>
+            <li>Al final: <b>quiz</b> de 10 preguntas con corrección y resumen.</li>
+          </ul>
+        </div>`,
+        icon: 'info',
+        confirmButtonText: '¡Entendido!',
+        confirmButtonColor: '#6a6cff'
+      })
+    });
+
+    function toast(text){
+      Swal.fire({ toast:true, position:'top-end', icon:'info', title:text, showConfirmButton:false, timer:2200, timerProgressBar:true });
+    }
+
+    const quiz = [
+      { q:"¿Cuál es el objetivo principal de la arquitectura de software?",
+        options:["Detallar algoritmos de cada operación","Proveer una visión global de la solución para simplificar comprensión","Elegir la BD física","Escribir el código final"],
+        correct:1,
+        explain:"La arquitectura busca expresar la estructura global y facilitar comprender el sistema."
+      },
+      { q:"La arquitectura lógica se obtiene típicamente por…",
+        options:["Partición top-down en componentes","Elegir primero una BD","Escribir pantallas","Hacer tuning de performance"],
+        correct:0,
+        explain:"Se obtiene por partición sucesiva (top-down) en componentes con responsabilidades."
+      },
+      { q:"Tres aspectos típicos a separar en sistemas interactivos:",
+        options:["UI, Red, Seguridad","Presentación, Lógica, Persistencia","Cache, CPU, RAM","Servidor, Cliente, DNS"],
+        correct:1,
+        explain:"El material destaca presentación, lógica y persistencia."
+      },
+      { q:"En arquitectura en capas, los actores usan directamente…",
+        options:["Persistencia","Lógica","Presentación","Acceso a datos"],
+        correct:2,
+        explain:"Los actores interactúan a través de la capa de presentación."
+      },
+      { q:"En el curso, el diseño de bajo nivel se enfoca en…",
+        options:["Capa lógica","Capa de persistencia","UI","Infraestructura"],
+        correct:0,
+        explain:"El enfoque del curso para bajo nivel está en la capa lógica."
+      },
+      { q:"Una colaboración está compuesta por…",
+        options:["Solo interacciones","Solo estructura","Estructura e interacciones","Solo casos de uso"],
+        correct:2,
+        explain:"Estructura: participantes; Interacciones: cómo se comunican para lograr el resultado."
+      },
+      { q:"Herramienta para el diseño de interacciones:",
+        options:["DSS","Diagrama de Comunicación","Modelo de Dominio","Diagrama ER"],
+        correct:1,
+        explain:"Para diseñar comunicaciones entre objetos se usan diagramas de comunicación."
+      },
+      { q:"En un diagrama de comunicación, el orden de mensajes se marca con…",
+        options:["Altura vertical","Colores","Números de secuencia","Tamaño de objetos"],
+        correct:2,
+        explain:"El orden viene dado por números (1, 1.1, 2, 2.1...)."
+      },
+      { q:"¿Qué significa el asterisco (*) en un mensaje numerado?",
+        options:["Condición","Iteración (loop)","Retorno","Creación"],
+        correct:1,
+        explain:"Indica repetición del mensaje (iteración)."
+      },
+      { q:"¿Cuál es un error común según el material?",
+        options:["Usar números de secuencia","Suponer links nunca generados o tratar multiobjeto como broadcast","Usar guardas [ ]","Usar create/destroy"],
+        correct:1,
+        explain:"Errores: asumir links inexistentes, multiobjeto como broadcast, datatypes como instancias, etc."
+      }
+    ];
+
+    const state = { answers: Array(quiz.length).fill(null), finished:false };
+
+    function renderQuiz(){
+      const root = document.getElementById('quizRoot');
+      root.innerHTML = '';
+      quiz.forEach((item, qi) => {
+        const block = document.createElement('div');
+        block.className = 'mb-4';
+        block.innerHTML = `
+          <div class="d-flex align-items-start justify-content-between gap-2">
+            <div class="fw-bold">${qi+1}. ${item.q}</div>
+            <span class="badge-soft"><i class="fa-solid fa-list-check me-2"></i>MCQ</span>
+          </div>
+          <div class="mt-2 d-grid gap-2" id="q-${qi}"></div>
+          <div class="small-muted mt-2" id="exp-${qi}" style="display:none"></div>
+        `;
+        root.appendChild(block);
+
+        const optWrap = block.querySelector(`#q-${qi}`);
+        item.options.forEach((opt, oi) => {
+          const optDiv = document.createElement('div');
+          optDiv.className = 'quiz-option';
+          optDiv.innerHTML = `<i class="fa-regular fa-circle me-2"></i>${opt}`;
+          optDiv.addEventListener('click', () => {
+            if(state.finished) return;
+            state.answers[qi] = oi;
+            refreshQuestion(qi);
+          });
+          optWrap.appendChild(optDiv);
+        });
+
+        refreshQuestion(qi);
+      });
+    }
+
+    function refreshQuestion(qi){
+      const optWrap = document.getElementById(`q-${qi}`);
+      const item = quiz[qi];
+      const chosen = state.answers[qi];
+
+      Array.from(optWrap.children).forEach((node, oi) => {
+        node.classList.toggle('selected', chosen === oi);
+        node.querySelector('i').className = chosen === oi ? 'fa-solid fa-circle-check me-2' : 'fa-regular fa-circle me-2';
+        node.classList.remove('correct','wrong');
+        if(state.finished){
+          if(oi === item.correct) node.classList.add('correct');
+          if(chosen === oi && chosen !== item.correct) node.classList.add('wrong');
+        }
+      });
+
+      const exp = document.getElementById(`exp-${qi}`);
+      if(state.finished){
+        exp.style.display = '';
+        const selText = (chosen === null) ? 'Sin responder' : item.options[chosen];
+        exp.innerHTML = `
+          <div class="callout">
+            <div><b>Correcta:</b> ${item.options[item.correct]}</div>
+            <div><b>Tu respuesta:</b> ${selText}</div>
+            <div class="mt-2">${item.explain}</div>
+          </div>
+        `;
+      }else{
+        exp.style.display = 'none';
+        exp.innerHTML = '';
+      }
+    }
+
+    function finishQuiz(){
+      const unanswered = state.answers.filter(a => a === null).length;
+      if(unanswered){
+        Swal.fire({
+          title:'Te faltan preguntas',
+          text:`Te faltan ${unanswered} preguntas sin responder. ¿Querés finalizar igual?`,
+          icon:'warning',
+          showCancelButton:true,
+          confirmButtonText:'Finalizar igual',
+          cancelButtonText:'Volver',
+          confirmButtonColor:'#ff6aa2'
+        }).then(r => { if(r.isConfirmed) doFinish(); });
+      }else{
+        doFinish();
+      }
+    }
+
+    function doFinish(){
+      state.finished = true;
+      for(let i=0;i<quiz.length;i++) refreshQuestion(i);
+
+      const correctCount = state.answers.reduce((acc,a,i)=> acc + (a===quiz[i].correct ? 1 : 0), 0);
+      const total = quiz.length;
+
+      let perQ = '';
+      for(let i=0;i<total;i++){
+        const chosen = state.answers[i];
+        const ok = (chosen === quiz[i].correct);
+        perQ += `<div style="text-align:left; margin-bottom:10px;">
+          <div><b>${i+1}. ${ok ? '✅ Correcto' : '❌ Incorrecto'}</b></div>
+          <div><b>Correcta:</b> ${quiz[i].options[quiz[i].correct]}</div>
+          <div><b>Tu respuesta:</b> ${chosen===null ? 'Sin responder' : quiz[i].options[chosen]}</div>
+        </div>`;
+      }
+
+      Swal.fire({
+        title:`Resultado: ${correctCount}/${total}`,
+        html:`<div class="small-muted" style="text-align:left; margin-bottom:10px;">
+                Detalle por pregunta (correcta vs tu respuesta):
+              </div>
+              <div style="max-height:52vh; overflow:auto; padding-right:6px;">${perQ}</div>
+              <hr/>
+              <div style="text-align:left;"><b>Resumen:</b> ${correctCount} correctas · ${total-correctCount} incorrectas.</div>`,
+        icon: correctCount >= 7 ? 'success' : 'info',
+        confirmButtonText:'Ok',
+        confirmButtonColor:'#6a6cff'
+      });
+    }
+
+    function resetQuiz(){
+      state.answers = Array(quiz.length).fill(null);
+      state.finished = false;
+      renderQuiz();
+      toast('Quiz reiniciado.');
+    }
+
+    document.getElementById('btnFinishQuiz').addEventListener('click', finishQuiz);
+    document.getElementById('btnResetQuiz').addEventListener('click', resetQuiz);
+
+    renderNav();
+    slides[0].classList.add('active');
+    updateChrome();
+    renderQuiz();
+  </script>
+</body>
+</html>

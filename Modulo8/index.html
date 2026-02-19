@@ -1,0 +1,912 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Programación 4 · Módulo 8</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    :root{
+      --bg:#fbfbff; --ink:#223; --muted:#566; --stroke:#e8e7ff;
+      --p1:#dff3ff; --p2:#ffe6ef; --p3:#e9ffe6; --p4:#fff6d6;
+      --accent:#6a6cff; --accent2:#ff6aa2; --good:#2fa05f; --bad:#d34a6a;
+      --shadow:0 12px 30px rgba(30,30,60,.08); --radius:18px;
+    }
+    body{
+      background:
+        radial-gradient(1200px 800px at 10% 10%, var(--p1), transparent 55%),
+        radial-gradient(1100px 700px at 90% 15%, var(--p2), transparent 60%),
+        radial-gradient(900px 700px at 20% 90%, var(--p3), transparent 55%),
+        radial-gradient(1000px 700px at 80% 85%, var(--p4), transparent 60%),
+        var(--bg);
+      color:var(--ink); min-height:100vh;
+    }
+    .app-shell{display:grid;grid-template-columns:320px 1fr;gap:18px;padding:18px;max-width:1500px;margin:0 auto;}
+    @media (max-width:992px){.app-shell{grid-template-columns:1fr}.sidebar{position:static!important;height:auto!important}}
+    .sidebar{
+      position:sticky;top:18px;height:calc(100vh - 36px);overflow:auto;
+      border:1px solid var(--stroke);background:linear-gradient(180deg,#ffffffcc,#ffffff99);
+      box-shadow:var(--shadow);border-radius:var(--radius);padding:14px;backdrop-filter:blur(8px);
+    }
+    .brand{border-radius:14px;padding:12px;background:linear-gradient(135deg,rgba(106,108,255,.14),rgba(255,106,162,.12));border:1px solid var(--stroke);}
+    .brand .title{font-weight:900;letter-spacing:.2px;margin:0;line-height:1.2}
+    .brand .subtitle{margin:6px 0 0 0;color:var(--muted);font-size:.92rem}
+
+    .navpill{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;border:1px solid transparent;color:var(--ink);text-decoration:none;transition:.18s ease;margin:6px 0;background:rgba(255,255,255,.55);}
+    .navpill:hover{transform:translateY(-1px);border-color:var(--stroke)}
+    .navpill.active{border-color:rgba(106,108,255,.35);background:rgba(106,108,255,.10)}
+    .navpill i{color:var(--accent);width:18px;text-align:center}
+
+    .content{
+      border:1px solid var(--stroke);background:linear-gradient(180deg,#ffffffcc,#ffffffa6);
+      box-shadow:var(--shadow);border-radius:var(--radius);padding:16px;backdrop-filter:blur(8px);overflow:hidden;
+    }
+    .topbar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:4px 4px 12px;border-bottom:1px solid var(--stroke);margin-bottom:12px;}
+    .progress{height:10px;border-radius:999px;background:rgba(106,108,255,.08)}
+    .progress-bar{background:linear-gradient(90deg,rgba(106,108,255,.85),rgba(255,106,162,.75))}
+    .slide{display:none;padding:8px 6px 14px;min-height:60vh}
+    .slide.active{display:block}
+    .slide h2{font-weight:900;letter-spacing:.2px;margin-bottom:10px}
+    .slide p,.slide li{color:var(--muted)}
+    .card-soft{border:1px solid var(--stroke);background:rgba(255,255,255,.70);border-radius:var(--radius);box-shadow:0 10px 22px rgba(30,30,60,.06)}
+    .badge-soft{border:1px solid var(--stroke);background:rgba(255,255,255,.60);color:var(--ink);border-radius:999px;padding:6px 10px;font-size:.82rem}
+    .callout{border-left:6px solid rgba(106,108,255,.55);background:rgba(106,108,255,.06);border-radius:14px;padding:12px}
+    .callout .k{font-weight:800;color:var(--ink)}
+    .analogy{border-left:6px solid rgba(255,106,162,.55);background:rgba(255,106,162,.06);border-radius:14px;padding:12px}
+    .analogy .k{font-weight:800;color:var(--ink)}
+    .btn-soft{border-radius:999px;border:1px solid rgba(106,108,255,.25);background:rgba(106,108,255,.08);color:var(--ink)}
+    .btn-soft:hover{background:rgba(106,108,255,.14)}
+    .btn-accent{border-radius:999px;background:linear-gradient(90deg,rgba(106,108,255,.95),rgba(255,106,162,.85));border:none}
+    .btn-accent:hover{filter:brightness(1.03)}
+    code.kbd{background:rgba(0,0,0,.06);padding:2px 6px;border-radius:10px;border:1px solid rgba(0,0,0,.06)}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    .pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:7px 10px;border:1px solid var(--stroke);background:rgba(255,255,255,.62)}
+    .step{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--stroke);background:rgba(255,255,255,.62);border-radius:16px;padding:12px}
+    .step .n{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;
+             background:rgba(106,108,255,.12);border:1px solid var(--stroke);font-weight:900;color:var(--accent)}
+    .mini-diag{border:1px dashed rgba(106,108,255,.35);border-radius:18px;padding:14px;background:rgba(106,108,255,.05)}
+    .quiz-option{border:1px solid var(--stroke);background:rgba(255,255,255,.62);border-radius:16px;padding:10px 12px;cursor:pointer;transition:.15s ease}
+    .quiz-option:hover{transform:translateY(-1px);border-color:rgba(106,108,255,.35)}
+    .quiz-option.selected{border-color:rgba(255,106,162,.55);background:rgba(255,106,162,.08)}
+    .quiz-option.correct{border-color:rgba(47,160,95,.55);background:rgba(47,160,95,.10)}
+    .quiz-option.wrong{border-color:rgba(211,74,106,.55);background:rgba(211,74,106,.10)}
+    .small-muted{color:var(--muted);font-size:.92rem}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:992px){.grid-2{grid-template-columns:1fr}}
+    pre.codebox{
+      margin:0; padding:12px 14px; border-radius:16px;
+      border:1px solid var(--stroke); background:rgba(255,255,255,.62);
+      overflow:auto; font-size:.92rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand animate__animated animate__fadeIn">
+        <div class="d-flex align-items-center gap-2">
+          <div class="p-2 rounded-3" style="background:rgba(106,108,255,.12); border:1px solid var(--stroke)">
+            <i class="fa-solid fa-cubes" style="color:var(--accent)"></i>
+          </div>
+          <div>
+            <p class="title mb-0">P4 · Módulo 8</p>
+            <p class="subtitle mb-0">Conceptos básicos II · Implementación: Interfaces · Patrones de diseño</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <a class="badge-soft text-decoration-none" href="../index.html">
+            <i class="fa-solid fa-house me-2"></i>Home
+          </a>
+          <button class="btn btn-sm btn-soft" id="btnHelp">
+            <i class="fa-regular fa-circle-question me-1"></i>Ayuda
+          </button>
+        </div>
+        <div id="nav" class="mt-2"></div>
+      </div>
+
+      <div class="mt-3">
+        <div class="card-soft p-3">
+          <div class="d-flex align-items-start gap-2">
+            <i class="fa-solid fa-bullseye mt-1" style="color:var(--accent2)"></i>
+            <div>
+              <div class="fw-bold">Idea central</div>
+              <div class="small-muted">
+                <b>Operación vs método</b> + <b>polimorfismo</b> e <b>interfaces</b> te permiten programar
+                “contra la especificación”. Y con <b>patrones</b> resolvés problemas comunes de diseño.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="content">
+      <div class="topbar">
+        <div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge-soft" id="slideTag"><i class="fa-solid fa-layer-group me-2"></i>Sección</span>
+            <span class="badge-soft" id="slideCounter"><i class="fa-solid fa-hashtag me-2"></i>1/1</span>
+          </div>
+          <div class="mt-2">
+            <div class="progress">
+              <div class="progress-bar" id="progressBar" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-soft" id="btnPrev"><i class="fa-solid fa-arrow-left me-2"></i>Anterior</button>
+          <button class="btn btn-accent text-white" id="btnNext">Siguiente<i class="fa-solid fa-arrow-right ms-2"></i></button>
+        </div>
+      </div>
+
+      <!-- SLIDES -->
+      <section class="slide" data-title="Bienvenida" data-icon="fa-hand-sparkles">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-hand-sparkles me-2" style="color:var(--accent2)"></i>Bienvenida</h2>
+          <p class="lead small-muted mb-3">
+            En este módulo conectamos conceptos OO (segunda parte) con patrones de diseño:
+            <b>Singleton</b>, <b>State</b>, <b>Observer</b> y <b>Factory</b>.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2"><i class="fa-solid fa-bullseye me-2" style="color:var(--accent)"></i>Objetivos</div>
+                <ul class="mb-0">
+                  <li>Diferenciar <b>operación</b> (qué) vs <b>método</b> (cómo).</li>
+                  <li>Entender <b>polimorfismo</b> y <b>redefinición</b> (override).</li>
+                  <li>Usar <b>interfaces</b> y <b>realización</b> para desacoplar.</li>
+                  <li>Reconocer <b>dependencias</b> (qué rompe cuando cambia algo).</li>
+                  <li>Aplicar patrones: <b>Singleton</b>, <b>State</b>, <b>Observer</b>, <b>Factory</b>.</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Frase clave:</span> “Programar contra interfaces y reutilizar soluciones probadas”.
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2"><i class="fa-solid fa-gamepad me-2" style="color:var(--accent2)"></i>Interacción</div>
+                <ul class="mb-3">
+                  <li><code class="kbd">←</code> y <code class="kbd">→</code> navegan.</li>
+                  <li>Barra lateral para saltar.</li>
+                  <li>Al final: <b>desafío de 10 preguntas</b>.</li>
+                </ul>
+                <button class="btn btn-soft w-100" onclick="toast('Tip: si cambiás una implementación, intentá que tu interfaz no cambie ✅')">
+                  <i class="fa-solid fa-play me-2"></i>Probar interacción
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> una <b>operación</b> es “pedir una pizza”; el <b>método</b> es “la receta”.
+            Patrones son “recetas famosas” para problemas repetidos.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Operación vs Método" data-icon="fa-gear">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-gear me-2" style="color:var(--accent)"></i>Operación vs Método</h2>
+          <p class="small-muted">
+            <b>Operación</b> = especificación de una transformación/consulta que un objeto puede ejecutar.
+            <b>Método</b> = implementación concreta de esa operación para una clase.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Pensalo así</div>
+                <ul class="mb-0">
+                  <li><b>Operación</b>: “qué le podés pedir a un objeto”.</li>
+                  <li><b>Método</b>: “cómo lo hace esta clase”.</li>
+                </ul>
+                <div class="callout mt-3"><span class="k">Clave:</span> distintas clases pueden implementar la misma operación con métodos distintos.</div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Mini-ejemplo</div>
+                <pre class="codebox mono">// Usuario tiene la operación getEdad()
+// El método es el código que la implementa
+int getEdad() {
+  // ... algoritmo
+}</pre>
+                <div class="small-muted mt-2">La operación es “obtener edad”. El método es el algoritmo.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> “hacer un café” es la operación. La receta (espresso, filtrado, etc.) es el método.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Polimorfismo y redefinición" data-icon="fa-shapes">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-shapes me-2" style="color:var(--accent2)"></i>Polimorfismo y redefinición</h2>
+          <p class="small-muted">
+            <b>Polimorfismo</b>: capacidad de asociar diferentes métodos a la misma operación.
+            En una jerarquía, si hay más de un método para la misma operación, decimos que está <b>redefinida</b> (override).
+          </p>
+
+          <div class="card-soft p-4">
+            <div class="fw-bold mb-2">Ejemplo típico (Usuario / Admin)</div>
+            <pre class="codebox mono">class Usuario {
+public:
+  virtual int getPermisos(); // operación
+};
+
+class Admin : public Usuario {
+public:
+  int getPermisos(); // redefinición (otro método)
+};</pre>
+            <div class="callout mt-3"><span class="k">Idea:</span> “mismo mensaje” (<span class="mono">getPermisos()</span>), “respuesta distinta” según el objeto real.</div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> todos “pagan” en una tienda (operación), pero un cliente VIP paga con descuento (método distinto).
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Interfaz" data-icon="fa-plug">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-plug me-2" style="color:var(--accent)"></i>Interfaz</h2>
+          <p class="small-muted">
+            Una <b>interfaz</b> es un conjunto de operaciones con nombre.
+            No define estado ni asocia métodos a esas operaciones: describe <b>comportamiento esperado</b>.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Qué aporta</div>
+                <ul class="mb-0">
+                  <li>Permite quebrar dependencias hacia implementaciones.</li>
+                  <li>Dejás una sola dependencia hacia la <b>especificación</b> (la interfaz).</li>
+                  <li>Una clase puede realizar varias interfaces (varios roles).</li>
+                </ul>
+                <div class="callout mt-3"><span class="k">Clave:</span> programar “contra interfaz”, no “contra clase concreta”.</div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Ejemplo de interfaz (Archivo)</div>
+                <pre class="codebox mono">class Archivo {
+public:
+  virtual string read(int n) = 0;
+  virtual void rewind() = 0;
+  virtual int position() = 0;
+  virtual int available() = 0;
+  virtual ~Archivo() {};
+};</pre>
+                <div class="small-muted mt-2">Cualquier clase derivada (o que la implemente) “es un Archivo”.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> un enchufe (interfaz) define “cómo conectarse”.
+            Podés conectar una lámpara o una notebook: distintos aparatos, mismo enchufe.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Realización" data-icon="fa-check-double">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-check-double me-2" style="color:var(--accent2)"></i>Realización</h2>
+          <p class="small-muted">
+            <b>Realización</b> es la relación entre una especificación (interfaz) y su implementación (clase).
+            Una clase <b>realiza</b> una interfaz si implementa todas sus operaciones (provee un método para cada una).
+          </p>
+
+          <div class="card-soft p-4">
+            <div class="fw-bold mb-2">Ejemplo</div>
+            <pre class="codebox mono">class CPPArchivo : public Archivo {
+public:
+  string read(int n);
+  void rewind();
+  int position();
+  int available();
+  ~CPPArchivo();
+};</pre>
+            <div class="callout mt-3">
+              <span class="k">Tip:</span> podés declarar variables/parámetros del tipo de la interfaz (p.ej. <span class="mono">Archivo*</span>).
+              Eso oculta la clase concreta.
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> la interfaz es el “puesto de trabajo” (rol). La clase es la “persona” que cumple ese rol.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Tipar por interfaz" data-icon="fa-id-card">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-id-card me-2" style="color:var(--accent)"></i>Tipar por interfaz</h2>
+          <p class="small-muted">
+            Si una variable es de tipo <b>I</b> (una interfaz), no significa “instancia de I” (eso no tiene sentido),
+            sino “instancia de alguna clase que realiza I”.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Ejemplo (Comparable / Representable)</div>
+                <pre class="codebox mono">class Comparable {
+public:
+  virtual int comparar(Comparable* b)=0;
+  virtual ~Comparable(){};
+};
+
+class Representable {
+public:
+  virtual string toString();
+  virtual ~Representable(){};
+};</pre>
+                <div class="small-muted mt-2">Una clase concreta puede realizar ambos roles.</div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Clase concreta</div>
+                <pre class="codebox mono">class Integer : public Comparable,
+                public Representable {
+  int val;
+public:
+  int comparar(Comparable* c);
+  string toString();
+};</pre>
+                <div class="callout mt-3"><span class="k">Clave:</span> una clase puede tener <b>múltiples roles</b> (múltiples interfaces).</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> una misma persona puede ser “docente” y “tutor”.
+            Dependiendo del trámite, la tratás como docente o como tutor (rol).
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Dependencia" data-icon="fa-link">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-link me-2" style="color:var(--accent2)"></i>Dependencia</h2>
+          <p class="small-muted">
+            Relación asimétrica: un elemento (origen) depende de otro (destino).
+            Un cambio en el destino puede afectar al origen.
+          </p>
+
+          <div class="card-soft p-4">
+            <div class="fw-bold mb-2">Ideas clave</div>
+            <ul class="mb-0">
+              <li>Asociación, generalización y realización son “dependencias fuertes”.</li>
+              <li>En diagramas de diseño, muchas dependencias se consideran asumidas y no se dibujan explícitamente.</li>
+              <li>Las interfaces ayudan a reducir el impacto de los cambios.</li>
+            </ul>
+            <div class="callout mt-3"><span class="k">Regla mental:</span> “si cambia A, ¿se rompe B?” → B depende de A.</div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> si tu cargador cambia el tipo de enchufe, tu celular “sufre” el cambio. El celular depende del cargador.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Patrones de diseño: idea" data-icon="fa-wand-magic-sparkles">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-wand-magic-sparkles me-2" style="color:var(--accent)"></i>Patrones de diseño: idea</h2>
+          <p class="small-muted">
+            Un patrón es una solución reutilizable a un problema recurrente de diseño OO.
+            Hoy veremos: <b>Singleton</b>, <b>State</b>, <b>Observer</b> y <b>Factory</b>.
+          </p>
+
+          <div class="grid-2">
+            <div class="step">
+              <div class="n">1</div>
+              <div>
+                <div class="fw-bold">Mismo problema, muchos sistemas</div>
+                <div class="small-muted">Por ejemplo: “una única instancia”, “cambio de comportamiento por estado”, “avisos por eventos”, “creación desacoplada”.</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="n">2</div>
+              <div>
+                <div class="fw-bold">Solución con roles (interfaces/clases)</div>
+                <div class="small-muted">Aprovecha polimorfismo e interfaces para mantener bajo acoplamiento.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> como “plantillas” de arquitectura: no copiás la casa exacta, copiás la idea del diseño.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Singleton" data-icon="fa-user-shield">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-user-shield me-2" style="color:var(--accent2)"></i>Singleton</h2>
+          <p class="small-muted">Asegura una única instancia globalmente accesible.</p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Estructura típica</div>
+                <ul class="mb-0">
+                  <li>Constructor <b>privado</b>.</li>
+                  <li>Atributo estático <b>instancia</b>.</li>
+                  <li>Método estático <b>getInstancia()</b>.</li>
+                </ul>
+                <div class="callout mt-3"><span class="k">Ojo:</span> es “una sola instancia”, no “muchas con el mismo estado”.</div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Mini-código</div>
+                <pre class="codebox mono">class Singleton {
+private:
+  static Singleton* instancia;
+  Singleton();
+public:
+  static Singleton* getInstancia();
+  void operacion();
+};</pre>
+                <div class="small-muted mt-2">Uso: <span class="mono">Singleton::getInstancia()->operacion();</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> el “director” del sistema: hay uno solo. Todos lo consultan, no se crean directores nuevos.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="State" data-icon="fa-toggle-on">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-toggle-on me-2" style="color:var(--accent)"></i>State</h2>
+          <p class="small-muted">
+            Permite que un objeto cambie su comportamiento cuando cambia su estado (sin if gigantes).
+          </p>
+
+          <div class="card-soft p-4">
+            <div class="fw-bold mb-2">Ejemplo: puerta automática (1 botón)</div>
+            <div class="mini-diag small-muted">
+              Estado <b>Cerrado</b> → botón ⇒ abrir() y pasa a <b>Abierto</b><br/>
+              Estado <b>Abierto</b> → botón ⇒ cerrar() y pasa a <b>Cerrado</b>
+            </div>
+            <div class="callout mt-3">
+              <span class="k">Cómo se implementa:</span> una interfaz/abstracta <b>EstadoControl</b> con
+              <span class="mono">boton(motor, estadoActual)</span>, y clases <b>Abierto</b>/<b>Cerrado</b> que redefinen ese método.
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> un semáforo: el mismo botón “continuar” produce acciones distintas según el color (estado).
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Observer" data-icon="fa-bell">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-bell me-2" style="color:var(--accent2)"></i>Observer</h2>
+          <p class="small-muted">
+            Un objeto (<b>subject</b>) avisa a varios interesados (<b>observadores</b>) cuando pasa algo.
+          </p>
+
+          <div class="card-soft p-4">
+            <div class="fw-bold mb-2">Ejemplo: control de stock</div>
+            <ul class="mb-0">
+              <li>Cuando el stock llega a cero, se avisa al <b>Depósito</b> y a los <b>Proveedores</b>.</li>
+              <li>El subject (<b>PuntoDeVenta</b>) mantiene una colección de <b>IObserver</b>.</li>
+              <li>Al ocurrir el evento, ejecuta <b>notify(...)</b> en cada observador.</li>
+            </ul>
+            <pre class="codebox mono mt-3">// Subject (fragmento)
+set<IObserver*> observers;
+void notificarObservadores(int idProd){
+  for(auto it = observers.begin(); it != observers.end(); ++it)
+    (*it)->notify(idProd);
+}</pre>
+            <div class="callout mt-3"><span class="k">Clave:</span> el subject no necesita saber “qué hacen” los observadores, solo que tienen <span class="mono">notify</span>.</div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> suscribirte a un canal: cuando suben un video, te llega la notificación.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Factory + Singleton" data-icon="fa-industry">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-industry me-2" style="color:var(--accent)"></i>Factory + Singleton</h2>
+          <p class="small-muted">
+            Una <b>fábrica</b> centraliza la creación/acceso a objetos (por ejemplo controladores),
+            para que la capa de presentación no quede acoplada a clases concretas.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Idea</div>
+                <ul class="mb-0">
+                  <li>Presentación pide interfaces: <b>ISistema1</b>, <b>ISistema2</b>.</li>
+                  <li><b>Fabrica</b> entrega implementaciones concretas (Controlador1, Controlador2).</li>
+                  <li>La fábrica puede ser <b>singleton</b> (una sola).</li>
+                </ul>
+                <div class="callout mt-3"><span class="k">Beneficio:</span> cambian controladores, pero la UI sigue pidiendo interfaces.</div>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Alternativas (3)</div>
+                <ul class="mb-0">
+                  <li><b>1)</b> Controladores son Singleton y la fábrica los retorna.</li>
+                  <li><b>2)</b> Controladores no Singleton; la fábrica guarda referencias para mantener unicidad.</li>
+                  <li><b>3)</b> La fábrica retorna una nueva instancia cada vez.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> una “mesa de entradas”: vos pedís el trámite (interfaz) y ellos te derivan con el funcionario correcto (implementación).
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Resumen" data-icon="fa-layer-group">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-layer-group me-2" style="color:var(--accent)"></i>Resumen: qué te llevás</h2>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2"><i class="fa-solid fa-cubes me-2" style="color:var(--accent2)"></i>OO (2)</div>
+                <ul class="mb-0">
+                  <li>Operación = <b>qué</b> / Método = <b>cómo</b>.</li>
+                  <li>Polimorfismo + redefinición (override) = mismo mensaje, distintas respuestas.</li>
+                  <li>Interfaz + realización = desacoplar a especificaciones.</li>
+                  <li>Dependencia = “qué se rompe si cambia algo”.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2"><i class="fa-solid fa-wand-magic-sparkles me-2" style="color:var(--accent)"></i>Patrones</div>
+                <ul class="mb-0">
+                  <li><b>Singleton:</b> una instancia global.</li>
+                  <li><b>State:</b> comportamiento cambia según estado (sin ifs enormes).</li>
+                  <li><b>Observer:</b> notificación a múltiples interesados.</li>
+                  <li><b>Factory:</b> creación/acceso desacoplado a clases concretas.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="callout mt-3">
+            <span class="k">Clave:</span> interfaces + polimorfismo son la “base” para que los patrones funcionen bien.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Desafío (10 preguntas)" data-icon="fa-circle-check">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-circle-check me-2" style="color:var(--accent2)"></i>Desafío final · 10 preguntas</h2>
+          <p class="small-muted">
+            Elegí una opción por pregunta. Al finalizar verás la correcta y tu respuesta por pregunta, y un resumen.
+          </p>
+
+          <div class="card-soft p-4">
+            <div id="quizRoot"></div>
+            <div class="d-flex flex-wrap gap-2 mt-3">
+              <button class="btn btn-accent text-white" id="btnFinishQuiz">
+                <i class="fa-solid fa-flag-checkered me-2"></i>Finalizar intento
+              </button>
+              <button class="btn btn-soft" id="btnResetQuiz">
+                <i class="fa-solid fa-rotate-right me-2"></i>Reiniciar
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Cierre" data-icon="fa-heart">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-heart me-2" style="color:var(--accent2)"></i>Cierre</h2>
+          <div class="card-soft p-4">
+            <div class="fw-bold mb-2">Checklist final</div>
+            <ul class="mb-0">
+              <li>¿Distingo operación (qué) de método (cómo)?</li>
+              <li>¿Sé qué es polimorfismo y cuándo hay redefinición?</li>
+              <li>¿Uso interfaces para desacoplar?</li>
+              <li>¿Identifico dependencias y su impacto?</li>
+              <li>¿Cuándo usar Singleton / State / Observer / Factory?</li>
+            </ul>
+          </div>
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> buenas interfaces son como “contratos claros”.
+            Los patrones son “acuerdos de trabajo” que ya se sabe que funcionan.
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const nav = document.getElementById('nav');
+    const slideCounter = document.getElementById('slideCounter');
+    const slideTag = document.getElementById('slideTag');
+    const progressBar = document.getElementById('progressBar');
+    let idx = 0;
+
+    function renderNav(){
+      nav.innerHTML = '';
+      slides.forEach((s, i) => {
+        const title = s.dataset.title || `Sección ${i+1}`;
+        const icon = s.dataset.icon || 'fa-circle';
+        const a = document.createElement('a');
+        a.href = '#';
+        a.className = 'navpill';
+        a.innerHTML = `<i class="fa-solid ${icon}"></i><span>${title}</span>`;
+        a.addEventListener('click', (e) => { e.preventDefault(); goTo(i, true); });
+        nav.appendChild(a);
+      });
+    }
+
+    function updateChrome(){
+      const total = slides.length;
+      slideCounter.innerHTML = `<i class="fa-solid fa-hashtag me-2"></i>${idx+1}/${total}`;
+      slideTag.innerHTML = `<i class="fa-solid fa-layer-group me-2"></i>${slides[idx].dataset.title || 'Sección'}`;
+      progressBar.style.width = `${Math.round(((idx+1)/total)*100)}%`;
+      Array.from(nav.querySelectorAll('.navpill')).forEach((p, i) => p.classList.toggle('active', i === idx));
+    }
+
+    function goTo(newIdx, animate=false){
+      if(newIdx < 0 || newIdx >= slides.length) return;
+      slides[idx].classList.remove('active');
+      idx = newIdx;
+      slides[idx].classList.add('active');
+      if(animate){
+        slides[idx].classList.remove('animate__fadeInUp');
+        void slides[idx].offsetWidth;
+        slides[idx].classList.add('animate__animated','animate__fadeInUp');
+      }
+      updateChrome();
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+    function next(){ goTo(Math.min(idx+1, slides.length-1), true); }
+    function prev(){ goTo(Math.max(idx-1, 0), true); }
+
+    document.getElementById('btnNext').addEventListener('click', next);
+    document.getElementById('btnPrev').addEventListener('click', prev);
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'ArrowRight') next();
+      if(e.key === 'ArrowLeft') prev();
+    });
+
+    document.getElementById('btnHelp').addEventListener('click', () => {
+      Swal.fire({
+        title: 'Cómo usar esta presentación',
+        html: `<div style="text-align:left">
+          <ul>
+            <li>Usá <b>Siguiente</b>/<b>Anterior</b> o <code>→</code>/<code>←</code>.</li>
+            <li>Barra lateral para saltar a cualquier tema.</li>
+            <li>Al final: <b>quiz</b> de 10 preguntas con corrección y resumen.</li>
+          </ul>
+        </div>`,
+        icon: 'info',
+        confirmButtonText: '¡Entendido!',
+        confirmButtonColor: '#6a6cff'
+      })
+    });
+
+    function toast(text){
+      Swal.fire({ toast:true, position:'top-end', icon:'info', title:text, showConfirmButton:false, timer:2200, timerProgressBar:true });
+    }
+
+    const quiz = [
+      { q:"¿Cuál es la mejor diferencia entre operación y método?",
+        options:["Operación = código; método = nombre","Operación = especificación (qué); método = implementación (cómo)","Operación = atributo; método = clase","Son lo mismo"],
+        correct:1,
+        explain:"Operación describe qué se puede pedir; método es cómo lo implementa una clase."
+      },
+      { q:"¿Qué expresa el polimorfismo?",
+        options:["Una clase no puede heredar","Mismo mensaje puede ejecutar métodos distintos según el objeto real","Un objeto no tiene identidad","No se pueden usar interfaces"],
+        correct:1,
+        explain:"El mismo llamado (operación) puede resolverse a métodos diferentes (override)."
+      },
+      { q:"Cuando una subclase define un método para una operación ya definida en la superclase, se dice que la operación está…",
+        options:["Encapsulada","Re-definida (override)","Serializada","Inmutable"],
+        correct:1,
+        explain:"Redefinición ocurre cuando hay más de un método para la misma operación en la jerarquía."
+      },
+      { q:"Una interfaz…",
+        options:["Define estado y métodos concretos","Es un conjunto de operaciones con nombre, sin estado y sin métodos asociados","Siempre hereda de otra interfaz","Solo sirve para guardar datos"],
+        correct:1,
+        explain:"La interfaz especifica comportamiento (operaciones) sin estado ni implementación."
+      },
+      { q:"Una clase C realiza una interfaz I cuando…",
+        options:["C hereda de I como clase concreta","C implementa todas las operaciones declaradas en I","C tiene el mismo nombre que I","C tiene exactamente un atributo"],
+        correct:1,
+        explain:"Realización significa proveer un método por cada operación de la interfaz."
+      },
+      { q:"Si una variable es de tipo I (interfaz), el objeto real es…",
+        options:["Instancia de I","Instancia de alguna clase que realiza I","Siempre null","Siempre una clase abstracta"],
+        correct:1,
+        explain:"No hay instancias directas de una interfaz: el objeto es de una clase que la implementa."
+      },
+      { q:"Una dependencia significa que…",
+        options:["Dos elementos son iguales","Un cambio en el destino puede afectar al origen","No existe relación","Siempre hay herencia"],
+        correct:1,
+        explain:"Dependencia: cambios en un elemento pueden impactar a otro que lo usa."
+      },
+      { q:"¿Qué asegura el patrón Singleton?",
+        options:["Muchas instancias de una clase","Una única instancia globalmente accesible","Que no haya herencia","Que toda clase tenga interfaz"],
+        correct:1,
+        explain:"Singleton controla la unicidad y ofrece acceso mediante getInstancia()."
+      },
+      { q:"¿Qué idea central tiene el patrón State?",
+        options:["Un objeto cambia comportamiento según su estado, usando objetos estado","Notificar observadores","Crear objetos con fábrica","Evitar encapsulación"],
+        correct:0,
+        explain:"State modela estados como objetos que implementan la misma interfaz y cambian la respuesta."
+      },
+      { q:"En Observer, el subject…",
+        options:["Conoce detalles internos de cada observador","Mantiene una lista de observadores y les avisa con notify cuando ocurre un evento","Nunca llama a notify","Solo funciona con singleton"],
+        correct:1,
+        explain:"Observer desacopla: el subject solo llama notify a través de la interfaz del observador."
+      }
+    ];
+
+    const state = { answers: Array(quiz.length).fill(null), finished:false };
+
+    function renderQuiz(){
+      const root = document.getElementById('quizRoot');
+      root.innerHTML = '';
+      quiz.forEach((item, qi) => {
+        const block = document.createElement('div');
+        block.className = 'mb-4';
+        block.innerHTML = `
+          <div class="d-flex align-items-start justify-content-between gap-2">
+            <div class="fw-bold">${qi+1}. ${item.q}</div>
+            <span class="badge-soft"><i class="fa-solid fa-list-check me-2"></i>MCQ</span>
+          </div>
+          <div class="mt-2 d-grid gap-2" id="q-${qi}"></div>
+          <div class="small-muted mt-2" id="exp-${qi}" style="display:none"></div>
+        `;
+        root.appendChild(block);
+
+        const optWrap = block.querySelector(`#q-${qi}`);
+        item.options.forEach((opt, oi) => {
+          const optDiv = document.createElement('div');
+          optDiv.className = 'quiz-option';
+          optDiv.innerHTML = `<i class="fa-regular fa-circle me-2"></i>${opt}`;
+          optDiv.addEventListener('click', () => {
+            if(state.finished) return;
+            state.answers[qi] = oi;
+            refreshQuestion(qi);
+          });
+          optWrap.appendChild(optDiv);
+        });
+
+        refreshQuestion(qi);
+      });
+    }
+
+    function refreshQuestion(qi){
+      const optWrap = document.getElementById(`q-${qi}`);
+      const item = quiz[qi];
+      const chosen = state.answers[qi];
+
+      Array.from(optWrap.children).forEach((node, oi) => {
+        node.classList.toggle('selected', chosen === oi);
+        node.querySelector('i').className = chosen === oi ? 'fa-solid fa-circle-check me-2' : 'fa-regular fa-circle me-2';
+        node.classList.remove('correct','wrong');
+        if(state.finished){
+          if(oi === item.correct) node.classList.add('correct');
+          if(chosen === oi && chosen !== item.correct) node.classList.add('wrong');
+        }
+      });
+
+      const exp = document.getElementById(`exp-${qi}`);
+      if(state.finished){
+        exp.style.display = '';
+        const selText = (chosen === null) ? 'Sin responder' : item.options[chosen];
+        exp.innerHTML = `
+          <div class="callout">
+            <div><b>Correcta:</b> ${item.options[item.correct]}</div>
+            <div><b>Tu respuesta:</b> ${selText}</div>
+            <div class="mt-2">${item.explain}</div>
+          </div>
+        `;
+      }else{
+        exp.style.display = 'none';
+        exp.innerHTML = '';
+      }
+    }
+
+    function finishQuiz(){
+      const unanswered = state.answers.filter(a => a === null).length;
+      if(unanswered){
+        Swal.fire({
+          title:'Te faltan preguntas',
+          text:`Te faltan ${unanswered} preguntas sin responder. ¿Querés finalizar igual?`,
+          icon:'warning',
+          showCancelButton:true,
+          confirmButtonText:'Finalizar igual',
+          cancelButtonText:'Volver',
+          confirmButtonColor:'#ff6aa2'
+        }).then(r => { if(r.isConfirmed) doFinish(); });
+      }else{
+        doFinish();
+      }
+    }
+
+    function doFinish(){
+      state.finished = true;
+      for(let i=0;i<quiz.length;i++) refreshQuestion(i);
+
+      const correctCount = state.answers.reduce((acc,a,i)=> acc + (a===quiz[i].correct ? 1 : 0), 0);
+      const total = quiz.length;
+
+      let perQ = '';
+      for(let i=0;i<total;i++){
+        const chosen = state.answers[i];
+        const ok = (chosen === quiz[i].correct);
+        perQ += `<div style="text-align:left; margin-bottom:10px;">
+          <div><b>${i+1}. ${ok ? '✅ Correcto' : '❌ Incorrecto'}</b></div>
+          <div><b>Correcta:</b> ${quiz[i].options[quiz[i].correct]}</div>
+          <div><b>Tu respuesta:</b> ${chosen===null ? 'Sin responder' : quiz[i].options[chosen]}</div>
+        </div>`;
+      }
+
+      Swal.fire({
+        title:`Resultado: ${correctCount}/${total}`,
+        html:`<div class="small-muted" style="text-align:left; margin-bottom:10px;">
+                Detalle por pregunta (correcta vs tu respuesta):
+              </div>
+              <div style="max-height:52vh; overflow:auto; padding-right:6px;">${perQ}</div>
+              <hr/>
+              <div style="text-align:left;"><b>Resumen:</b> ${correctCount} correctas · ${total-correctCount} incorrectas.</div>`,
+        icon: correctCount >= 7 ? 'success' : 'info',
+        confirmButtonText:'Ok',
+        confirmButtonColor:'#6a6cff'
+      });
+    }
+
+    function resetQuiz(){
+      state.answers = Array(quiz.length).fill(null);
+      state.finished = false;
+      renderQuiz();
+      toast('Quiz reiniciado.');
+    }
+
+    document.getElementById('btnFinishQuiz').addEventListener('click', finishQuiz);
+    document.getElementById('btnResetQuiz').addEventListener('click', resetQuiz);
+
+    renderNav();
+    slides[0].classList.add('active');
+    updateChrome();
+    renderQuiz();
+  </script>
+</body>
+</html>

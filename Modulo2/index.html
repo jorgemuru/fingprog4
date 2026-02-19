@@ -1,0 +1,1320 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Programación 4 · Modulo 2</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <!-- Animate.css -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    :root{
+      --bg: #fbfbff;
+      --ink: #223;
+      --muted: #566;
+      --stroke: #e8e7ff;
+      --pastel-1:#dff3ff;
+      --pastel-2:#ffe6ef;
+      --pastel-3:#e9ffe6;
+      --pastel-4:#fff6d6;
+      --accent:#6a6cff;
+      --accent2:#ff6aa2;
+      --shadow: 0 12px 30px rgba(30,30,60,.08);
+      --radius: 18px;
+    }
+    body{
+      background: radial-gradient(1200px 800px at 10% 10%, var(--pastel-1), transparent 55%),
+                  radial-gradient(1100px 700px at 90% 15%, var(--pastel-2), transparent 60%),
+                  radial-gradient(900px 700px at 20% 90%, var(--pastel-3), transparent 55%),
+                  radial-gradient(1000px 700px at 80% 85%, var(--pastel-4), transparent 60%),
+                  var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+    .app-shell{
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 18px;
+      padding: 18px;
+      max-width: 1450px;
+      margin: 0 auto;
+    }
+    @media (max-width: 992px){
+      .app-shell{ grid-template-columns: 1fr; }
+      .sidebar{ position: static !important; height: auto !important; }
+    }
+    .sidebar{
+      position: sticky;
+      top: 18px;
+      height: calc(100vh - 36px);
+      overflow: auto;
+      border: 1px solid var(--stroke);
+      background: linear-gradient(180deg, #ffffffcc, #ffffff99);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      padding: 14px;
+      backdrop-filter: blur(8px);
+    }
+    .brand{
+      border-radius: 14px;
+      padding: 12px 12px;
+      background: linear-gradient(135deg, rgba(106,108,255,.14), rgba(255,106,162,.12));
+      border: 1px solid var(--stroke);
+    }
+    .brand .title{
+      font-weight: 900;
+      letter-spacing: .2px;
+      margin: 0;
+      line-height: 1.2;
+    }
+    .brand .subtitle{
+      margin: 6px 0 0 0;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+    .navpill{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      color: var(--ink);
+      text-decoration:none;
+      transition: .18s ease;
+      margin: 6px 0;
+      background: rgba(255,255,255,.55);
+    }
+    .navpill:hover{ transform: translateY(-1px); border-color: var(--stroke); }
+    .navpill.active{
+      border-color: rgba(106,108,255,.35);
+      background: rgba(106,108,255,.10);
+    }
+    .navpill i{ color: var(--accent); width: 18px; text-align:center; }
+
+    .content{
+      border: 1px solid var(--stroke);
+      background: linear-gradient(180deg, #ffffffcc, #ffffffa6);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      padding: 16px;
+      backdrop-filter: blur(8px);
+      overflow: hidden;
+    }
+    .topbar{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap: wrap;
+      padding: 4px 4px 12px 4px;
+      border-bottom: 1px solid var(--stroke);
+      margin-bottom: 12px;
+    }
+    .progress{
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(106,108,255,.08);
+    }
+    .progress-bar{
+      background: linear-gradient(90deg, rgba(106,108,255,.85), rgba(255,106,162,.75));
+    }
+    .slide{
+      display:none;
+      padding: 8px 6px 14px 6px;
+      min-height: 60vh;
+    }
+    .slide.active{ display:block; }
+    .slide h2{
+      font-weight: 900;
+      letter-spacing: .2px;
+      margin-bottom: 10px;
+    }
+    .slide p, .slide li{ color: var(--muted); }
+    .card-soft{
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.70);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 22px rgba(30,30,60,.06);
+    }
+    .badge-soft{
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.60);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: .82rem;
+    }
+    .callout{
+      border-left: 6px solid rgba(106,108,255,.55);
+      background: rgba(106,108,255,.06);
+      border-radius: 14px;
+      padding: 12px 12px;
+    }
+    .callout .k{ font-weight: 800; color: var(--ink); }
+    .analogy{
+      border-left: 6px solid rgba(255,106,162,.55);
+      background: rgba(255,106,162,.06);
+      border-radius: 14px;
+      padding: 12px 12px;
+    }
+    .analogy .k{ font-weight: 800; color: var(--ink); }
+    .btn-soft{
+      border-radius: 999px;
+      border: 1px solid rgba(106,108,255,.25);
+      background: rgba(106,108,255,.08);
+      color: var(--ink);
+    }
+    .btn-soft:hover{ background: rgba(106,108,255,.14); }
+    .btn-accent{
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(106,108,255,.95), rgba(255,106,162,.85));
+      border: none;
+    }
+    .btn-accent:hover{ filter: brightness(1.03); }
+    code.kbd{
+      background: rgba(0,0,0,.06);
+      padding: 2px 6px;
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,.06);
+    }
+
+    /* Quiz */
+    .quiz-option{
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.62);
+      border-radius: 16px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: .15s ease;
+    }
+    .quiz-option:hover{ transform: translateY(-1px); border-color: rgba(106,108,255,.35); }
+    .quiz-option.selected{ border-color: rgba(255,106,162,.55); background: rgba(255,106,162,.08); }
+    .quiz-option.correct{ border-color: rgba(50,180,90,.55); background: rgba(50,180,90,.10); }
+    .quiz-option.wrong{ border-color: rgba(220,60,90,.55); background: rgba(220,60,90,.10); }
+    .small-muted{ color: var(--muted); font-size: .92rem; }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand animate__animated animate__fadeIn">
+        <div class="d-flex align-items-center gap-2">
+          <div class="p-2 rounded-3" style="background:rgba(106,108,255,.12); border:1px solid var(--stroke)">
+            <i class="fa-solid fa-clipboard-list" style="color:var(--accent)"></i>
+          </div>
+          <div>
+            <p class="title mb-0">P4 · Módulo 2</p>
+            <p class="subtitle mb-0">Requerimientos + Análisis: Modelado del Dominio (UML)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <div class="d-flex align-items-center justify-content-between">
+			<a href="../index.html"
+			   class="badge-soft text-decoration-none">
+			   <i class="fa-solid fa-house me-2"></i>Home
+			</a>
+          <button class="btn btn-sm btn-soft" id="btnHelp">
+            <i class="fa-regular fa-circle-question me-1"></i>Ayuda
+          </button>
+        </div>
+        <div id="nav" class="mt-2"></div>
+      </div>
+
+      <div class="mt-3">
+        <div class="card-soft p-3">
+          <div class="d-flex align-items-start gap-2">
+            <i class="fa-solid fa-lightbulb mt-1" style="color:var(--accent2)"></i>
+            <div>
+              <div class="fw-bold">Tip</div>
+              <div class="small-muted">
+                Cada sección termina con una <b>analogía</b> para fijar la idea principal.
+                Podés abrirla en popup.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="content">
+      <div class="topbar">
+        <div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge-soft" id="slideTag"><i class="fa-solid fa-layer-group me-2"></i>Sección</span>
+            <span class="badge-soft" id="slideCounter"><i class="fa-solid fa-hashtag me-2"></i>1/1</span>
+          </div>
+          <div class="mt-2">
+            <div class="progress" role="progressbar" aria-label="progreso">
+              <div class="progress-bar" id="progressBar" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-soft" id="btnPrev"><i class="fa-solid fa-arrow-left me-2"></i>Anterior</button>
+          <button class="btn btn-accent text-white" id="btnNext">Siguiente<i class="fa-solid fa-arrow-right ms-2"></i></button>
+        </div>
+      </div>
+
+      <!-- SLIDES -->
+      <section class="slide" data-title="Bienvenida" data-icon="fa-hand-sparkles">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-hand-sparkles me-2" style="color:var(--accent2)"></i>Bienvenida</h2>
+          <p class="lead small-muted mb-3">
+            Hoy trabajamos dos ideas grandes:
+            <b>1) Requerimientos</b> (qué debe cumplir el sistema) y
+            <b>2) Análisis</b> con <b>Modelado del Dominio</b> (conceptos y relaciones del problema).
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="d-flex align-items-start gap-3">
+                  <div class="p-3 rounded-4" style="background:rgba(106,108,255,.10); border:1px solid var(--stroke)">
+                    <i class="fa-solid fa-route fa-lg" style="color:var(--accent)"></i>
+                  </div>
+                  <div>
+                    <div class="fw-bold mb-2">Al final vas a poder…</div>
+                    <ul class="mb-0">
+                      <li>Explicar qué es una <b>especificación de requerimientos</b> y por qué es “delicada”.</li>
+                      <li>Distinguir <b>requerimientos funcionales</b> vs <b>no funcionales</b>.</li>
+                      <li>Armar un <b>caso de uso</b> (actores, sinopsis, curso típico y alternativos).</li>
+                      <li>Construir un <b>Modelo de Dominio</b> (conceptos, atributos, asociaciones y restricciones).</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2"><i class="fa-solid fa-gamepad me-2" style="color:var(--accent)"></i>Modo interactivo</div>
+                <ul class="mb-3">
+                  <li>Barra lateral para saltar.</li>
+                  <li><code class="kbd">←</code> y <code class="kbd">→</code> también navegan.</li>
+                  <li>Al final hay un <b>quiz de 10 preguntas</b>.</li>
+                </ul>
+                <button class="btn btn-soft w-100" onclick="toast('¡Arrancamos! Primero: Requerimientos.')">
+                  <i class="fa-solid fa-play me-2"></i>Probar interacción
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 callout">
+            <span class="k">Idea guía:</span> sin requerimientos claros, diseñar e implementar es como construir “a ciegas”.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Especificación de Requerimientos" data-icon="fa-file-signature">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-file-signature me-2" style="color:var(--accent)"></i>Especificación de Requerimientos</h2>
+          <p>
+            La <b>Especificación de Requerimientos</b> es un insumo fundamental:
+            es la <b>principal fuente</b> para diseñar, implementar y testear el sistema.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Por qué es delicada</div>
+                <ul class="mb-0">
+                  <li>Es compleja de obtener.</li>
+                  <li>De su correctitud depende el éxito del proyecto.</li>
+                  <li>Representa un “<b>contrato</b>” con el usuario.</li>
+                  <li>No se completa de una sola vez: se arma <b>incrementalmente</b>.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Cómo se presenta</div>
+                <ul class="mb-0">
+                  <li>Normalmente es una agregación de distintos <b>artefactos</b>.</li>
+                  <li>Se refina con el avance del proyecto.</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Clave:</span> “si está mal, todo lo demás se apoya en algo mal”.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> es como un “pedido” en un restaurante: si el pedido está ambiguo, el plato puede salir bien… o totalmente distinto a lo esperado.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Especificación de requerimientos','Como un pedido en un restaurante: si pedís algo ambiguo, el resultado puede no coincidir con lo que querías.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Tipos de Requerimientos" data-icon="fa-layer-group">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-layer-group me-2" style="color:var(--accent2)"></i>Tipos de Requerimientos</h2>
+          <p>Un requerimiento es una <b>condición o capacidad</b> que un sistema debe cumplir.</p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2"><i class="fa-solid fa-right-to-bracket me-2" style="color:var(--accent)"></i>Funcionales</div>
+                <ul class="mb-0">
+                  <li>Acciones que el sistema debe ser capaz de realizar.</li>
+                  <li>Especifican comportamiento de <b>entrada/salida</b>.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2"><i class="fa-solid fa-gauge-high me-2" style="color:var(--accent2)"></i>No funcionales</div>
+                <ul class="mb-0">
+                  <li>Propiedades o cualidades del sistema (y restricciones).</li>
+                  <li>Incluyen restricciones sobre los funcionales.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> funcional = “el auto debe frenar”; no funcional = “debe frenar en menos de 3 segundos y ser cómodo de usar”.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Funcional vs No funcional','Funcional: qué hace. No funcional: con qué calidad/limitación lo hace (tiempo, usabilidad, confiabilidad, etc.).')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="No Funcionales (categorías)" data-icon="fa-list-ul">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-list-ul me-2" style="color:var(--accent)"></i>Requerimientos No Funcionales</h2>
+          <p class="small-muted">Suelen referir a cualidades como:</p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <ul class="mb-0">
+                  <li><b>Usabilidad</b>: factores humanos, ayuda, documentación.</li>
+                  <li><b>Confiabilidad</b>: frecuencia de fallas, tiempo de recuperación.</li>
+                  <li><b>Performance</b>: tiempo de respuesta, tasa de procesamiento, precisión, capacidad de carga.</li>
+                  <li><b>Soportabilidad</b>: adaptabilidad, mantenibilidad, configurabilidad, internacionalización.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">También pueden ser restricciones</div>
+                <ul class="mb-0">
+                  <li><b>Interfaces</b> con sistemas externos.</li>
+                  <li>Uso de sistemas/paquetes existentes.</li>
+                  <li>Plataformas, lenguajes, ambientes, herramientas (DB, middleware, etc.).</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Ejemplo:</span> “Debe correr en Windows y Linux” (restricción de plataforma).
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> una app de delivery puede “hacer pedidos” (funcional), pero si tarda 10 segundos en responder o se cae, la experiencia se rompe (no funcional).
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('No funcionales','Como un delivery: no solo importa poder pedir, sino que sea rápido, confiable y fácil de usar.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Funcionales y Casos de Uso" data-icon="fa-person-walking">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-person-walking me-2" style="color:var(--accent2)"></i>Funcionales y Casos de Uso</h2>
+          <p>
+            Antes se expresaban como “funciones del sistema” (algo puntual que el sistema debe hacer).
+            Cuando las interacciones se volvieron complejas, apareció un enfoque más potente: <b>Casos de Uso</b>.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Función del sistema (técnica básica)</div>
+                <div class="callout">
+                  <span class="k">Chequeo simple:</span> si X es una función del sistema, la frase
+                  “<b>El sistema debe hacer X</b>” tiene que tener sentido.
+                </div>
+                <div class="small-muted mt-2">Sirve cuando la interacción es corta y puntual.</div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Casos de Uso</div>
+                <ul class="mb-0">
+                  <li>Basados en la noción de <b>actor</b> (agente externo).</li>
+                  <li>Narran la “historia completa” (y variantes) de uso del sistema.</li>
+                  <li>Terminan cuando el actor principal logra su objetivo con un resultado de valor.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> función = “prender la luz”; caso de uso = “llegar a casa, entrar, encender luces, ajustar clima, y dejar todo listo”.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Casos de uso','Función: acción puntual. Caso de uso: historia completa con pasos y variantes hasta lograr un objetivo.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Estructura de un Caso de Uso" data-icon="fa-book-open">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-book-open me-2" style="color:var(--accent)"></i>Estructura de un Caso de Uso</h2>
+          <p class="small-muted">Un caso de uso se compone de:</p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <ul class="mb-0">
+                  <li><b>Nombre</b> que lo identifica.</li>
+                  <li><b>Actores</b> participantes.</li>
+                  <li><b>Sinopsis</b> (objetivo breve).</li>
+                  <li><b>Curso típico</b> (historia más común).</li>
+                  <li><b>Cursos alternativos</b> (variantes).</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Ventaja:</span> al ser textual es simple de comprender incluso para no técnicos.
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Niveles de detalle</div>
+                <ul class="mb-0">
+                  <li><b>Detectado</b>: nombre + actores.</li>
+                  <li><b>Alto nivel</b>: agrega sinopsis.</li>
+                  <li><b>Expandido</b>: agrega historia y variantes.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> es como contar una receta: nombre del plato, quién cocina, qué busca lograr, pasos normales y “si pasa X, entonces Y”.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Caso de uso','Como una receta: nombre, objetivo, pasos típicos y alternativas cuando algo cambia.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Método para construir Casos de Uso" data-icon="fa-pen-to-square">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-pen-to-square me-2" style="color:var(--accent2)"></i>Método básico (iterativo)</h2>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Pasos típicos</div>
+                <ol class="mb-0">
+                  <li>Detectar <b>actores</b>.</li>
+                  <li>Identificar casos de uso (objetivos/necesidades).</li>
+                  <li>Especificarlos en alto nivel.</li>
+                  <li>Examinarlos y expandir algunos.</li>
+                  <li>Repetir: aparecen nuevos casos y se refinan otros.</li>
+                </ol>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Cómo se usan en I&amp;I</div>
+                <ul class="mb-0">
+                  <li>Sirven para partir el problema en iteraciones.</li>
+                  <li>En una iteración se desarrolla “uno a la vez”.</li>
+                  <li>Los incrementos son conjuntos de funcionalidades (no “partes físicas”).</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Consejo:</span> al inicio se priorizan los casos de uso más importantes.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> es como planear un viaje: primero listás quién viaja (actores), qué quieren lograr (objetivos) y armás itinerarios, refinándolos a medida que conseguís datos.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Construcción incremental','Como planear un viaje: empezás con lo importante, y refinás itinerarios a medida que descubrís detalles.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Ejemplo: Escribir Email" data-icon="fa-envelope-open-text">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-envelope-open-text me-2" style="color:var(--accent)"></i>Ejemplo (Caso de Uso)</h2>
+          <p class="small-muted">Ejemplo del material: “Escribir Email”.</p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Versión Alto Nivel</div>
+                <ul class="mb-0">
+                  <li><b>Nombre:</b> Escribir Email</li>
+                  <li><b>Actor:</b> Usuario</li>
+                  <li><b>Descripción:</b> redacta cuerpo/asunto, adjunta archivos, selecciona destinatarios, envía, se copia en “Enviados”.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Versión Expandida (escenario típico)</div>
+                <ol class="mb-0">
+                  <li>Usuario especifica cuerpo y asunto</li>
+                  <li>Sistema muestra lista de contactos</li>
+                  <li>Usuario selecciona contactos y tipo (Para/CC/CCO)</li>
+                  <li>Usuario agrega más destinatarios manualmente</li>
+                  <li>Usuario hace click en Enviar</li>
+                  <li>Sistema envía el mail</li>
+                  <li>Sistema copia a Enviados</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> alto nivel = “quiero mandar un mail”; expandido = “paso a paso lo que hago y lo que el sistema responde”.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Alto nivel vs expandido','Alto nivel: resumen del objetivo. Expandido: historia con pasos típicos y variantes.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Qué sigue: objetivos y actividades" data-icon="fa-bullseye">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-bullseye me-2" style="color:var(--accent2)"></i>¿Qué sigue después?</h2>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Tras el conjunto inicial de casos de uso…</div>
+                <ul class="mb-0">
+                  <li>El equipo puede analizar, diseñar e implementar.</li>
+                  <li>En paralelo, analistas siguen detectando/especificando nuevos casos.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Objetivos de esta etapa</div>
+                <ul class="mb-0">
+                  <li><b>Modelar el dominio</b> para entender el contexto y aproximar la estructura de la solución.</li>
+                  <li><b>Especificar comportamiento</b> para describir con precisión lo esperado del sistema.</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Actividades:</span> Modelado del Dominio + Especificación del Comportamiento del Sistema.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> primero definís “qué quiere el cliente” (casos de uso) y luego armás el mapa de “qué cosas existen” (dominio) antes de programar.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('De requerimientos a análisis','Primero objetivos/uso (casos de uso), luego mapa del territorio (modelo de dominio) antes de construir.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Modelo de Dominio" data-icon="fa-diagram-project">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-diagram-project me-2" style="color:var(--accent)"></i>Modelo de Dominio</h2>
+          <p>
+            La esencia del análisis OO es <b>descomponer el problema</b> en conceptos individuales.
+            Un Modelo de Dominio contiene principalmente <b>conceptos</b> y <b>relaciones</b> significativas del dominio.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">En qué está enfocado</div>
+                <ul class="mb-0">
+                  <li>En conceptos del <b>dominio</b>, no en entidades de software.</li>
+                  <li>Qué es “significativo” depende del problema y requerimientos.</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Regla mental:</span> “estoy describiendo el territorio, no el GPS”.
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Contenido típico</div>
+                <ul class="mb-0">
+                  <li>Introducción breve</li>
+                  <li>Conceptos (clases)</li>
+                  <li>Tipos (data types)</li>
+                  <li>Relaciones (asociación / generalización)</li>
+                  <li>Restricciones</li>
+                  <li>Diagrama(s) (usualmente uno)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> es como un mapa turístico: muestra lugares importantes y conexiones, no cómo está construido cada edificio.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Modelo de Dominio','Como un mapa turístico: lugares y conexiones importantes, sin detalles de construcción interna.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Conceptos: identificación" data-icon="fa-magnifying-glass">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-magnifying-glass me-2" style="color:var(--accent2)"></i>Conceptos: identificación</h2>
+          <p>Un <b>concepto</b> es una idea/cosa del mundo real o del problema que se modela.</p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Técnicas para listar candidatos</div>
+                <ul class="mb-0">
+                  <li><b>Lista de categorías</b> (objetos físicos, transacciones, roles, lugares…).</li>
+                  <li><b>Identificación de sustantivos</b> en la descripción del problema y/o casos de uso.</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Importante:</span> no es automático: lenguaje natural es ambiguo.
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Consejos</div>
+                <ul class="mb-0">
+                  <li>Es común omitir conceptos al inicio: se agregan después.</li>
+                  <li>Mejor sobre-especificar (granularidad fina) que quedarse corto.</li>
+                  <li>Error común: poner como atributo algo que debía ser concepto.</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Regla de duda:</span> si X no es “solo un número/texto/booleano”, probablemente sea un concepto.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> es como hacer inventario antes de mudarte: anotás todo lo que importa; después eliminás lo que sobraba.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Identificación de conceptos','Como un inventario de mudanza: mejor anotar de más y depurar, que olvidar algo importante.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Atributos" data-icon="fa-sliders">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-sliders me-2" style="color:var(--accent)"></i>Atributos</h2>
+          <p class="small-muted">Identificamos atributos para satisfacer requerimientos de información.</p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Conceptos clave</div>
+                <ul class="mb-0">
+                  <li>Un atributo es un <b>data value</b> de un objeto.</li>
+                  <li>El tipo de un atributo es un <b>data type</b>.</li>
+                  <li>Derivables se marcan con <b>/</b> y suelen llevar nota de cálculo.</li>
+                  <li>Puede haber alcance de instancia y de clase.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Sugerencias</div>
+                <ul class="mb-0">
+                  <li>No usar atributos como <b>claves foráneas</b> para relacionar elementos.</li>
+                  <li>En general, tipos primitivos (Integer, String, Real…).</li>
+                  <li>Si hace falta, definir tipos no-primitivos (ej: Date).</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Idea:</span> relación entre conceptos se modela con asociaciones, no con IDs “a mano”.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> poner un “idAmigo” en una persona para indicar amistad es como escribir el nombre del amigo en un papel suelto: mejor registrar la relación “son amigos”.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Atributos vs relaciones','No uses atributos como “claves foráneas” para relaciones: modelá la relación explícitamente con asociaciones.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Asociaciones" data-icon="fa-link">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-link me-2" style="color:var(--accent2)"></i>Asociaciones</h2>
+          <p>Una <b>asociación</b> indica una conexión interesante o significativa entre conceptos. Suelen preservarse por un tiempo (“need-to-know”).</p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Dos categorías</div>
+                <ul class="mb-0">
+                  <li><b>Need-to-know</b>: necesarias para requerimientos de información.</li>
+                  <li><b>De comprensión</b>: ayudan a entender el dominio.</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Consejo:</span> demasiadas asociaciones confunden; buscar equilibrio.
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Cómo detectarlas</div>
+                <ul class="mb-0">
+                  <li>A es parte física/lógica de B</li>
+                  <li>A está contenido en B</li>
+                  <li>A es miembro de B</li>
+                  <li>A describe a B · A es ítem de transacción · A es propiedad de B…</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> es como un mapa de “contactos importantes”: no anotás todas las conexiones posibles, solo las que sirven para resolver algo.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Asociaciones','Como una agenda: guardás relaciones que necesitás recordar (need-to-know), no todas las relaciones posibles.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Multiplicidades y Roles" data-icon="fa-arrows-left-right">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-arrows-left-right me-2" style="color:var(--accent)"></i>Multiplicidades y Roles</h2>
+          <p class="small-muted">La notación de asociaciones agrega precisión.</p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Multiplicidad</div>
+                <ul class="mb-0">
+                  <li>Ejemplos: <b>*</b> (0..*), <b>1..*</b>, <b>0..1</b>, <b>5</b>.</li>
+                  <li>Define cuántas instancias del otro lado se conectan.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Roles y restricciones</div>
+                <ul class="mb-0">
+                  <li>Roles eliminan ambigüedades.</li>
+                  <li><b>{xor}</b>, <b>{subset}</b>, <b>{ordered}</b>.</li>
+                  <li>Agregación/composición: “parte de”.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> multiplicidad es como “cupos”: un curso puede tener 0..* alumnos; un alumno puede estar en 0..* cursos.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Multiplicidad','Como cupos: define cuántas relaciones se permiten (0..1, 1..*, etc.).')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Generalizaciones y estados" data-icon="fa-sitemap">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-sitemap me-2" style="color:var(--accent2)"></i>Generalizaciones y estados</h2>
+          <p>Usamos generalización cuando hay variantes interesantes de un concepto y se pueden factorizar propiedades comunes.</p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Cuándo conviene</div>
+                <ul class="mb-0">
+                  <li>Subtipos son variantes interesantes.</li>
+                  <li>Propiedades comunes se factorizan en el supertipo.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Estados</div>
+                <ul class="mb-0">
+                  <li>Modelar estados solo si es imprescindible.</li>
+                  <li>No modelar estados como subtipos: usar atributos o conceptos con cuidado.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> generalización es como “categorías”: “Vehículo” agrupa “Auto” y “Moto”; estado es como “encendido/apagado”, mejor como propiedad.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Generalización vs estado','Categorías (Vehículo/Auto) se modelan con generalización. Estados (encendido) suelen ir como atributo.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Tipos asociativos" data-icon="fa-diagram-predecessor">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-diagram-predecessor me-2" style="color:var(--accent)"></i>Tipos asociativos</h2>
+          <p class="small-muted">Sirven para agregar propiedades a una asociación (ej: sueldo).</p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Motivación</div>
+                <ul class="mb-0">
+                  <li>Sueldo depende del vínculo Persona–Empresa.</li>
+                  <li>No “pertenece” solo a Persona ni solo a Empresa.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Qué permite</div>
+                <ul class="mb-0">
+                  <li>Multiplicidades + atributos sobre el vínculo.</li>
+                  <li>Modelado avanzado (múltiples instancias del vínculo).</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> es como un “contrato laboral”: el vínculo tiene datos propios (sueldo, fecha), no solo la persona o la empresa.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Tipo asociativo','Como un contrato laboral: el vínculo tiene datos propios (sueldo), no solo las personas/empresa.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Restricciones e invariantes" data-icon="fa-shield-halved">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-shield-halved me-2" style="color:var(--accent2)"></i>Restricciones e invariantes</h2>
+          <p>
+            Si el modelo permite configuraciones “no deseables”, ajustamos el modelo o agregamos <b>restricciones</b> (invariantes).
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Invariante</div>
+                <ul class="mb-0">
+                  <li>Predicado que siempre debe ser verdadero.</li>
+                  <li>Si da falso, la configuración no es válida.</li>
+                  <li>Puede expresarse informalmente o formalmente.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Restricciones habituales</div>
+                <ul class="mb-0">
+                  <li>Unicidad de atributos</li>
+                  <li>Dominio de atributos</li>
+                  <li>Integridad circular</li>
+                  <li>Atributos calculados</li>
+                  <li>Reglas de negocio</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> reglas de un juego: definen qué situaciones están permitidas y cuáles no.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Invariantes','Como reglas del juego: limitan configuraciones para representar la realidad deseada.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Errores comunes" data-icon="fa-triangle-exclamation">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-triangle-exclamation me-2" style="color:var(--accent)"></i>Errores comunes al modelar</h2>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <ul class="mb-0">
+                  <li>Modelar estados con conceptos sin necesitarlo.</li>
+                  <li>Confundir data types y conceptos.</li>
+                  <li>Incluir elementos de diseño (interfaces, dependencias).</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <ul class="mb-0">
+                  <li>Representar asociaciones como atributos (claves foráneas).</li>
+                  <li>Redundancia / sobre-especificación.</li>
+                  <li>Demasiadas asociaciones que confunden el diagrama.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> un mapa con demasiados símbolos termina confundiendo más de lo que ayuda.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Errores comunes','Como un mapa sobrecargado: demasiados detalles reducen la claridad.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- QUIZ -->
+      <section class="slide" data-title="Desafío (10 preguntas)" data-icon="fa-circle-check">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-circle-check me-2" style="color:var(--accent2)"></i>Desafío final · 10 preguntas</h2>
+          <p class="small-muted">
+            Elegí una opción por pregunta. Al finalizar, verás para cada una la respuesta correcta y la que seleccionaste, y luego un resumen.
+          </p>
+
+          <div class="card-soft p-4">
+            <div id="quizRoot"></div>
+            <div class="d-flex flex-wrap gap-2 mt-3">
+              <button class="btn btn-accent text-white" id="btnFinishQuiz">
+                <i class="fa-solid fa-flag-checkered me-2"></i>Finalizar intento
+              </button>
+              <button class="btn btn-soft" id="btnResetQuiz">
+                <i class="fa-solid fa-rotate-right me-2"></i>Reiniciar
+              </button>
+            </div>
+            <div class="small-muted mt-2">
+              Tip: si te trabás, volvé a secciones anteriores con la barra lateral.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Cierre" data-icon="fa-heart">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-heart me-2" style="color:var(--accent2)"></i>Cierre</h2>
+          <div class="card-soft p-4">
+            <div class="fw-bold mb-2">Checklist para autoevaluarte:</div>
+            <ul class="mb-0">
+              <li>¿Podés diferenciar <b>funcional</b> vs <b>no funcional</b> con un ejemplo?</li>
+              <li>¿Podés escribir un caso de uso con <b>curso típico</b> y un <b>alternativo</b>?</li>
+              <li>¿Podés explicar por qué el <b>modelo de dominio</b> no es “diseño de clases de software”?</li>
+              <li>¿Sabés cuándo usar <b>atributos</b> vs <b>asociaciones</b>?</li>
+              <li>¿Podés dar un ejemplo de <b>invariante</b> y por qué sirve?</li>
+            </ul>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Última analogía:</span> requerimientos dicen “qué quiere el cliente”; el dominio es el “mapa del territorio”. Si el mapa está mal, te perdés aunque manejes bien.
+            <button class="btn btn-sm btn-soft mt-2" onclick="analogy('Cierre','Requerimientos: qué quiere el cliente. Dominio: mapa del territorio. Un mapa mal hecho te hace perder aunque sepas conducir.')">
+              <i class="fa-solid fa-mug-saucer me-2"></i>Popup
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const nav = document.getElementById('nav');
+    const slideCounter = document.getElementById('slideCounter');
+    const slideTag = document.getElementById('slideTag');
+    const progressBar = document.getElementById('progressBar');
+    let idx = 0;
+
+    function renderNav(){
+      nav.innerHTML = '';
+      slides.forEach((s, i) => {
+        const title = s.dataset.title || `Sección ${i+1}`;
+        const icon = s.dataset.icon || 'fa-circle';
+        const a = document.createElement('a');
+        a.href = '#';
+        a.className = 'navpill';
+        a.innerHTML = `<i class="fa-solid ${icon}"></i><span>${title}</span>`;
+        a.addEventListener('click', (e) => { e.preventDefault(); goTo(i, true); });
+        nav.appendChild(a);
+      });
+    }
+
+    function updateChrome(){
+      const total = slides.length;
+      slideCounter.innerHTML = `<i class="fa-solid fa-hashtag me-2"></i>${idx+1}/${total}`;
+      slideTag.innerHTML = `<i class="fa-solid fa-layer-group me-2"></i>${slides[idx].dataset.title || 'Sección'}`;
+      progressBar.style.width = `${Math.round(((idx+1)/total)*100)}%`;
+      const pills = Array.from(nav.querySelectorAll('.navpill'));
+      pills.forEach((p, i) => p.classList.toggle('active', i === idx));
+    }
+
+    function goTo(newIdx, animate=false){
+      if(newIdx < 0 || newIdx >= slides.length) return;
+      slides[idx].classList.remove('active');
+      idx = newIdx;
+      slides[idx].classList.add('active');
+      if(animate){
+        slides[idx].classList.remove('animate__fadeInUp');
+        void slides[idx].offsetWidth;
+        slides[idx].classList.add('animate__animated','animate__fadeInUp');
+      }
+      updateChrome();
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+    function next(){ goTo(Math.min(idx+1, slides.length-1), true); }
+    function prev(){ goTo(Math.max(idx-1, 0), true); }
+
+    document.getElementById('btnNext').addEventListener('click', next);
+    document.getElementById('btnPrev').addEventListener('click', prev);
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'ArrowRight') next();
+      if(e.key === 'ArrowLeft') prev();
+    });
+
+    document.getElementById('btnHelp').addEventListener('click', () => {
+      Swal.fire({
+        title: 'Cómo usar esta presentación',
+        html: `
+          <div style="text-align:left">
+            <ul>
+              <li>Usá <b>Siguiente</b> / <b>Anterior</b> o las teclas <code>→</code> y <code>←</code>.</li>
+              <li>En la barra lateral podés saltar a cualquier tema.</li>
+              <li>Cada tema tiene una <b>analogía</b> para fijar la idea.</li>
+              <li>Al final hay un <b>quiz</b> de 10 preguntas con corrección y resumen.</li>
+            </ul>
+          </div>`,
+        icon: 'info',
+        confirmButtonText: '¡Entendido!',
+        confirmButtonColor: '#6a6cff'
+      })
+    });
+
+    function analogy(title, text){
+      Swal.fire({
+        title: `Analogía · ${title}`,
+        text,
+        icon: 'success',
+        confirmButtonText: 'Ok',
+        confirmButtonColor: '#6a6cff'
+      });
+    }
+    function toast(text){
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'info',
+        title: text,
+        showConfirmButton: false,
+        timer: 2200,
+        timerProgressBar: true
+      });
+    }
+
+    const quiz = [
+      { q: "¿Qué es un requerimiento (en general)?",
+        options: ["Un diagrama UML","Una condición o capacidad que el sistema debe cumplir","Un algoritmo de implementación","Un tipo de dato primitivo"],
+        correct: 1,
+        explain: "Un requerimiento es una condición/capacidad que el sistema debe cumplir."
+      },
+      { q: "¿Qué caracteriza a los requerimientos funcionales?",
+        options: ["Describen propiedades como performance o usabilidad","Expresan acciones que el sistema debe realizar (entrada/salida)","Son siempre restricciones de plataforma","Solo se escriben al final del proyecto"],
+        correct: 1,
+        explain: "Los funcionales expresan acciones del sistema y su comportamiento de entrada/salida."
+      },
+      { q: "¿Cuál es un ejemplo típico de requerimiento no funcional?",
+        options: ["El sistema debe registrar ventas","El sistema debe permitir crear usuarios","Tiempo de respuesta menor a 2 segundos","El sistema debe calcular el total"],
+        correct: 2,
+        explain: "Tiempo de respuesta es performance (no funcional)."
+      },
+      { q: "En casos de uso, un actor es…",
+        options: ["Un método del sistema","Un agente externo (humano o no) que interactúa directamente con el sistema","Una clase abstracta","Un atributo derivado"],
+        correct: 1,
+        explain: "Actor = agente externo que interactúa con el sistema."
+      },
+      { q: "¿Qué NO es parte típica de un caso de uso?",
+        options: ["Nombre","Actores","Curso típico y alternativos","Código fuente en Java"],
+        correct: 3,
+        explain: "El código fuente no forma parte de la especificación del caso de uso."
+      },
+      { q: "El Modelo de Dominio está enfocado en…",
+        options: ["Interfaces y dependencias del software","Conceptos del dominio y sus relaciones significativas","Optimización de performance","Clases de diseño con métodos concretos"],
+        correct: 1,
+        explain: "Describe el territorio (conceptos y relaciones), no el diseño de software."
+      },
+      { q: "¿Cuál es un error común al identificar conceptos?",
+        options: ["Usar nombres del territorio","Excluir características irrelevantes","Representar como atributo algo que debía ser un concepto","Agregar conceptos omitidos posteriormente"],
+        correct: 2,
+        explain: "Es típico modelar como atributo algo que debía ser un concepto independiente."
+      },
+      { q: "¿Qué indica una multiplicidad como 0..1?",
+        options: ["Cero o uno (opcional)","Uno o más","Cualquier cantidad excepto cero","Exactamente uno"],
+        correct: 0,
+        explain: "0..1 significa opcionalmente uno: cero o uno."
+      },
+      { q: "¿Para qué se usa un tipo asociativo?",
+        options: ["Para eliminar todos los atributos del modelo","Para agregar propiedades a una asociación (por ejemplo, sueldo en trabaja)","Para reemplazar las multiplicidades por números fijos","Para modelar estados como subclases"],
+        correct: 1,
+        explain: "Permite que el vínculo tenga atributos propios."
+      },
+      { q: "¿Qué es un invariante en el modelo de dominio?",
+        options: ["Un predicado que debe ser siempre verdadero","Un método abstracto","Una clave foránea","Un diagrama de comunicación"],
+        correct: 0,
+        explain: "Un invariante es una restricción (predicado) que siempre debe cumplirse."
+      }
+    ];
+
+    const state = { answers: Array(quiz.length).fill(null), finished: false };
+
+    function renderQuiz(){
+      const root = document.getElementById('quizRoot');
+      root.innerHTML = '';
+      quiz.forEach((item, qi) => {
+        const block = document.createElement('div');
+        block.className = 'mb-4';
+        block.innerHTML = `
+          <div class="d-flex align-items-start justify-content-between gap-2">
+            <div class="fw-bold">${qi+1}. ${item.q}</div>
+            <span class="badge-soft"><i class="fa-solid fa-list-check me-2"></i>MCQ</span>
+          </div>
+          <div class="mt-2 d-grid gap-2" id="q-${qi}"></div>
+          <div class="small-muted mt-2" id="exp-${qi}" style="display:none"></div>
+        `;
+        root.appendChild(block);
+
+        const optWrap = block.querySelector(`#q-${qi}`);
+        item.options.forEach((opt, oi) => {
+          const optDiv = document.createElement('div');
+          optDiv.className = 'quiz-option';
+          optDiv.innerHTML = `<i class="fa-regular fa-circle me-2"></i>${opt}`;
+          optDiv.addEventListener('click', () => {
+            if(state.finished) return;
+            state.answers[qi] = oi;
+            refreshQuestion(qi);
+          });
+          optWrap.appendChild(optDiv);
+        });
+
+        refreshQuestion(qi);
+      });
+    }
+
+    function refreshQuestion(qi){
+      const optWrap = document.getElementById(`q-${qi}`);
+      const item = quiz[qi];
+      const chosen = state.answers[qi];
+
+      Array.from(optWrap.children).forEach((node, oi) => {
+        node.classList.toggle('selected', chosen === oi);
+        node.querySelector('i').className = chosen === oi ? 'fa-solid fa-circle-check me-2' : 'fa-regular fa-circle me-2';
+        node.classList.remove('correct','wrong');
+        if(state.finished){
+          if(oi === item.correct) node.classList.add('correct');
+          if(chosen === oi && chosen !== item.correct) node.classList.add('wrong');
+        }
+      });
+
+      const exp = document.getElementById(`exp-${qi}`);
+      if(state.finished){
+        exp.style.display = '';
+        const selText = (chosen === null) ? 'Sin responder' : item.options[chosen];
+        exp.innerHTML = `
+          <div class="callout">
+            <div><b>Correcta:</b> ${item.options[item.correct]}</div>
+            <div><b>Tu respuesta:</b> ${selText}</div>
+            <div class="mt-2">${item.explain}</div>
+          </div>
+        `;
+      }else{
+        exp.style.display = 'none';
+        exp.innerHTML = '';
+      }
+    }
+
+    function finishQuiz(){
+      const unanswered = state.answers.map((a,i)=>a===null?i:null).filter(x=>x!==null);
+      if(unanswered.length){
+        Swal.fire({
+          title: 'Te faltan preguntas',
+          text: `Te faltan ${unanswered.length} preguntas sin responder. ¿Querés finalizar igual?`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Finalizar igual',
+          cancelButtonText: 'Volver',
+          confirmButtonColor: '#ff6aa2'
+        }).then(r=>{ if(r.isConfirmed) doFinish(); });
+      }else{
+        doFinish();
+      }
+    }
+
+    function doFinish(){
+      state.finished = true;
+      for(let i=0;i<quiz.length;i++) refreshQuestion(i);
+
+      const correctCount = state.answers.reduce((acc,a,i)=> acc + (a===quiz[i].correct ? 1 : 0), 0);
+      const total = quiz.length;
+
+      let perQ = '';
+      for(let i=0;i<total;i++){
+        const chosen = state.answers[i];
+        const ok = (chosen === quiz[i].correct);
+        perQ += `<div style="text-align:left; margin-bottom:10px;">
+          <div><b>${i+1}. ${ok ? '✅ Correcto' : '❌ Incorrecto'}</b></div>
+          <div><b>Correcta:</b> ${quiz[i].options[quiz[i].correct]}</div>
+          <div><b>Tu respuesta:</b> ${chosen===null ? 'Sin responder' : quiz[i].options[chosen]}</div>
+        </div>`;
+      }
+
+      Swal.fire({
+        title: `Resultado: ${correctCount}/${total}`,
+        html: `
+          <div class="small-muted" style="text-align:left; margin-bottom:10px;">
+            Abajo tenés el detalle por pregunta (correcta vs tu respuesta).
+          </div>
+          <div style="max-height: 52vh; overflow:auto; padding-right:6px;">${perQ}</div>
+          <hr/>
+          <div style="text-align:left;">
+            <b>Resumen:</b> ${correctCount} correctas · ${total-correctCount} incorrectas.
+          </div>
+        `,
+        icon: correctCount >= 7 ? 'success' : 'info',
+        confirmButtonText: 'Ok',
+        confirmButtonColor: '#6a6cff'
+      });
+    }
+
+    function resetQuiz(){
+      state.answers = Array(quiz.length).fill(null);
+      state.finished = false;
+      renderQuiz();
+      toast('Quiz reiniciado.');
+    }
+
+    document.getElementById('btnFinishQuiz').addEventListener('click', finishQuiz);
+    document.getElementById('btnResetQuiz').addEventListener('click', resetQuiz);
+
+    renderNav();
+    slides[0].classList.add('active');
+    updateChrome();
+    renderQuiz();
+  </script>
+</body>
+</html>

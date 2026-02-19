@@ -1,0 +1,941 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Programación 4 · Módulo 7</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    :root{
+      --bg:#fbfbff; --ink:#223; --muted:#566; --stroke:#e8e7ff;
+      --p1:#dff3ff; --p2:#ffe6ef; --p3:#e9ffe6; --p4:#fff6d6;
+      --accent:#6a6cff; --accent2:#ff6aa2; --good:#2fa05f; --bad:#d34a6a;
+      --shadow:0 12px 30px rgba(30,30,60,.08); --radius:18px;
+    }
+    body{
+      background:
+        radial-gradient(1200px 800px at 10% 10%, var(--p1), transparent 55%),
+        radial-gradient(1100px 700px at 90% 15%, var(--p2), transparent 60%),
+        radial-gradient(900px 700px at 20% 90%, var(--p3), transparent 55%),
+        radial-gradient(1000px 700px at 80% 85%, var(--p4), transparent 60%),
+        var(--bg);
+      color:var(--ink); min-height:100vh;
+    }
+    .app-shell{display:grid;grid-template-columns:320px 1fr;gap:18px;padding:18px;max-width:1500px;margin:0 auto;}
+    @media (max-width:992px){.app-shell{grid-template-columns:1fr}.sidebar{position:static!important;height:auto!important}}
+    .sidebar{
+      position:sticky;top:18px;height:calc(100vh - 36px);overflow:auto;
+      border:1px solid var(--stroke);background:linear-gradient(180deg,#ffffffcc,#ffffff99);
+      box-shadow:var(--shadow);border-radius:var(--radius);padding:14px;backdrop-filter:blur(8px);
+    }
+    .brand{border-radius:14px;padding:12px;background:linear-gradient(135deg,rgba(106,108,255,.14),rgba(255,106,162,.12));border:1px solid var(--stroke);}
+    .brand .title{font-weight:900;letter-spacing:.2px;margin:0;line-height:1.2}
+    .brand .subtitle{margin:6px 0 0 0;color:var(--muted);font-size:.92rem}
+
+    .navpill{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;border:1px solid transparent;color:var(--ink);text-decoration:none;transition:.18s ease;margin:6px 0;background:rgba(255,255,255,.55);}
+    .navpill:hover{transform:translateY(-1px);border-color:var(--stroke)}
+    .navpill.active{border-color:rgba(106,108,255,.35);background:rgba(106,108,255,.10)}
+    .navpill i{color:var(--accent);width:18px;text-align:center}
+
+    .content{
+      border:1px solid var(--stroke);background:linear-gradient(180deg,#ffffffcc,#ffffffa6);
+      box-shadow:var(--shadow);border-radius:var(--radius);padding:16px;backdrop-filter:blur(8px);overflow:hidden;
+    }
+    .topbar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:4px 4px 12px;border-bottom:1px solid var(--stroke);margin-bottom:12px;}
+    .progress{height:10px;border-radius:999px;background:rgba(106,108,255,.08)}
+    .progress-bar{background:linear-gradient(90deg,rgba(106,108,255,.85),rgba(255,106,162,.75))}
+    .slide{display:none;padding:8px 6px 14px;min-height:60vh}
+    .slide.active{display:block}
+    .slide h2{font-weight:900;letter-spacing:.2px;margin-bottom:10px}
+    .slide p,.slide li{color:var(--muted)}
+    .card-soft{border:1px solid var(--stroke);background:rgba(255,255,255,.70);border-radius:var(--radius);box-shadow:0 10px 22px rgba(30,30,60,.06)}
+    .badge-soft{border:1px solid var(--stroke);background:rgba(255,255,255,.60);color:var(--ink);border-radius:999px;padding:6px 10px;font-size:.82rem}
+    .callout{border-left:6px solid rgba(106,108,255,.55);background:rgba(106,108,255,.06);border-radius:14px;padding:12px}
+    .callout .k{font-weight:800;color:var(--ink)}
+    .analogy{border-left:6px solid rgba(255,106,162,.55);background:rgba(255,106,162,.06);border-radius:14px;padding:12px}
+    .analogy .k{font-weight:800;color:var(--ink)}
+    .btn-soft{border-radius:999px;border:1px solid rgba(106,108,255,.25);background:rgba(106,108,255,.08);color:var(--ink)}
+    .btn-soft:hover{background:rgba(106,108,255,.14)}
+    .btn-accent{border-radius:999px;background:linear-gradient(90deg,rgba(106,108,255,.95),rgba(255,106,162,.85));border:none}
+    .btn-accent:hover{filter:brightness(1.03)}
+    code.kbd{background:rgba(0,0,0,.06);padding:2px 6px;border-radius:10px;border:1px solid rgba(0,0,0,.06)}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    .pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:7px 10px;border:1px solid var(--stroke);background:rgba(255,255,255,.62)}
+    .step{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--stroke);background:rgba(255,255,255,.62);border-radius:16px;padding:12px}
+    .step .n{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;
+             background:rgba(106,108,255,.12);border:1px solid var(--stroke);font-weight:900;color:var(--accent)}
+    .quiz-option{border:1px solid var(--stroke);background:rgba(255,255,255,.62);border-radius:16px;padding:10px 12px;cursor:pointer;transition:.15s ease}
+    .quiz-option:hover{transform:translateY(-1px);border-color:rgba(106,108,255,.35)}
+    .quiz-option.selected{border-color:rgba(255,106,162,.55);background:rgba(255,106,162,.08)}
+    .quiz-option.correct{border-color:rgba(47,160,95,.55);background:rgba(47,160,95,.10)}
+    .quiz-option.wrong{border-color:rgba(211,74,106,.55);background:rgba(211,74,106,.10)}
+    .small-muted{color:var(--muted);font-size:.92rem}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:992px){.grid-2{grid-template-columns:1fr}}
+    .mini-diag{border:1px dashed rgba(106,108,255,.35);border-radius:18px;padding:14px;background:rgba(106,108,255,.05)}
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand animate__animated animate__fadeIn">
+        <div class="d-flex align-items-center gap-2">
+          <div class="p-2 rounded-3" style="background:rgba(106,108,255,.12); border:1px solid var(--stroke)">
+            <i class="fa-solid fa-code" style="color:var(--accent)"></i>
+          </div>
+          <div>
+            <p class="title mb-0">P4 · Módulo 7</p>
+            <p class="subtitle mb-0">Implementación: Objetos · Colecciones</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <a class="badge-soft text-decoration-none" href="../index.html">
+            <i class="fa-solid fa-house me-2"></i>Home
+          </a>
+          <button class="btn btn-sm btn-soft" id="btnHelp">
+            <i class="fa-regular fa-circle-question me-1"></i>Ayuda
+          </button>
+        </div>
+        <div id="nav" class="mt-2"></div>
+      </div>
+
+      <div class="mt-3">
+        <div class="card-soft p-3">
+          <div class="d-flex align-items-start gap-2">
+            <i class="fa-solid fa-bullseye mt-1" style="color:var(--accent2)"></i>
+            <div>
+              <div class="fw-bold">Idea central</div>
+              <div class="small-muted">
+                Implementar = pasar de diagramas a código:
+                <b>estructura</b> (clases/relaciones), <b>comportamiento</b> (métodos),
+                y soporte con <b>referencias</b> + <b>colecciones</b>.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="content">
+      <div class="topbar">
+        <div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge-soft" id="slideTag"><i class="fa-solid fa-layer-group me-2"></i>Sección</span>
+            <span class="badge-soft" id="slideCounter"><i class="fa-solid fa-hashtag me-2"></i>1/1</span>
+          </div>
+          <div class="mt-2">
+            <div class="progress">
+              <div class="progress-bar" id="progressBar" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-soft" id="btnPrev"><i class="fa-solid fa-arrow-left me-2"></i>Anterior</button>
+          <button class="btn btn-accent text-white" id="btnNext">Siguiente<i class="fa-solid fa-arrow-right ms-2"></i></button>
+        </div>
+      </div>
+
+      <!-- SLIDES -->
+      <section class="slide" data-title="Bienvenida" data-icon="fa-hand-sparkles">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-hand-sparkles me-2" style="color:var(--accent2)"></i>Bienvenida</h2>
+          <p class="lead small-muted mb-3">
+            En este módulo vemos cómo llevar el diseño a código:
+            <b>generación de código</b>, <b>manejo de objetos</b> (referencias y copias) y <b>colecciones</b>.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2"><i class="fa-solid fa-bullseye me-2" style="color:var(--accent)"></i>Objetivos</div>
+                <ul class="mb-0">
+                  <li>Implementar una <b>colaboración</b>: estructura + interacciones.</li>
+                  <li>Entender referencias: <b>heap</b>, <b>void/attached</b> y objetos compartidos.</li>
+                  <li>Distinguir <b>copia plana</b> vs <b>copia profunda</b> y destrucción (GC vs manual).</li>
+                  <li>Usar <b>colecciones</b>, iteradores, diccionarios y búsquedas con condiciones.</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Frase clave:</span> “Del diagrama al código, sin romper identidad ni estructura”.
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2"><i class="fa-solid fa-gamepad me-2" style="color:var(--accent2)"></i>Interacción</div>
+                <ul class="mb-3">
+                  <li><code class="kbd">←</code> y <code class="kbd">→</code> navegan.</li>
+                  <li>Barra lateral para saltar.</li>
+                  <li>Al final: <b>quiz de 10 preguntas</b>.</li>
+                </ul>
+                <button class="btn btn-soft w-100" onclick="toast('Tip: implementá por partes y probá cada clase al terminar ✅')">
+                  <i class="fa-solid fa-play me-2"></i>Probar interacción
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> el diseño es el “plano” y la implementación es la “obra”.
+            Primero levantás paredes (estructura) y después conectás luz/agua (comportamiento).
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Implementación: visión general" data-icon="fa-code">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-code me-2" style="color:var(--accent)"></i>Implementación: visión general</h2>
+          <p class="small-muted">
+            Una tarea de implementación se enfoca en lograr <b>funcionalidad</b> (realizar casos de uso),
+            implementando los elementos de diseño que contribuyen a esa funcionalidad (colaboración).
+          </p>
+
+          <div class="card-soft p-4">
+            <div class="fw-bold mb-2">Dos bloques de trabajo</div>
+            <div class="grid-2">
+              <div class="step">
+                <div class="n">1</div>
+                <div>
+                  <div class="fw-bold">Implementar estructura</div>
+                  <div class="small-muted">Interfaces, clases, atributos, operaciones y relaciones (herencia, realización, asociación, dependencia).</div>
+                </div>
+              </div>
+              <div class="step">
+                <div class="n">2</div>
+                <div>
+                  <div class="fw-bold">Implementar interacciones</div>
+                  <div class="small-muted">Métodos a partir de diagramas de interacción (p.ej. comunicación).</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> armar un equipo de fútbol:
+            primero definís posiciones (estructura) y después practicás jugadas (interacciones).
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Estructura: interfaces y clases" data-icon="fa-sitemap">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-sitemap me-2" style="color:var(--accent2)"></i>Estructura: interfaces y clases</h2>
+          <p class="small-muted">Del DCD al código: qué crear y qué completar.</p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Interfaces</div>
+                <ul class="mb-0">
+                  <li>Se obtienen del <b>DCD</b>.</li>
+                  <li>Si el lenguaje no soporta interfaces, puede usarse una <b>clase abstracta</b> equivalente.</li>
+                </ul>
+                <div class="callout mt-3"><span class="k">Idea:</span> la interfaz define “qué se puede pedir”, no “cómo se hace”.</div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Clases</div>
+                <ul class="mb-0">
+                  <li>Se implementan desde el <b>DCD</b>.</li>
+                  <li>Se completan con constructores, (posible) destructor, y accesores (get/set) según convenga.</li>
+                </ul>
+                <div class="mini-diag mt-3 small-muted">
+                  <div class="fw-bold mb-1">Mini-check</div>
+                  Clase → atributos → operaciones → tipos → visibilidades.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> la interfaz es un “menú” de pedidos; la clase es la “cocina” que los hace.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Relaciones en código" data-icon="fa-code-branch">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-code-branch me-2" style="color:var(--accent)"></i>Relaciones en código</h2>
+          <p class="small-muted">Cómo “bajar” relaciones UML a construcciones del lenguaje.</p>
+
+          <div class="card-soft p-4">
+            <ul class="mb-0">
+              <li><b>Generalización (herencia):</b> declarar el ancestro (<span class="mono">extends</span>, <span class="mono">:</span>, etc.).</li>
+              <li><b>Realización:</b> declarar interfaces implementadas (<span class="mono">implements</span>).</li>
+              <li><b>Dependencias:</b> incluir/importar para tener visibilidad (<span class="mono">#include</span>, <span class="mono">import</span>, <span class="mono">using</span>).</li>
+            </ul>
+            <div class="callout mt-3"><span class="k">Tip:</span> si no importás/includeás, es como no tener el “contacto”: no podés llamar ni usar el tipo.</div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> herencia = “soy un tipo de…”, realización = “cumplo este contrato” y dependencia = “tengo este material a mano”.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Asociaciones y pseudoatributos" data-icon="fa-link">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-link me-2" style="color:var(--accent2)"></i>Asociaciones y pseudoatributos</h2>
+          <p class="small-muted">
+            Muchos lenguajes no tienen “asociación” como elemento. Se implementa con un <b>atributo referencia</b>.
+          </p>
+
+          <div class="card-soft p-4">
+            <div class="fw-bold mb-2">Reglas prácticas</div>
+            <ul class="mb-0">
+              <li>Se agrega un <b>pseudoatributo</b> (atributo referencia) si la asociación es <b>navegable</b>.</li>
+              <li>Si la multiplicidad máxima es 1 → una referencia (un objeto).</li>
+              <li>Si la multiplicidad máxima es * → una <b>colección</b>.</li>
+            </ul>
+            <div class="mini-diag mt-3">
+              <div class="fw-bold mb-1">Esquema mental</div>
+              <div class="small-muted">
+                A → B (navegable) ⇒ A tiene <span class="mono">b</span> o <span class="mono">bs</span>.
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> si un alumno conoce a su ITR, guarda “un contacto”.
+            Si un curso tiene muchos alumnos, guarda “una lista”.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Interacciones → métodos" data-icon="fa-comments">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-comments me-2" style="color:var(--accent)"></i>Interacciones → métodos</h2>
+          <p class="small-muted">
+            La estructura define “qué existe”. Los diagramas de interacción te dicen “qué se llama” y “en qué orden”.
+          </p>
+
+          <div class="card-soft p-4">
+            <div class="fw-bold mb-2">Qué hacer</div>
+            <ul class="mb-0">
+              <li>Tomar el diagrama de comunicación/interacción.</li>
+              <li>Para cada mensaje <span class="mono">obj.metodo()</span>, implementar el método en la clase destino.</li>
+              <li>Respetar parámetros, retornos y decisiones del diseño.</li>
+            </ul>
+            <div class="callout mt-3"><span class="k">Tip:</span> implementá la clase “más independiente” primero y probala.</div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> la interacción es el “guion” de una escena: quién le habla a quién y qué pide.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Sugerencias prácticas" data-icon="fa-wand-magic-sparkles">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-wand-magic-sparkles me-2" style="color:var(--accent2)"></i>Sugerencias prácticas</h2>
+          <div class="card-soft p-4">
+            <ul class="mb-0">
+              <li>Antes de escribir todo: ver si podés <b>reusar</b> o <b>adaptar</b> código existente.</li>
+              <li>Entender dónde encaja cada clase en la <b>arquitectura</b> ayuda a mantener coherencia.</li>
+              <li>Orden sugerido: de <b>menos acopladas</b> a <b>más acopladas</b> + tests al cerrar cada clase.</li>
+            </ul>
+          </div>
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> no construís una casa empezando por el techo. Vas por etapas y verificás.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Manejo de objetos: referencias" data-icon="fa-cubes">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-cubes me-2" style="color:var(--accent)"></i>Manejo de objetos: referencias</h2>
+          <p class="small-muted">
+            Los objetos suelen vivir en el <b>heap</b> y se manipulan por <b>referencias</b>.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Estados de una referencia</div>
+                <ul class="mb-0">
+                  <li><b>void:</b> no apunta a ningún objeto.</li>
+                  <li><b>attached:</b> apunta a un objeto particular.</li>
+                </ul>
+                <div class="callout mt-3"><span class="k">Idea:</span> una referencia es como un “manejo” para acceder al objeto.</div>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="mini-diag h-100">
+                <div class="fw-bold mb-2">Mini-visual</div>
+                <div class="small-muted">
+                  Stack: referencias<br/>
+                  Heap: objetos<br/><br/>
+                  Referencia attached → objeto (identidad)
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> el objeto es la casa; la referencia es la dirección.
+            Dirección “void” = no hay casa. “attached” = apunta a una casa real.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Objetos compartidos" data-icon="fa-people-arrows">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-people-arrows me-2" style="color:var(--accent2)"></i>Objetos compartidos</h2>
+          <p class="small-muted">
+            Por identidad, varios objetos pueden referenciar el <b>mismo</b> objeto.
+          </p>
+
+          <div class="card-soft p-4">
+            <ul class="mb-0">
+              <li>En OO, la identidad importa: si “es el mismo”, no deberían existir copias.</li>
+              <li>Compartir = cada objeto guarda una <b>referencia</b> al objeto compartido.</li>
+            </ul>
+            <div class="callout mt-3"><span class="k">Consejo:</span> definí claramente quién “posee” el objeto (ownership) si hay destrucción manual.</div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> varias personas pueden tener el mismo contacto del médico.
+            No crean médicos nuevos: guardan el mismo número.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Copias: shallow vs deep" data-icon="fa-copy">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-copy me-2" style="color:var(--accent)"></i>Copias: shallow vs deep</h2>
+          <p class="small-muted">Copiar no siempre es “duplicar todo”. Ojo con referencias internas.</p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Copia plana (shallow)</div>
+                <ul class="mb-0">
+                  <li>Duplica el objeto, pero <b>mantiene</b> las referencias internas.</li>
+                  <li>Resultado: ambos apuntan a los mismos objetos internos.</li>
+                </ul>
+              </div>
+              <div class="analogy mt-3">
+                <span class="k">Analogía:</span> copiás una agenda con links: no copiás los archivos, copiás las direcciones.
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Copia profunda (deep)</div>
+                <ul class="mb-0">
+                  <li>Duplica también lo referenciado internamente.</li>
+                  <li>Resultado: estructuras independientes.</li>
+                </ul>
+              </div>
+              <div class="analogy mt-3">
+                <span class="k">Analogía:</span> copiar una carpeta de fotos: duplicás todas las fotos.
+              </div>
+            </div>
+          </div>
+
+          <div class="callout mt-3"><span class="k">Regla mental:</span> ¿querés independencia real? deep. ¿querés compartir identidad? referencias/shallow.</div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Destrucción: GC vs manual" data-icon="fa-trash-can">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-trash-can me-2" style="color:var(--accent2)"></i>Destrucción: GC vs manual</h2>
+          <p class="small-muted">Qué pasa con objetos en heap cuando ya no se usan.</p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Garbage Collector (Java/C#)</div>
+                <ul class="mb-0">
+                  <li>Corre en el runtime (en paralelo).</li>
+                  <li>Elimina objetos en heap <b>sin referencias attached</b>.</li>
+                  <li>Evita liberar memoria “a mano”.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Manual (C++)</div>
+                <ul class="mb-0">
+                  <li>El programador libera memoria explícitamente.</li>
+                  <li>Riesgos: <b>memory leak</b> y <b>referencias colgantes</b>.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> con GC hay “limpieza automática”.
+            Manual: vos sacás la basura; si te olvidás se acumula (leak), si tirás algo que otro usa, queda colgando.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Colecciones: por qué" data-icon="fa-layer-group">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-layer-group me-2" style="color:var(--accent)"></i>Colecciones: por qué</h2>
+          <p class="small-muted">
+            Para asociaciones con multiplicidad <b>*</b> (muchos), solemos guardar objetos en colecciones.
+          </p>
+
+          <div class="card-soft p-4">
+            <div class="fw-bold mb-2">Objetivo</div>
+            <ul class="mb-0">
+              <li>Tratar el “conjunto de objetos” con operaciones comunes: agregar, borrar, consultar, iterar.</li>
+              <li>Separar <b>especificación</b> de <b>implementación</b>.</li>
+            </ul>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> una lista de asistencia: la operación “agregar estudiante” no depende de si usás hoja, app o planilla (implementación).
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Colecciones genéricas" data-icon="fa-boxes-stacked">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-boxes-stacked me-2" style="color:var(--accent2)"></i>Colecciones genéricas</h2>
+          <p class="small-muted">Una estructura reutilizable para almacenar objetos “coleccionables”.</p>
+
+          <div class="card-soft p-4">
+            <ul class="mb-0">
+              <li><b>ICollectible</b>: interfaz de marca (no define operaciones).</li>
+              <li><b>ICollection</b>: define operaciones típicas (add/remove/member/isEmpty).</li>
+              <li>Puede haber varias realizaciones (array/lista/etc.).</li>
+            </ul>
+            <div class="mini-diag mt-3">
+              <div class="fw-bold mb-1">Idea</div>
+              <div class="small-muted">
+                “Guardar cosas” (ICollection) sin importar cómo las guardás por dentro.
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> ICollectible es etiqueta “apto para guardar”. ICollection es el “contrato” de la caja: meter/sacar/revisar.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Iteradores" data-icon="fa-arrows-rotate">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-arrows-rotate me-2" style="color:var(--accent)"></i>Iteradores</h2>
+          <p class="small-muted">Para recorrer elementos sin exponer la estructura interna.</p>
+
+          <div class="card-soft p-4">
+            <ul class="mb-0">
+              <li>La colección ofrece <b>getIterator()</b> y devuelve un <b>IIterator</b>.</li>
+              <li>Un iterador recorre uno a uno los elementos.</li>
+              <li>Se pueden tener iteraciones simultáneas.</li>
+            </ul>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> tu dedo recorriendo una lista: avanzás ítem por ítem, sin “abrir” la lista por dentro.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Diccionarios" data-icon="fa-key">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-key me-2" style="color:var(--accent2)"></i>Diccionarios</h2>
+          <p class="small-muted">Objetos identificados por una clave.</p>
+
+          <div class="card-soft p-4">
+            <ul class="mb-0">
+              <li><b>IDictionary</b> define operaciones de diccionario (clave → valor).</li>
+              <li><b>IKey</b> permite claves genéricas (comparación/igualdad).</li>
+            </ul>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> agenda: buscás por nombre (clave) y obtenés el teléfono (valor).
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Búsquedas con condiciones" data-icon="fa-magnifying-glass">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-magnifying-glass me-2" style="color:var(--accent)"></i>Búsquedas con condiciones</h2>
+          <p class="small-muted">Generalizar búsquedas cambiando sólo la condición.</p>
+
+          <div class="card-soft p-4">
+            <ul class="mb-0">
+              <li>Muchas búsquedas se parecen; cambia la <b>condición</b>.</li>
+              <li>Se propone <b>select(ICondition)</b> para filtrar una colección/diccionario.</li>
+              <li><b>ICondition</b> encapsula la condición con <b>holds(ICollectible)</b>.</li>
+            </ul>
+            <div class="callout mt-3"><span class="k">Idea:</span> separás “cómo recorrer” de “qué condición aplicar”.</div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> un colador: la condición decide qué pasa y qué queda afuera.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="STL (C++)" data-icon="fa-toolbox">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-toolbox me-2" style="color:var(--accent2)"></i>STL (C++)</h2>
+          <p class="small-muted">Alternativa: usar contenedores y utilidades ya provistas.</p>
+
+          <div class="card-soft p-4">
+            <ul class="mb-0">
+              <li>La STL ofrece contenedores paramétricos (templates): <b>vector, list, queue, stack</b>, etc.</li>
+              <li><b>set&lt;T&gt;</b>: colección (con ordenamiento opcional).</li>
+              <li><b>map&lt;K,V&gt;</b>: diccionario clave → valor.</li>
+              <li>Iteradores integrados para recorrer.</li>
+            </ul>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> en vez de fabricar tu propia caja, usás una caja estándar ya probada.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Resumen" data-icon="fa-layer-group">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-layer-group me-2" style="color:var(--accent)"></i>Resumen: qué te llevás</h2>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2"><i class="fa-solid fa-code me-2" style="color:var(--accent2)"></i>Implementación</div>
+                <ul class="mb-0">
+                  <li>Estructura: clases/relaciones del DCD.</li>
+                  <li>Interacciones: métodos desde diagramas de comunicación.</li>
+                  <li>Asociaciones → pseudoatributos (1 o colección).</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2"><i class="fa-solid fa-layer-group me-2" style="color:var(--accent)"></i>Objetos y colecciones</div>
+                <ul class="mb-0">
+                  <li>Referencias: void/attached y heap.</li>
+                  <li>Copias: shallow vs deep.</li>
+                  <li>Colecciones: genéricas, iteradores, diccionarios, select(ICondition), STL.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="callout mt-3">
+            <span class="k">Clave:</span> cuidá identidad, visibilidad y multiplicidades al pasar a código.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Desafío (10 preguntas)" data-icon="fa-circle-check">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-circle-check me-2" style="color:var(--accent2)"></i>Desafío final · 10 preguntas</h2>
+          <p class="small-muted">
+            Elegí una opción por pregunta. Al finalizar verás la correcta y tu respuesta por pregunta, y un resumen.
+          </p>
+
+          <div class="card-soft p-4">
+            <div id="quizRoot"></div>
+            <div class="d-flex flex-wrap gap-2 mt-3">
+              <button class="btn btn-accent text-white" id="btnFinishQuiz">
+                <i class="fa-solid fa-flag-checkered me-2"></i>Finalizar intento
+              </button>
+              <button class="btn btn-soft" id="btnResetQuiz">
+                <i class="fa-solid fa-rotate-right me-2"></i>Reiniciar
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Cierre" data-icon="fa-heart">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-heart me-2" style="color:var(--accent2)"></i>Cierre</h2>
+          <div class="card-soft p-4">
+            <div class="fw-bold mb-2">Checklist final</div>
+            <ul class="mb-0">
+              <li>Implementación = estructura + interacciones.</li>
+              <li>Asociaciones se implementan con referencias/colecciones (pseudoatributos).</li>
+              <li>Objetos en heap, referencias void/attached y compartición por identidad.</li>
+              <li>Copias shallow/deep y destrucción GC/manual.</li>
+              <li>Colecciones, iteradores, diccionarios, select(ICondition) y STL.</li>
+            </ul>
+          </div>
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> programar bien es como construir bien: estructura sólida, conexiones claras y herramientas correctas.
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const nav = document.getElementById('nav');
+    const slideCounter = document.getElementById('slideCounter');
+    const slideTag = document.getElementById('slideTag');
+    const progressBar = document.getElementById('progressBar');
+    let idx = 0;
+
+    function renderNav(){
+      nav.innerHTML = '';
+      slides.forEach((s, i) => {
+        const title = s.dataset.title || `Sección ${i+1}`;
+        const icon = s.dataset.icon || 'fa-circle';
+        const a = document.createElement('a');
+        a.href = '#';
+        a.className = 'navpill';
+        a.innerHTML = `<i class="fa-solid ${icon}"></i><span>${title}</span>`;
+        a.addEventListener('click', (e) => { e.preventDefault(); goTo(i, true); });
+        nav.appendChild(a);
+      });
+    }
+
+    function updateChrome(){
+      const total = slides.length;
+      slideCounter.innerHTML = `<i class="fa-solid fa-hashtag me-2"></i>${idx+1}/${total}`;
+      slideTag.innerHTML = `<i class="fa-solid fa-layer-group me-2"></i>${slides[idx].dataset.title || 'Sección'}`;
+      progressBar.style.width = `${Math.round(((idx+1)/total)*100)}%`;
+      Array.from(nav.querySelectorAll('.navpill')).forEach((p, i) => p.classList.toggle('active', i === idx));
+    }
+
+    function goTo(newIdx, animate=false){
+      if(newIdx < 0 || newIdx >= slides.length) return;
+      slides[idx].classList.remove('active');
+      idx = newIdx;
+      slides[idx].classList.add('active');
+      if(animate){
+        slides[idx].classList.remove('animate__fadeInUp');
+        void slides[idx].offsetWidth;
+        slides[idx].classList.add('animate__animated','animate__fadeInUp');
+      }
+      updateChrome();
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+    function next(){ goTo(Math.min(idx+1, slides.length-1), true); }
+    function prev(){ goTo(Math.max(idx-1, 0), true); }
+
+    document.getElementById('btnNext').addEventListener('click', next);
+    document.getElementById('btnPrev').addEventListener('click', prev);
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'ArrowRight') next();
+      if(e.key === 'ArrowLeft') prev();
+    });
+
+    document.getElementById('btnHelp').addEventListener('click', () => {
+      Swal.fire({
+        title: 'Cómo usar esta presentación',
+        html: `<div style="text-align:left">
+          <ul>
+            <li>Usá <b>Siguiente</b>/<b>Anterior</b> o <code>→</code>/<code>←</code>.</li>
+            <li>Barra lateral para saltar a cualquier tema.</li>
+            <li>Al final: <b>quiz</b> de 10 preguntas con corrección y resumen.</li>
+          </ul>
+        </div>`,
+        icon: 'info',
+        confirmButtonText: '¡Entendido!',
+        confirmButtonColor: '#6a6cff'
+      })
+    });
+
+    function toast(text){
+      Swal.fire({ toast:true, position:'top-end', icon:'info', title:text, showConfirmButton:false, timer:2200, timerProgressBar:true });
+    }
+
+    const quiz = [
+      { q:"¿Qué busca una tarea de implementación en OO?",
+        options:["Dibujar más diagramas","Lograr funcionalidad implementando elementos del diseño","Eliminar interfaces","Cambiar requerimientos"],
+        correct:1,
+        explain:"Implementación: llevar una colaboración del diseño a código funcional."
+      },
+      { q:"¿Cuáles son los dos grandes bloques al implementar una colaboración?",
+        options:["Ventas y soporte","Estructura e interacciones","Pruebas y deploy","Dominio y requerimientos"],
+        correct:1,
+        explain:"Primero estructura (clases/relaciones), luego interacciones (métodos)."
+      },
+      { q:"Una asociación UML suele implementarse como…",
+        options:["Herencia","Pseudoatributo (referencia/colección)","Un método abstracto","Un caso de uso"],
+        correct:1,
+        explain:"Se agrega un atributo referencia (o colección) si hay navegabilidad."
+      },
+      { q:"Si una asociación tiene multiplicidad máxima 1, conviene usar…",
+        options:["Colección","Una referencia a un objeto","Un diccionario","Un iterador"],
+        correct:1,
+        explain:"Máximo 1 → referencia única."
+      },
+      { q:"¿Qué describe mejor una referencia 'void'?",
+        options:["Apunta a un objeto","No apunta a ningún objeto","Está en heap","Es una colección"],
+        correct:1,
+        explain:"Void significa que no está asociada a un objeto."
+      },
+      { q:"La copia plana (shallow) se caracteriza por…",
+        options:["Duplicar todo lo interno","Mantener referencias internas iguales","Eliminar el original","Usar GC"],
+        correct:1,
+        explain:"Copia el objeto pero conserva referencias internas (comparten)."
+      },
+      { q:"¿Qué hace el Garbage Collector (GC)?",
+        options:["Borra variables del stack","Libera objetos sin referencias attached","Obliga a usar delete","Convierte shallow en deep"],
+        correct:1,
+        explain:"GC elimina objetos en heap que ya no tienen referencias adjuntas."
+      },
+      { q:"ICollectible es…",
+        options:["Un diccionario","Una interfaz de marca","Un iterador","Una colección concreta"],
+        correct:1,
+        explain:"ICollectible marca que algo es coleccionable, sin operaciones."
+      },
+      { q:"¿Para qué se usa un iterador?",
+        options:["Cambiar el tipo de una clase","Recorrer elementos sin exponer la estructura","Guardar por clave","Hacer herencia"],
+        correct:1,
+        explain:"Iterador permite recorrer elemento a elemento."
+      },
+      { q:"En STL, map<K,V> representa…",
+        options:["Una cola","Un diccionario clave→valor","Un conjunto ordenado","Un stack"],
+        correct:1,
+        explain:"map es un diccionario; set es un conjunto."
+      }
+    ];
+
+    const state = { answers: Array(quiz.length).fill(null), finished:false };
+
+    function renderQuiz(){
+      const root = document.getElementById('quizRoot');
+      root.innerHTML = '';
+      quiz.forEach((item, qi) => {
+        const block = document.createElement('div');
+        block.className = 'mb-4';
+        block.innerHTML = `
+          <div class="d-flex align-items-start justify-content-between gap-2">
+            <div class="fw-bold">${qi+1}. ${item.q}</div>
+            <span class="badge-soft"><i class="fa-solid fa-list-check me-2"></i>MCQ</span>
+          </div>
+          <div class="mt-2 d-grid gap-2" id="q-${qi}"></div>
+          <div class="small-muted mt-2" id="exp-${qi}" style="display:none"></div>
+        `;
+        root.appendChild(block);
+
+        const optWrap = block.querySelector(`#q-${qi}`);
+        item.options.forEach((opt, oi) => {
+          const optDiv = document.createElement('div');
+          optDiv.className = 'quiz-option';
+          optDiv.innerHTML = `<i class="fa-regular fa-circle me-2"></i>${opt}`;
+          optDiv.addEventListener('click', () => {
+            if(state.finished) return;
+            state.answers[qi] = oi;
+            refreshQuestion(qi);
+          });
+          optWrap.appendChild(optDiv);
+        });
+
+        refreshQuestion(qi);
+      });
+    }
+
+    function refreshQuestion(qi){
+      const optWrap = document.getElementById(`q-${qi}`);
+      const item = quiz[qi];
+      const chosen = state.answers[qi];
+
+      Array.from(optWrap.children).forEach((node, oi) => {
+        node.classList.toggle('selected', chosen === oi);
+        node.querySelector('i').className = chosen === oi ? 'fa-solid fa-circle-check me-2' : 'fa-regular fa-circle me-2';
+        node.classList.remove('correct','wrong');
+        if(state.finished){
+          if(oi === item.correct) node.classList.add('correct');
+          if(chosen === oi && chosen !== item.correct) node.classList.add('wrong');
+        }
+      });
+
+      const exp = document.getElementById(`exp-${qi}`);
+      if(state.finished){
+        exp.style.display = '';
+        const selText = (chosen === null) ? 'Sin responder' : item.options[chosen];
+        exp.innerHTML = `
+          <div class="callout">
+            <div><b>Correcta:</b> ${item.options[item.correct]}</div>
+            <div><b>Tu respuesta:</b> ${selText}</div>
+            <div class="mt-2">${item.explain}</div>
+          </div>
+        `;
+      }else{
+        exp.style.display = 'none';
+        exp.innerHTML = '';
+      }
+    }
+
+    function finishQuiz(){
+      const unanswered = state.answers.filter(a => a === null).length;
+      if(unanswered){
+        Swal.fire({
+          title:'Te faltan preguntas',
+          text:`Te faltan ${unanswered} preguntas sin responder. ¿Querés finalizar igual?`,
+          icon:'warning',
+          showCancelButton:true,
+          confirmButtonText:'Finalizar igual',
+          cancelButtonText:'Volver',
+          confirmButtonColor:'#ff6aa2'
+        }).then(r => { if(r.isConfirmed) doFinish(); });
+      }else{
+        doFinish();
+      }
+    }
+
+    function doFinish(){
+      state.finished = true;
+      for(let i=0;i<quiz.length;i++) refreshQuestion(i);
+
+      const correctCount = state.answers.reduce((acc,a,i)=> acc + (a===quiz[i].correct ? 1 : 0), 0);
+      const total = quiz.length;
+
+      let perQ = '';
+      for(let i=0;i<total;i++){
+        const chosen = state.answers[i];
+        const ok = (chosen === quiz[i].correct);
+        perQ += `<div style="text-align:left; margin-bottom:10px;">
+          <div><b>${i+1}. ${ok ? '✅ Correcto' : '❌ Incorrecto'}</b></div>
+          <div><b>Correcta:</b> ${quiz[i].options[quiz[i].correct]}</div>
+          <div><b>Tu respuesta:</b> ${chosen===null ? 'Sin responder' : quiz[i].options[chosen]}</div>
+        </div>`;
+      }
+
+      Swal.fire({
+        title:`Resultado: ${correctCount}/${total}`,
+        html:`<div class="small-muted" style="text-align:left; margin-bottom:10px;">
+                Detalle por pregunta (correcta vs tu respuesta):
+              </div>
+              <div style="max-height:52vh; overflow:auto; padding-right:6px;">${perQ}</div>
+              <hr/>
+              <div style="text-align:left;"><b>Resumen:</b> ${correctCount} correctas · ${total-correctCount} incorrectas.</div>`,
+        icon: correctCount >= 7 ? 'success' : 'info',
+        confirmButtonText:'Ok',
+        confirmButtonColor:'#6a6cff'
+      });
+    }
+
+    function resetQuiz(){
+      state.answers = Array(quiz.length).fill(null);
+      state.finished = false;
+      renderQuiz();
+      toast('Quiz reiniciado.');
+    }
+
+    document.getElementById('btnFinishQuiz').addEventListener('click', finishQuiz);
+    document.getElementById('btnResetQuiz').addEventListener('click', resetQuiz);
+
+    renderNav();
+    slides[0].classList.add('active');
+    updateChrome();
+    renderQuiz();
+  </script>
+</body>
+</html>

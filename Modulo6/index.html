@@ -1,0 +1,945 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Programación 4 · Módulo 6</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    :root{
+      --bg:#fbfbff; --ink:#223; --muted:#566; --stroke:#e8e7ff;
+      --p1:#dff3ff; --p2:#ffe6ef; --p3:#e9ffe6; --p4:#fff6d6;
+      --accent:#6a6cff; --accent2:#ff6aa2; --good:#2fa05f; --bad:#d34a6a;
+      --shadow:0 12px 30px rgba(30,30,60,.08); --radius:18px;
+    }
+    body{
+      background:
+        radial-gradient(1200px 800px at 10% 10%, var(--p1), transparent 55%),
+        radial-gradient(1100px 700px at 90% 15%, var(--p2), transparent 60%),
+        radial-gradient(900px 700px at 20% 90%, var(--p3), transparent 55%),
+        radial-gradient(1000px 700px at 80% 85%, var(--p4), transparent 60%),
+        var(--bg);
+      color:var(--ink); min-height:100vh;
+    }
+    .app-shell{display:grid;grid-template-columns:320px 1fr;gap:18px;padding:18px;max-width:1500px;margin:0 auto;}
+    @media (max-width:992px){.app-shell{grid-template-columns:1fr}.sidebar{position:static!important;height:auto!important}}
+    .sidebar{
+      position:sticky;top:18px;height:calc(100vh - 36px);overflow:auto;
+      border:1px solid var(--stroke);background:linear-gradient(180deg,#ffffffcc,#ffffff99);
+      box-shadow:var(--shadow);border-radius:var(--radius);padding:14px;backdrop-filter:blur(8px);
+    }
+    .brand{border-radius:14px;padding:12px;background:linear-gradient(135deg,rgba(106,108,255,.14),rgba(255,106,162,.12));border:1px solid var(--stroke);}
+    .brand .title{font-weight:900;letter-spacing:.2px;margin:0;line-height:1.2}
+    .brand .subtitle{margin:6px 0 0 0;color:var(--muted);font-size:.92rem}
+
+    .navpill{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;border:1px solid transparent;color:var(--ink);text-decoration:none;transition:.18s ease;margin:6px 0;background:rgba(255,255,255,.55);}
+    .navpill:hover{transform:translateY(-1px);border-color:var(--stroke)}
+    .navpill.active{border-color:rgba(106,108,255,.35);background:rgba(106,108,255,.10)}
+    .navpill i{color:var(--accent);width:18px;text-align:center}
+
+    .content{
+      border:1px solid var(--stroke);background:linear-gradient(180deg,#ffffffcc,#ffffffa6);
+      box-shadow:var(--shadow);border-radius:var(--radius);padding:16px;backdrop-filter:blur(8px);overflow:hidden;
+    }
+    .topbar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:4px 4px 12px;border-bottom:1px solid var(--stroke);margin-bottom:12px;}
+    .progress{height:10px;border-radius:999px;background:rgba(106,108,255,.08)}
+    .progress-bar{background:linear-gradient(90deg,rgba(106,108,255,.85),rgba(255,106,162,.75))}
+    .slide{display:none;padding:8px 6px 14px;min-height:60vh}
+    .slide.active{display:block}
+    .slide h2{font-weight:900;letter-spacing:.2px;margin-bottom:10px}
+    .slide p,.slide li{color:var(--muted)}
+    .card-soft{border:1px solid var(--stroke);background:rgba(255,255,255,.70);border-radius:var(--radius);box-shadow:0 10px 22px rgba(30,30,60,.06)}
+    .badge-soft{border:1px solid var(--stroke);background:rgba(255,255,255,.60);color:var(--ink);border-radius:999px;padding:6px 10px;font-size:.82rem}
+    .callout{border-left:6px solid rgba(106,108,255,.55);background:rgba(106,108,255,.06);border-radius:14px;padding:12px}
+    .callout .k{font-weight:800;color:var(--ink)}
+    .analogy{border-left:6px solid rgba(255,106,162,.55);background:rgba(255,106,162,.06);border-radius:14px;padding:12px}
+    .analogy .k{font-weight:800;color:var(--ink)}
+    .btn-soft{border-radius:999px;border:1px solid rgba(106,108,255,.25);background:rgba(106,108,255,.08);color:var(--ink)}
+    .btn-soft:hover{background:rgba(106,108,255,.14)}
+    .btn-accent{border-radius:999px;background:linear-gradient(90deg,rgba(106,108,255,.95),rgba(255,106,162,.85));border:none}
+    .btn-accent:hover{filter:brightness(1.03)}
+    code.kbd{background:rgba(0,0,0,.06);padding:2px 6px;border-radius:10px;border:1px solid rgba(0,0,0,.06)}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    .pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:7px 10px;border:1px solid var(--stroke);background:rgba(255,255,255,.62)}
+    .step{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--stroke);background:rgba(255,255,255,.62);border-radius:16px;padding:12px}
+    .step .n{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;
+             background:rgba(106,108,255,.12);border:1px solid var(--stroke);font-weight:900;color:var(--accent)}
+    .quiz-option{border:1px solid var(--stroke);background:rgba(255,255,255,.62);border-radius:16px;padding:10px 12px;cursor:pointer;transition:.15s ease}
+    .quiz-option:hover{transform:translateY(-1px);border-color:rgba(106,108,255,.35)}
+    .quiz-option.selected{border-color:rgba(255,106,162,.55);background:rgba(255,106,162,.08)}
+    .quiz-option.correct{border-color:rgba(47,160,95,.55);background:rgba(47,160,95,.10)}
+    .quiz-option.wrong{border-color:rgba(211,74,106,.55);background:rgba(211,74,106,.10)}
+    .small-muted{color:var(--muted);font-size:.92rem}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:992px){.grid-2{grid-template-columns:1fr}}
+    .mini-diag{border:1px dashed rgba(106,108,255,.35);border-radius:18px;padding:14px;background:rgba(106,108,255,.05)}
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand animate__animated animate__fadeIn">
+        <div class="d-flex align-items-center gap-2">
+          <div class="p-2 rounded-3" style="background:rgba(106,108,255,.12); border:1px solid var(--stroke)">
+            <i class="fa-solid fa-diagram-project" style="color:var(--accent)"></i>
+          </div>
+          <div>
+            <p class="title mb-0">P4 · Módulo 6</p>
+            <p class="subtitle mb-0">Diseño: Guías · Estructura · Patrones</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <a class="badge-soft text-decoration-none" href="../index.html">
+            <i class="fa-solid fa-house me-2"></i>Home
+          </a>
+          <button class="btn btn-sm btn-soft" id="btnHelp">
+            <i class="fa-regular fa-circle-question me-1"></i>Ayuda
+          </button>
+        </div>
+        <div id="nav" class="mt-2"></div>
+      </div>
+
+      <div class="mt-3">
+        <div class="card-soft p-3">
+          <div class="d-flex align-items-start gap-2">
+            <i class="fa-solid fa-compass-drafting mt-1" style="color:var(--accent2)"></i>
+            <div>
+              <div class="fw-bold">Idea central</div>
+              <div class="small-muted">
+                Diseñar = pasar de “qué hace el sistema” a “cómo se arma la solución”:
+                <b>pasos</b> (guías), <b>estructura</b> (DCD) y <b>soluciones reutilizables</b> (patrones).
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="content">
+      <div class="topbar">
+        <div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge-soft" id="slideTag"><i class="fa-solid fa-layer-group me-2"></i>Sección</span>
+            <span class="badge-soft" id="slideCounter"><i class="fa-solid fa-hashtag me-2"></i>1/1</span>
+          </div>
+          <div class="mt-2">
+            <div class="progress">
+              <div class="progress-bar" id="progressBar" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-soft" id="btnPrev"><i class="fa-solid fa-arrow-left me-2"></i>Anterior</button>
+          <button class="btn btn-accent text-white" id="btnNext">Siguiente<i class="fa-solid fa-arrow-right ms-2"></i></button>
+        </div>
+      </div>
+
+      <section class="slide" data-title="Bienvenida" data-icon="fa-hand-sparkles">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-hand-sparkles me-2" style="color:var(--accent2)"></i>Bienvenida</h2>
+          <p class="lead small-muted mb-3">
+            En este módulo trabajamos tres piezas del diseño OO:
+            <b>guías para abordarlo</b>, <b>cómo dejar la estructura en UML</b> y <b>patrones de diseño</b>.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2"><i class="fa-solid fa-bullseye me-2" style="color:var(--accent)"></i>Objetivos</div>
+                <ul class="mb-0">
+                  <li>Usar un enfoque <b>sistemático</b> para diseñar (paso a paso).</li>
+                  <li>Construir un <b>Diagrama de Clases de Diseño (DCD)</b> a partir de interacciones.</li>
+                  <li>Reconocer y aplicar <b>patrones</b> para problemas recurrentes.</li>
+                </ul>
+                <div class="callout mt-3">
+                  <span class="k">Frase clave:</span> “No reinventes la rueda: seguí guías y reutilizá patrones”.
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2"><i class="fa-solid fa-gamepad me-2" style="color:var(--accent2)"></i>Interacción</div>
+                <ul class="mb-3">
+                  <li><code class="kbd">←</code> y <code class="kbd">→</code> navegan.</li>
+                  <li>Barra lateral para saltar.</li>
+                  <li>Al final: <b>quiz de 10 preguntas</b>.</li>
+                </ul>
+                <button class="btn btn-soft w-100" onclick="toast('Tip: diseñar bien suele requerir iteraciones, no 1 intento 😄')">
+                  <i class="fa-solid fa-play me-2"></i>Probar interacción
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> diseñar un sistema es como organizar un viaje:
+            tenés un plan (guías), armás el itinerario (estructura) y usás trucos ya probados (patrones).
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Guías: visión general" data-icon="fa-route">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-route me-2" style="color:var(--accent)"></i>Guías para abordar el diseño</h2>
+          <p class="small-muted">
+            Se propone abordar la etapa de diseño con un enfoque sistemático, ilustrándolo con un caso (ATMs/banco).
+          </p>
+
+          <div class="card-soft p-4">
+            <div class="fw-bold mb-2">Los 4 pasos sugeridos</div>
+            <div class="grid-2">
+              <div class="step"><div class="n">1</div><div><div class="fw-bold">Organizar Operaciones</div><div class="small-muted">Definir controladores, interfaces del sistema y fábrica.</div></div></div>
+              <div class="step"><div class="n">2</div><div><div class="fw-bold">Ubicación de Instancias</div><div class="small-muted">Decidir dónde viven colecciones/objetos.</div></div></div>
+              <div class="step"><div class="n">3</div><div><div class="fw-bold">Definir Colaboraciones</div><div class="small-muted">Agrupar casos de uso por afinidad.</div></div></div>
+              <div class="step"><div class="n">4</div><div><div class="fw-bold">Diseñar Colaboraciones</div><div class="small-muted">Diagramas de comunicación + DCD.</div></div></div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> es como cocinar una receta: primero organizás qué vas a hacer (operaciones),
+            después dónde están los ingredientes (instancias), definís “platos” (colaboraciones) y finalmente cocinás paso a paso (diseñar).
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Paso 1: Operaciones" data-icon="fa-clipboard-list">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-clipboard-list me-2" style="color:var(--accent2)"></i>Paso 1 · Organizar Operaciones</h2>
+          <p class="small-muted">
+            Se define cómo “entran” las operaciones del sistema: controladores + interfaces del sistema + fábrica.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Qué decidir</div>
+                <ul class="mb-0">
+                  <li>Qué <b>controladores</b> usar.</li>
+                  <li>Qué <b>interfaces del sistema</b> agrupan las operaciones.</li>
+                  <li>Cómo <b>organizar operaciones</b>: por afinidad temática, funcional o por casos de uso.</li>
+                  <li>Definir la <b>fábrica</b> de controladores (punto de acceso).</li>
+                </ul>
+                <div class="callout mt-3"><span class="k">Tip:</span> mirá operaciones repetidas y la “memoria del sistema”.</div>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="mini-diag h-100">
+                <div class="fw-bold mb-2">Mini-esquema (idea)</div>
+                <div class="small-muted">
+                  <div class="pill mb-2"><i class="fa-solid fa-id-card" style="color:var(--accent)"></i>UI</div>
+                  → <span class="pill"><i class="fa-solid fa-plug" style="color:var(--accent2)"></i>Interfaz (ISistema)</span>
+                  → <span class="pill"><i class="fa-solid fa-traffic-light" style="color:var(--accent)"></i>Controlador</span>
+                  <div class="mt-2">La <b>fábrica</b> devuelve la interfaz sin “new” del controlador.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> para pedir comida, no llamás directo al cocinero: usás el mostrador (interfaz) y alguien coordina (controlador).
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Paso 2: Instancias" data-icon="fa-boxes-stacked">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-boxes-stacked me-2" style="color:var(--accent)"></i>Paso 2 · Ubicación de Instancias</h2>
+          <p class="small-muted">
+            Decidir dónde se alojan colecciones/instancias para acceder a ellas sin ensuciar el diseño.
+          </p>
+
+          <div class="card-soft p-4">
+            <div class="fw-bold mb-2">Diferenciar colecciones</div>
+            <ul class="mb-0">
+              <li>Las que pueden vivir en un <b>controlador</b> (ej.: ATM, Banco).</li>
+              <li>Las que se acceden a través de otra clase (ej.: Cuenta a través de Banco).</li>
+              <li>Si hace falta: una colección compartida separada (acceso común para varios controladores).</li>
+            </ul>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> “¿Dónde guardo la lista de contactos?”:
+            en tu teléfono (controlador), en una app (otra clase), o en la nube compartida (colección compartida).
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Paso 3: Colaboraciones" data-icon="fa-people-group">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-people-group me-2" style="color:var(--accent2)"></i>Paso 3 · Definir Colaboraciones</h2>
+          <p class="small-muted">
+            Una colaboración realiza uno o más casos de uso. Agrupar casos por afinidad y priorizar.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Cómo hacerlo</div>
+                <ul class="mb-0">
+                  <li>Agrupar casos de uso por afinidad (temática o funcional).</li>
+                  <li>Definir una colaboración por grupo y darle nombre.</li>
+                  <li>Priorizar por impacto en el diseño.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="mini-diag h-100">
+                <div class="fw-bold mb-2">Ejemplo (idea)</div>
+                <div class="small-muted">
+                  Retiro de Cuenta + Consulta de Depósitos → colaboración “Transacciones” (porque están relacionadas).
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> armás “carpetas” para tus tareas: pagos, compras, trámites… y dentro metés lo relacionado.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Paso 4: Diseñar colaboración" data-icon="fa-comments">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-comments me-2" style="color:var(--accent)"></i>Paso 4 · Diseñar Colaboraciones</h2>
+          <p class="small-muted">
+            Diseñar cada colaboración construyendo diagramas de comunicación para las operaciones del sistema,
+            aplicando criterios de responsabilidades y consistencia.
+          </p>
+
+          <div class="card-soft p-4">
+            <div class="fw-bold mb-2">Checklist</div>
+            <ul class="mb-0">
+              <li>Hacer diagramas de comunicación para las operaciones involucradas.</li>
+              <li>Aplicar criterios, decisiones previas (consistencia) y resolver problemas nuevos.</li>
+              <li>Construir el <b>DCD</b> para la estructura.</li>
+            </ul>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> primero ensayás la conversación (quién le pide qué a quién),
+            después dibujás el organigrama final con roles y conexiones (estructura).
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="DCD: qué es" data-icon="fa-sitemap">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-sitemap me-2" style="color:var(--accent2)"></i>Diagrama de Clases de Diseño (DCD)</h2>
+          <p class="small-muted">
+            Luego de construir diagramas de comunicación, se especifica la parte estructural con diagramas de clases UML.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">¿Qué muestra un DCD?</div>
+                <ul class="mb-0">
+                  <li>La <b>estructura</b> de la solución.</li>
+                  <li>Clases, asociaciones, atributos.</li>
+                  <li>Navegabilidades, operaciones, métodos.</li>
+                  <li>Interfaces, fábricas, datatypes, generalizaciones y dependencias.</li>
+                  <li>Solo lo <b>necesario</b> para la colaboración.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="callout h-100">
+                <span class="k">Regla práctica:</span> DCD ≠ “todo el sistema”. Es “lo necesario para esta colaboración”.
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> es como el plano de una casa: no describe cómo vivís (dinámica), describe paredes, puertas y conexiones (estructura).
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="DCD: pasos de construcción" data-icon="fa-list-ol">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-list-ol me-2" style="color:var(--accent)"></i>Cómo construir un DCD (pasos)</h2>
+          <p class="small-muted">
+            Secuencia recomendada desde interacciones hacia estructura.
+          </p>
+
+          <div class="card-soft p-4">
+            <div class="grid-2">
+              <div class="step"><div class="n">1</div><div><div class="fw-bold">Identificar clases</div><div class="small-muted">Analizar diagramas de comunicación.</div></div></div>
+              <div class="step"><div class="n">2</div><div><div class="fw-bold">Incluirlas</div><div class="small-muted">Armar el esqueleto del DCD.</div></div></div>
+              <div class="step"><div class="n">3</div><div><div class="fw-bold">Atributos</div><div class="small-muted">Replicar del dominio + nuevos necesarios.</div></div></div>
+              <div class="step"><div class="n">4</div><div><div class="fw-bold">Operaciones</div><div class="small-muted">Según mensajes/colaboraciones.</div></div></div>
+              <div class="step"><div class="n">5</div><div><div class="fw-bold">Tipos</div><div class="small-muted">Tipos de atributos/retornos (datatypes).</div></div></div>
+              <div class="step"><div class="n">6</div><div><div class="fw-bold">Asociaciones</div><div class="small-muted">Para visibilidades por atributo.</div></div></div>
+              <div class="step"><div class="n">7</div><div><div class="fw-bold">Navegabilidades</div><div class="small-muted">Dirección de la visibilidad.</div></div></div>
+              <div class="step"><div class="n">8</div><div><div class="fw-bold">Dependencias</div><div class="small-muted">Otros tipos de visibilidad.</div></div></div>
+              <div class="step"><div class="n">9</div><div><div class="fw-bold">Interfaces + fábricas</div><div class="small-muted">Completar accesos y capas.</div></div></div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> armar un mueble: piezas → armado → tornillos → verificación final.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="DCD: qué omitir" data-icon="fa-filter">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-filter me-2" style="color:var(--accent2)"></i>DCD: ¿qué NO conviene sobrecargar?</h2>
+          <p class="small-muted">
+            Para que el diagrama sea legible y útil.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Comúnmente se omite</div>
+                <ul class="mb-0">
+                  <li><span class="mono">create</span> (constructores suelen asumirse).</li>
+                  <li>Gets/sets por defecto (salvo <span class="mono">{readOnly}</span>).</li>
+                  <li>Colecciones como clases extra (se derivan de multiplicidades).</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Errores comunes</div>
+                <ul class="mb-0">
+                  <li>No incluir dependencias existentes.</li>
+                  <li>Omitir datatypes.</li>
+                  <li>No incluir interfaces, controladores ni fábricas.</li>
+                  <li>Sobrecargar con operaciones omitibles.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> un buen mapa muestra rutas, no cada árbol del camino.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="¿Qué es un patrón?" data-icon="fa-shapes">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-shapes me-2" style="color:var(--accent)"></i>Patrones de Diseño</h2>
+          <p class="small-muted">
+            Un patrón de diseño nombra y explica un diseño general para un problema recurrente: problema, solución, cuándo aplicar y consecuencias.
+          </p>
+
+          <div class="card-soft p-4">
+            <div class="fw-bold mb-2">Ideas clave</div>
+            <ul class="mb-0">
+              <li>Los expertos reutilizan soluciones que ya funcionaron.</li>
+              <li>Los patrones registran experiencia para que otros la aprovechen.</li>
+              <li>La solución propuesta es una <b>colaboración abstracta</b> (plantilla) adaptable.</li>
+              <li>Entender el <b>problema tipo</b> y el <b>contexto</b> es fundamental.</li>
+            </ul>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> una plantilla de Excel: no es tu planilla exacta, pero te ahorra inventarla desde cero.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Cómo aplicar patrones" data-icon="fa-wand-magic-sparkles">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-wand-magic-sparkles me-2" style="color:var(--accent2)"></i>Aplicar patrones (pasos)</h2>
+          <p class="small-muted">
+            Proceso sugerido para aplicar patrones con sentido.
+          </p>
+
+          <div class="card-soft p-4">
+            <div class="step mb-2"><div class="n">1</div><div><div class="fw-bold">Analizar el problema</div><div class="small-muted">Ver aplicabilidad.</div></div></div>
+            <div class="step mb-2"><div class="n">2</div><div><div class="fw-bold">Determinar un patrón</div><div class="small-muted">Buscar uno que encaje.</div></div></div>
+            <div class="step"><div class="n">3</div><div><div class="fw-bold">Aplicar estructura e interacciones</div><div class="small-muted">Integrar al diseño existente.</div></div></div>
+            <div class="callout mt-3"><span class="k">Error común:</span> aplicar un patrón porque “suena bien” sin cumplir condiciones.</div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> no usás martillo para todo; primero confirmás que el problema sea un clavo.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Singleton" data-icon="fa-1">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-1 me-2" style="color:var(--accent)"></i>Patrón: Singleton</h2>
+          <p class="small-muted">
+            Asegura una única instancia y provee acceso global.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Aplicabilidad</div>
+                <ul class="mb-0">
+                  <li>Debe existir una única instancia de una clase.</li>
+                  <li>Debe ser accesible por cualquier cliente.</li>
+                </ul>
+                <div class="callout mt-3"><span class="k">Consecuencias:</span> acceso controlado, pero derivar puede ser complejo.</div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="mini-diag h-100">
+                <div class="fw-bold mb-2">Esquema mental</div>
+                <div class="small-muted">
+                  <span class="pill"><i class="fa-solid fa-lock" style="color:var(--accent2)"></i>Constructor privado</span>
+                  <span class="pill"><i class="fa-solid fa-key" style="color:var(--accent)"></i>getInstancia()</span>
+                  <div class="mt-2">Crea la instancia si no existe; luego siempre devuelve la misma.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> el “encargado” del edificio: hay uno solo y todos lo contactan por el mismo medio.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Composite" data-icon="fa-tree">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-tree me-2" style="color:var(--accent2)"></i>Patrón: Composite</h2>
+          <p class="small-muted">
+            Representa jerarquías arborescentes y trata uniformemente hojas y compuestos.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Participantes</div>
+                <ul class="mb-0">
+                  <li><b>Componente</b>: interfaz común.</li>
+                  <li><b>Hoja</b>: objeto primitivo.</li>
+                  <li><b>Compuesto</b>: contiene hijos y delega operaciones.</li>
+                  <li><b>Cliente</b>: usa todo como Componente.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="callout h-100">
+                <span class="k">Consecuencia:</span> elimina condicionales en el cliente y facilita agregar nuevos componentes.
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> una carpeta (compuesto) puede tener archivos (hojas) y subcarpetas (compuestos). “Mover” funciona igual.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="State" data-icon="fa-toggle-on">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-toggle-on me-2" style="color:var(--accent)"></i>Patrón: State</h2>
+          <p class="small-muted">
+            Permite variar comportamiento según el estado interno, delegando en objetos Estado.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Aplicabilidad</div>
+                <ul class="mb-0">
+                  <li>El comportamiento depende del estado y cambia en ejecución.</li>
+                  <li>Muchas ramas condicionales según estado dentro del objeto.</li>
+                </ul>
+                <div class="callout mt-3"><span class="k">Consecuencia:</span> puede aumentar cantidad de clases (estados concretos).</div>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="mini-diag h-100">
+                <div class="fw-bold mb-2">Esquema mental</div>
+                <div class="small-muted">
+                  Contexto → Estado actual → evento() <br/>
+                  Cambiar estado = cambiar el objeto Estado.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> una puerta automática: el botón hace cosas distintas si la puerta está abierta o cerrada.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Observer" data-icon="fa-bell">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-bell me-2" style="color:var(--accent2)"></i>Patrón: Observer</h2>
+          <p class="small-muted">
+            Dependencia 1-n: cuando el Subject cambia, notifica a todos los Observers.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-lg-7">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Aplicabilidad</div>
+                <ul class="mb-0">
+                  <li>No querés saber exactamente quiénes dependen, pero debés avisarles.</li>
+                  <li>Notificar objetos de distinta naturaleza sin acoplarse a concretos.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2">Consecuencias</div>
+                <ul class="mb-0">
+                  <li>Sin acoplamiento con observadores concretos.</li>
+                  <li>Notificación secuencial; orden puede ser aleatorio.</li>
+                  <li>Puede haber notificaciones en cascada.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> suscribirte a alertas: cuando hay un cambio, te llega a vos y a todos los suscriptores.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Resumen" data-icon="fa-layer-group">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-layer-group me-2" style="color:var(--accent)"></i>Resumen: qué te llevás</h2>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2"><i class="fa-solid fa-route me-2" style="color:var(--accent2)"></i>Guías</div>
+                <ul class="mb-0">
+                  <li>4 pasos para diseñar sistemáticamente.</li>
+                  <li>Operaciones → instancias → colaboraciones → diseño (comunicación + DCD).</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-soft p-4 h-100">
+                <div class="fw-bold mb-2"><i class="fa-solid fa-shapes me-2" style="color:var(--accent)"></i>Patrones</div>
+                <ul class="mb-0">
+                  <li>Plantillas para problemas recurrentes.</li>
+                  <li>Singleton, Composite, State, Observer.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="callout mt-3">
+            <span class="k">Clave:</span> primero reconocé el problema; luego elegí estructura/patrón y evaluá consecuencias.
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Desafío (10 preguntas)" data-icon="fa-circle-check">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-circle-check me-2" style="color:var(--accent2)"></i>Desafío final · 10 preguntas</h2>
+          <p class="small-muted">
+            Elegí una opción por pregunta. Al finalizar verás la correcta y tu respuesta por pregunta, y un resumen.
+          </p>
+
+          <div class="card-soft p-4">
+            <div id="quizRoot"></div>
+            <div class="d-flex flex-wrap gap-2 mt-3">
+              <button class="btn btn-accent text-white" id="btnFinishQuiz">
+                <i class="fa-solid fa-flag-checkered me-2"></i>Finalizar intento
+              </button>
+              <button class="btn btn-soft" id="btnResetQuiz">
+                <i class="fa-solid fa-rotate-right me-2"></i>Reiniciar
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Cierre" data-icon="fa-heart">
+        <div class="animate__animated animate__fadeInUp">
+          <h2><i class="fa-solid fa-heart me-2" style="color:var(--accent2)"></i>Cierre</h2>
+          <div class="card-soft p-4">
+            <div class="fw-bold mb-2">Checklist final</div>
+            <ul class="mb-0">
+              <li>Guías: 4 pasos para diseñar en forma sistemática.</li>
+              <li>DCD: estructura derivada de diagramas de comunicación (navegabilidades y dependencias).</li>
+              <li>Patrones: soluciones reutilizables a problemas recurrentes.</li>
+              <li>Aplicar patrones: problema + aplicabilidad + consecuencias.</li>
+            </ul>
+          </div>
+          <div class="analogy mt-3">
+            <span class="k">Analogía:</span> el diseño es un oficio: con guías y patrones, cada iteración te sale mejor.
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const nav = document.getElementById('nav');
+    const slideCounter = document.getElementById('slideCounter');
+    const slideTag = document.getElementById('slideTag');
+    const progressBar = document.getElementById('progressBar');
+    let idx = 0;
+
+    function renderNav(){
+      nav.innerHTML = '';
+      slides.forEach((s, i) => {
+        const title = s.dataset.title || `Sección ${i+1}`;
+        const icon = s.dataset.icon || 'fa-circle';
+        const a = document.createElement('a');
+        a.href = '#';
+        a.className = 'navpill';
+        a.innerHTML = `<i class="fa-solid ${icon}"></i><span>${title}</span>`;
+        a.addEventListener('click', (e) => { e.preventDefault(); goTo(i, true); });
+        nav.appendChild(a);
+      });
+    }
+
+    function updateChrome(){
+      const total = slides.length;
+      slideCounter.innerHTML = `<i class="fa-solid fa-hashtag me-2"></i>${idx+1}/${total}`;
+      slideTag.innerHTML = `<i class="fa-solid fa-layer-group me-2"></i>${slides[idx].dataset.title || 'Sección'}`;
+      progressBar.style.width = `${Math.round(((idx+1)/total)*100)}%`;
+      Array.from(nav.querySelectorAll('.navpill')).forEach((p, i) => p.classList.toggle('active', i === idx));
+    }
+
+    function goTo(newIdx, animate=false){
+      if(newIdx < 0 || newIdx >= slides.length) return;
+      slides[idx].classList.remove('active');
+      idx = newIdx;
+      slides[idx].classList.add('active');
+      if(animate){
+        slides[idx].classList.remove('animate__fadeInUp');
+        void slides[idx].offsetWidth;
+        slides[idx].classList.add('animate__animated','animate__fadeInUp');
+      }
+      updateChrome();
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+    function next(){ goTo(Math.min(idx+1, slides.length-1), true); }
+    function prev(){ goTo(Math.max(idx-1, 0), true); }
+
+    document.getElementById('btnNext').addEventListener('click', next);
+    document.getElementById('btnPrev').addEventListener('click', prev);
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'ArrowRight') next();
+      if(e.key === 'ArrowLeft') prev();
+    });
+
+    document.getElementById('btnHelp').addEventListener('click', () => {
+      Swal.fire({
+        title: 'Cómo usar esta presentación',
+        html: `<div style="text-align:left">
+          <ul>
+            <li>Usá <b>Siguiente</b>/<b>Anterior</b> o <code>→</code>/<code>←</code>.</li>
+            <li>Barra lateral para saltar a cualquier tema.</li>
+            <li>Al final: <b>quiz</b> de 10 preguntas con corrección y resumen.</li>
+          </ul>
+        </div>`,
+        icon: 'info',
+        confirmButtonText: '¡Entendido!',
+        confirmButtonColor: '#6a6cff'
+      })
+    });
+
+    function toast(text){
+      Swal.fire({ toast:true, position:'top-end', icon:'info', title:text, showConfirmButton:false, timer:2200, timerProgressBar:true });
+    }
+
+    const quiz = [
+      { q:"¿Cuál es el objetivo de las guías de abordaje del diseño?",
+        options:["Evitar usar UML","Abordar la etapa de diseño con un enfoque sistemático","Eliminar el análisis","Escribir código directamente"],
+        correct:1,
+        explain:"Las guías proponen organizar el trabajo de diseño de forma sistemática."
+      },
+      { q:"¿Cuál NO es uno de los 4 pasos sugeridos por las guías?",
+        options:["Organizar Operaciones","Definir Ubicación de Instancias","Optimizar rendimiento","Definir Colaboraciones"],
+        correct:2,
+        explain:"Los pasos son: organizar operaciones, ubicar instancias, definir colaboraciones y diseñar colaboraciones."
+      },
+      { q:"En el paso 'Organizar Operaciones' se define principalmente…",
+        options:["El color del diagrama","Controladores, interfaces del sistema y fábrica","La base de datos","Los casos de prueba"],
+        correct:1,
+        explain:"Se definen controladores, interfaces del sistema y la fábrica que las provee."
+      },
+      { q:"¿Qué es un Diagrama de Clases de Diseño (DCD)?",
+        options:["Un diagrama del dominio real","Un diagrama que especifica la estructura de una colaboración","Un diagrama de estados","Un DSS"],
+        correct:1,
+        explain:"El DCD describe la estructura necesaria para resolver los casos de uso de una colaboración."
+      },
+      { q:"¿Qué elemento se agrega para indicar la dirección de la visibilidad por atributo?",
+        options:["Navegabilidades","Casos de uso","Test unitarios","Patrones"],
+        correct:0,
+        explain:"La navegabilidad indica la dirección de la asociación (visibilidad por atributo)."
+      },
+      { q:"¿Qué se usa para reflejar visibilidad por parámetro/local/global en el DCD?",
+        options:["Herencia","Dependencias","Multiplicidades","Notas"],
+        correct:1,
+        explain:"Las dependencias reflejan otros tipos de visibilidad además de la asociación."
+      },
+      { q:"Un patrón de diseño es…",
+        options:["Un algoritmo fijo","Una colaboración abstracta (plantilla) para un problema recurrente","Un requerimiento","Un lenguaje de programación"],
+        correct:1,
+        explain:"Los patrones registran experiencia y proponen una colaboración abstracta adaptable."
+      },
+      { q:"Singleton resuelve el problema de…",
+        options:["Tener muchos estados","Asegurar una sola instancia y acceso global","Agrupar objetos en árbol","Notificar observadores"],
+        correct:1,
+        explain:"Singleton: una sola instancia y acceso global."
+      },
+      { q:"Composite permite…",
+        options:["Eliminar condicionales tratando hojas y compuestos uniformemente","Crear múltiples instancias globales","Reaccionar a eventos","Cambiar estado interno"],
+        correct:0,
+        explain:"Composite trata objetos simples y compuestos por una interfaz común."
+      },
+      { q:"Observer se aplica cuando…",
+        options:["Un objeto debe cambiar su comportamiento según estado","Se necesita dependencia 1-n y notificar sin acoplarse","Se requiere una sola instancia","Hay jerarquías arborescentes"],
+        correct:1,
+        explain:"Observer: Subject notifica a muchos Observers sin acoplamiento con concretos."
+      }
+    ];
+
+    const state = { answers: Array(quiz.length).fill(null), finished:false };
+
+    function renderQuiz(){
+      const root = document.getElementById('quizRoot');
+      root.innerHTML = '';
+      quiz.forEach((item, qi) => {
+        const block = document.createElement('div');
+        block.className = 'mb-4';
+        block.innerHTML = `
+          <div class="d-flex align-items-start justify-content-between gap-2">
+            <div class="fw-bold">${qi+1}. ${item.q}</div>
+            <span class="badge-soft"><i class="fa-solid fa-list-check me-2"></i>MCQ</span>
+          </div>
+          <div class="mt-2 d-grid gap-2" id="q-${qi}"></div>
+          <div class="small-muted mt-2" id="exp-${qi}" style="display:none"></div>
+        `;
+        root.appendChild(block);
+
+        const optWrap = block.querySelector(`#q-${qi}`);
+        item.options.forEach((opt, oi) => {
+          const optDiv = document.createElement('div');
+          optDiv.className = 'quiz-option';
+          optDiv.innerHTML = `<i class="fa-regular fa-circle me-2"></i>${opt}`;
+          optDiv.addEventListener('click', () => {
+            if(state.finished) return;
+            state.answers[qi] = oi;
+            refreshQuestion(qi);
+          });
+          optWrap.appendChild(optDiv);
+        });
+
+        refreshQuestion(qi);
+      });
+    }
+
+    function refreshQuestion(qi){
+      const optWrap = document.getElementById(`q-${qi}`);
+      const item = quiz[qi];
+      const chosen = state.answers[qi];
+
+      Array.from(optWrap.children).forEach((node, oi) => {
+        node.classList.toggle('selected', chosen === oi);
+        node.querySelector('i').className = chosen === oi ? 'fa-solid fa-circle-check me-2' : 'fa-regular fa-circle me-2';
+        node.classList.remove('correct','wrong');
+        if(state.finished){
+          if(oi === item.correct) node.classList.add('correct');
+          if(chosen === oi && chosen !== item.correct) node.classList.add('wrong');
+        }
+      });
+
+      const exp = document.getElementById(`exp-${qi}`);
+      if(state.finished){
+        exp.style.display = '';
+        const selText = (chosen === null) ? 'Sin responder' : item.options[chosen];
+        exp.innerHTML = `
+          <div class="callout">
+            <div><b>Correcta:</b> ${item.options[item.correct]}</div>
+            <div><b>Tu respuesta:</b> ${selText}</div>
+            <div class="mt-2">${item.explain}</div>
+          </div>
+        `;
+      }else{
+        exp.style.display = 'none';
+        exp.innerHTML = '';
+      }
+    }
+
+    function finishQuiz(){
+      const unanswered = state.answers.filter(a => a === null).length;
+      if(unanswered){
+        Swal.fire({
+          title:'Te faltan preguntas',
+          text:`Te faltan ${unanswered} preguntas sin responder. ¿Querés finalizar igual?`,
+          icon:'warning',
+          showCancelButton:true,
+          confirmButtonText:'Finalizar igual',
+          cancelButtonText:'Volver',
+          confirmButtonColor:'#ff6aa2'
+        }).then(r => { if(r.isConfirmed) doFinish(); });
+      }else{
+        doFinish();
+      }
+    }
+
+    function doFinish(){
+      state.finished = true;
+      for(let i=0;i<quiz.length;i++) refreshQuestion(i);
+
+      const correctCount = state.answers.reduce((acc,a,i)=> acc + (a===quiz[i].correct ? 1 : 0), 0);
+      const total = quiz.length;
+
+      let perQ = '';
+      for(let i=0;i<total;i++){
+        const chosen = state.answers[i];
+        const ok = (chosen === quiz[i].correct);
+        perQ += `<div style="text-align:left; margin-bottom:10px;">
+          <div><b>${i+1}. ${ok ? '✅ Correcto' : '❌ Incorrecto'}</b></div>
+          <div><b>Correcta:</b> ${quiz[i].options[quiz[i].correct]}</div>
+          <div><b>Tu respuesta:</b> ${chosen===null ? 'Sin responder' : quiz[i].options[chosen]}</div>
+        </div>`;
+      }
+
+      Swal.fire({
+        title:`Resultado: ${correctCount}/${total}`,
+        html:`<div class="small-muted" style="text-align:left; margin-bottom:10px;">
+                Detalle por pregunta (correcta vs tu respuesta):
+              </div>
+              <div style="max-height:52vh; overflow:auto; padding-right:6px;">${perQ}</div>
+              <hr/>
+              <div style="text-align:left;"><b>Resumen:</b> ${correctCount} correctas · ${total-correctCount} incorrectas.</div>`,
+        icon: correctCount >= 7 ? 'success' : 'info',
+        confirmButtonText:'Ok',
+        confirmButtonColor:'#6a6cff'
+      });
+    }
+
+    function resetQuiz(){
+      state.answers = Array(quiz.length).fill(null);
+      state.finished = false;
+      renderQuiz();
+      toast('Quiz reiniciado.');
+    }
+
+    document.getElementById('btnFinishQuiz').addEventListener('click', finishQuiz);
+    document.getElementById('btnResetQuiz').addEventListener('click', resetQuiz);
+
+    renderNav();
+    slides[0].classList.add('active');
+    updateChrome();
+    renderQuiz();
+  </script>
+</body>
+</html>
