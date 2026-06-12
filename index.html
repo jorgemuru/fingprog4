@@ -1,107 +1,366 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>P4 - Repositorio de Clases</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        :root { --pastel-blue: #ebf4f6; --accent-blue: #b2d8d8; --text-color: #555; }
-        body { font-family: 'Quicksand', sans-serif; background-color: var(--pastel-blue); color: var(--text-color); }
-        .hero { background: white; padding: 40px 0; border-bottom: 5px solid var(--accent-blue); text-align: center; }
-        .course-card { background: white; border: none; border-radius: 20px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.05); height: 100%; }
-        .course-card:hover { transform: translateY(-5px); }
-        .btn-pastel { background-color: var(--accent-blue); color: white; border-radius: 50px; text-decoration: none; padding: 10px 20px; display: inline-block; margin-top: 15px; }
-            footer {
-            margin-top: 50px;
-            padding: 20px;
-            text-align: center;
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
-	</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FING.P4 | Defensas | Reserva de horarios</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+  <style>
+    :root{
+      --pastel-bg:#f8f3ff;
+      --pastel-card:#ffffff;
+      --pastel-primary:#7868e6;
+      --pastel-soft:#ece8ff;
+      --pastel-accent:#b8e8d2;
+      --pastel-danger:#ffd6d6;
+      --text:#263238;
+    }
+    body{background:linear-gradient(135deg,#f8f3ff 0%,#eef9ff 48%,#f6fff7 100%); color:var(--text); min-height:100vh;}
+    .hero{border-radius:28px; background:rgba(255,255,255,.82); box-shadow:0 16px 50px rgba(55,50,100,.12); border:1px solid rgba(120,104,230,.15);}
+    .brand-icon{width:58px;height:58px;border-radius:18px;background:var(--pastel-soft);display:grid;place-items:center;color:var(--pastel-primary);font-size:1.6rem;}
+    .slot-card{border:0;border-radius:22px;box-shadow:0 10px 30px rgba(55,50,100,.09);transition:.2s ease;overflow:hidden;}
+    .slot-card:not(.disabled-slot):hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(55,50,100,.15);}
+    .available{background:#fff;}
+    .reserved{background:#fff7f7;}
+    .disabled-slot{opacity:.65;}
+    .badge-soft{background:var(--pastel-soft);color:#5142c7;}
+    .btn-primary{background:var(--pastel-primary);border-color:var(--pastel-primary);}
+    .btn-primary:hover{background:#6657ce;border-color:#6657ce;}
+    .btn-outline-primary{border-color:var(--pastel-primary);color:var(--pastel-primary);}
+    .btn-outline-primary:hover{background:var(--pastel-primary);border-color:var(--pastel-primary);}
+    .form-control,.form-select{border-radius:14px;}
+    .admin-panel{display:none;}
+    .small-muted{font-size:.9rem;color:#607d8b;}
+    .table{--bs-table-bg: transparent;}
+    .modal-content{border-radius:24px;border:0;}
+    .spinner-wrap{display:none;}
+  </style>
 </head>
 <body>
+  <main class="container py-4 py-lg-5">
+    <section class="hero p-4 p-lg-5 mb-4">
+      <div class="d-flex flex-column flex-md-row gap-3 align-items-md-center justify-content-between">
+        <div class="d-flex gap-3 align-items-center">
+          <div class="brand-icon"><i class="fa-regular fa-calendar-check"></i></div>
+          <div>
+            <h1 class="h2 mb-1">FING.P4 | Defensas ´26 | Reserva de horarios | Doc. Jorge Martinez</h1>
+            <p class="mb-0 small-muted">Seleccione grupo y fecha. Cada grupo puede reservar un único horario disponible.</p>
+          </div>
+        </div>
+        <button class="btn btn-outline-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#adminModal">
+          <i class="fa-solid fa-lock me-2"></i>Administración
+        </button>
+      </div>
+    </section>
 
-    <header class="hero mb-5">
-        <div class="container">
-            <i class="fas fa-laptop-code fa-3x mb-3" style="color: var(--accent-blue);"></i>
-            <h1 class="fw-bold">Programación 4</h1>
-            <p class="lead">Portal de Contenidos Interactivos</p>
-			<p class="small text-muted">El presente material es un complemento del publicado en el sitio oficial del curso NO REEMPLAZANDOLO BAJO NINGUN CONCEPTO.</p>
+    <section class="card slot-card p-3 p-lg-4 mb-4">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Fecha</label>
+          <select id="fechaSelect" class="form-select"></select>
         </div>
-    </header>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Grupo</label>
+          <select id="grupoSelect" class="form-select"></select>
+        </div>
+        <div class="col-md-4">
+          <button id="btnActualizar" class="btn btn-primary w-100 rounded-pill py-2"><i class="fa-solid fa-rotate me-2"></i>Actualizar horarios</button>
+        </div>
+      </div>
+    </section>
 
-    <div class="container pb-5">
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card course-card p-4 text-center">
-                    <i class="fas fa-cubes fa-2x mb-3 text-warning"></i>
-                    <h5>Módulo 1</h5>
-                    <p class="small text-muted">Proceso de Desarrollo OO + UML + Conceptos básicos I.</p>
-                    <a href="Modulo1/index.html" class="btn-pastel">Entrar</a>
-                </div>
-            </div>
-			<div class="col-md-4">
-                <div class="card course-card p-4 text-center">
-                    <i class="fas fa-sitemap fa-2x mb-3 text-warning"></i>
-                    <h5>Módulo 2</h5>
-                    <p class="small text-muted">Requerimientos + Análisis: Modelado del Dominio (UML)</p>
-                    <a href="Modulo2/index.html" class="btn-pastel">Entrar</a>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card course-card p-4 text-center">
-                    <i class="fas fa-file-contract fa-2x mb-3 text-warning"></i>
-                    <h5>Módulo 3</h5>
-                    <p class="small text-muted">Análisis: Comportamiento del Sistema</p>
-                    <a href="Modulo3/index.html" class="btn-pastel">Entrar</a>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card course-card p-4 text-center" style="border: 2px solid var(--accent-blue);">
-                    <i class="fas fa-drafting-compass fa-2x mb-3 text-warning"></i>
-                    <h5>Modulo 4</h5>
-                    <p class="small text-muted">Diseño + Diagramas de Comunicación.</p>
-                    <a href="Modulo4/index.html" class="btn-pastel">Entrar</a>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card course-card p-4 text-center" style="border: 2px solid var(--accent-blue);">
-                    <i class="fas fa-drafting-compass fa-2x mb-3 text-warning"></i>
-                    <h5>Módulo 5</h5>
-                    <p class="small text-muted">Diseño: GRASP + Visibilidad.</p>
-                    <a href="Modulo5/index.html" class="btn-pastel">Entrar</a>
-                </div>
-        </div>
-		<div class="col-md-4">
-                <div class="card course-card p-4 text-center" style="border: 2px solid var(--accent-blue);">
-                    <i class="fas fa-drafting-compass fa-2x mb-3 text-warning"></i>
-                    <h5>Modulo 6</h5>
-                    <p class="small text-muted">Diseño: Guías · Estructura · Patrones</p>
-                    <a href="Modulo6/index.html" class="btn-pastel">Entrar</a>
-                </div>
-        </div>
-				<div class="col-md-4">
-                <div class="card course-card p-4 text-center" style="border: 2px solid var(--accent-blue);">
-                    <i class="fas fa-laptop-code fa-2x mb-3 text-warning"></i>
-                    <h5>Módulo 7</h5>
-                    <p class="small text-muted">Implementación: Objetos · Colecciones</p>
-                    <a href="Modulo7/index.html" class="btn-pastel">Entrar</a>
-                </div>
-        </div>
-				<div class="col-md-4">
-                <div class="card course-card p-4 text-center" style="border: 2px solid var(--accent-blue);">
-                    <i class="fas fa-laptop-code fa-2x mb-3 text-warning"></i>
-                    <h5>Modulo 8</h5>
-                    <p class="small text-muted">Conceptos básicos II · Implementación: Interfaces · Patrones de diseño</p>
-                    <a href="Modulo8/index.html" class="btn-pastel">Entrar</a>
-                </div>
-        </div>
+    <div id="status" class="alert alert-info rounded-4 d-none"></div>
+
+    <div class="spinner-wrap text-center py-5" id="loader">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p class="mt-3 small-muted">Cargando disponibilidad...</p>
     </div>
-    <footer>
-        <p>© 2026 - UDELAR | FING | INCO | CENUR LN<br>Material diseñado para estudiantes de Programación 4.</p>
-    </footer>
+
+    <section id="slotsContainer" class="row g-3"></section>
+  </main>
+
+  <div class="modal fade" id="reservaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <div>
+            <h5 class="modal-title">Confirmar reserva</h5>
+            <p class="small-muted mb-0" id="reservaResumen"></p>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <form id="reservaForm" class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Nombre</label>
+              <input id="nombre" class="form-control" required maxlength="80">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Apellido</label>
+              <input id="apellido" class="form-control" required maxlength="80">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Correo electrónico</label>
+              <input id="email" type="email" class="form-control" required maxlength="120">
+            </div>
+            <div class="col-12 d-grid">
+              <button class="btn btn-primary rounded-pill py-2" type="submit"><i class="fa-solid fa-check me-2"></i>Reservar horario</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="adminModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <div>
+            <h5 class="modal-title">Panel de administración</h5>
+            <p class="small-muted mb-0">Permite ver, modificar o eliminar reservas usando la clave de administrador.</p>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-2 mb-3">
+            <div class="col-md-8">
+              <input id="adminPass" type="password" class="form-control" placeholder="Clave de administrador">
+            </div>
+            <div class="col-md-4 d-grid">
+              <button id="btnAdminCargar" class="btn btn-primary rounded-pill"><i class="fa-solid fa-shield-halved me-2"></i>Cargar reservas</button>
+            </div>
+          </div>
+          <div id="adminMsg" class="alert alert-warning rounded-4 d-none"></div>
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <thead>
+                <tr>
+                  <th>Fecha</th><th>Grupo</th><th>Horario</th><th>Nombre</th><th>Apellido</th><th>Email</th><th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="adminTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    /*********************************************************************
+     * CONFIGURACIÓN PRINCIPAL
+     * 1) Pegue aquí la URL /exec de su Web App de Google Apps Script.
+     * 2) Ajuste fechas, grupos y horarios predefinidos según necesidad.
+     *********************************************************************/
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyeqjhcvbcqaf5bE0WT29QmrbXnFLuA0NK7j9GHcPBYnBk8ow_4o0E-5CWhcT_Nq-o/exec';
+
+    const FECHAS = [
+      { id: '2026-06-22', label: '22/06/2026' }
+    ];
+
+    const GRUPOS = [
+      { id: 'Grupo 55', label: 'Grupo 55' },
+      { id: 'Grupo 56', label: 'Grupo 56' },
+      { id: 'Grupo 57', label: 'Grupo 57' },
+      { id: 'Grupo 66', label: 'Grupo 66' },
+      { id: 'Grupo 67', label: 'Grupo 67' },
+      { id: 'Grupo 68', label: 'Grupo 68' },
+      { id: 'Grupo 69', label: 'Grupo 69' },
+      { id: 'Grupo 70', label: 'Grupo 70' },
+      { id: 'Grupo 71', label: 'Grupo 71' },
+      { id: 'Grupo 72', label: 'Grupo 72' },
+      { id: 'Grupo 73', label: 'Grupo 73' },
+      { id: 'Grupo 74', label: 'Grupo 74' },
+      { id: 'Grupo 75', label: 'Grupo 75' }
+    ];
+
+    const HORARIOS = ['08:00', '08:40', '09:20', '10:00', '10:40', '11:20', '12:00', '14:00', '14:40', '15:20', '16:00', '16:40', '17:20'];
+
+    let reservas = [];
+    let slotSeleccionado = null;
+    const reservaModal = new bootstrap.Modal(document.getElementById('reservaModal'));
+
+    const $ = (id) => document.getElementById(id);
+
+    function init() {
+      cargarCombos();
+      $('btnActualizar').addEventListener('click', cargarEstado);
+      $('reservaForm').addEventListener('submit', reservar);
+      $('btnAdminCargar').addEventListener('click', cargarAdmin);
+      cargarEstado();
+    }
+
+    function cargarCombos(){
+      $('fechaSelect').innerHTML = FECHAS.map(f => `<option value="${escapeHtml(f.id)}">${escapeHtml(f.label)}</option>`).join('');
+      $('grupoSelect').innerHTML = GRUPOS.map(g => `<option value="${escapeHtml(g.id)}">${escapeHtml(g.label)}</option>`).join('');
+    }
+
+    function api(action, params = {}) {
+      return new Promise((resolve, reject) => {
+        if (!API_URL || API_URL.includes('PEGAR_AQUI')) {
+          reject(new Error('Debe configurar API_URL en index.html con la URL /exec del Apps Script.'));
+          return;
+        }
+        const callbackName = 'jsonp_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+        const query = new URLSearchParams({ action, callback: callbackName, ...params });
+        const script = document.createElement('script');
+        const timer = setTimeout(() => {
+          cleanup();
+          reject(new Error('La solicitud demoró demasiado. Verifique la URL del Apps Script.'));
+        }, 15000);
+        function cleanup(){
+          clearTimeout(timer);
+          delete window[callbackName];
+          if (script.parentNode) script.parentNode.removeChild(script);
+        }
+        window[callbackName] = (data) => { cleanup(); data && data.ok ? resolve(data) : reject(new Error((data && data.error) || 'Error desconocido')); };
+        script.onerror = () => { cleanup(); reject(new Error('No se pudo conectar con el Apps Script.')); };
+        script.src = API_URL + '?' + query.toString();
+        document.body.appendChild(script);
+      });
+    }
+
+    async function cargarEstado(){
+      showLoader(true);
+      setStatus('', 'info', true);
+      try {
+        const data = await api('state');
+        reservas = data.reservas || [];
+        renderSlots();
+      } catch (err) {
+        setStatus(err.message, 'danger');
+      } finally {
+        showLoader(false);
+      }
+    }
+
+    function renderSlots(){
+      const fecha = $('fechaSelect').value;
+      const grupo = $('grupoSelect').value;
+      const reservaGrupo = reservas.find(r => r.fecha === fecha && r.grupo === grupo);
+      const html = HORARIOS.map(hora => {
+        const reservaHorario = reservas.find(r => r.fecha === fecha && r.horario === hora);
+        const ocupado = Boolean(reservaHorario);
+        const yaReservoGrupo = Boolean(reservaGrupo);
+        const esReservaDelGrupo = reservaGrupo && reservaGrupo.horario === hora;
+        const disabled = ocupado || yaReservoGrupo;
+        const estado = esReservaDelGrupo ? 'Reservado por este grupo' : ocupado ? 'No disponible' : yaReservoGrupo ? 'Grupo ya reservado' : 'Disponible';
+        const icon = ocupado ? 'fa-lock' : yaReservoGrupo ? 'fa-circle-info' : 'fa-calendar-plus';
+        const btn = !disabled
+          ? `<button class="btn btn-primary rounded-pill w-100" onclick="abrirReserva('${hora}')">Reservar</button>`
+          : `<button class="btn btn-outline-secondary rounded-pill w-100" disabled>${escapeHtml(estado)}</button>`;
+        return `
+          <div class="col-md-6 col-lg-4">
+            <article class="card slot-card ${disabled ? 'disabled-slot reserved' : 'available'} h-100">
+              <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <span class="badge badge-soft rounded-pill px-3 py-2"><i class="fa-solid ${icon} me-2"></i>${escapeHtml(estado)}</span>
+                  <span class="h4 mb-0">${escapeHtml(hora)}</span>
+                </div>
+                <p class="small-muted mb-3">Fecha: ${escapeHtml(fecha)} · Grupo: ${escapeHtml(grupo)}</p>
+                ${reservaHorario ? `<p class="mb-3"><strong>Reservado por:</strong><br>${escapeHtml(reservaHorario.nombre)} ${escapeHtml(reservaHorario.apellido)}</p>` : '<p class="mb-3">Horario libre para reserva.</p>'}
+                ${btn}
+              </div>
+            </article>
+          </div>`;
+      }).join('');
+      $('slotsContainer').innerHTML = html;
+    }
+
+    function abrirReserva(hora){
+      slotSeleccionado = { fecha: $('fechaSelect').value, grupo: $('grupoSelect').value, horario: hora };
+      $('reservaResumen').textContent = `${slotSeleccionado.fecha} · ${slotSeleccionado.grupo} · ${slotSeleccionado.horario}`;
+      $('reservaForm').reset();
+      reservaModal.show();
+    }
+
+    async function reservar(e){
+      e.preventDefault();
+      if (!slotSeleccionado) return;
+      const payload = {
+        ...slotSeleccionado,
+        nombre: $('nombre').value.trim(),
+        apellido: $('apellido').value.trim(),
+        email: $('email').value.trim()
+      };
+      try {
+        await api('reserve', payload);
+        reservaModal.hide();
+        setStatus('Reserva registrada correctamente.', 'success');
+        await cargarEstado();
+      } catch (err) {
+        setStatus(err.message, 'danger');
+      }
+    }
+
+    async function cargarAdmin(){
+      $('adminMsg').classList.add('d-none');
+      $('adminTable').innerHTML = '';
+      try {
+        const data = await api('adminList', { adminPass: $('adminPass').value });
+        renderAdmin(data.reservas || []);
+      } catch (err) {
+        $('adminMsg').textContent = err.message;
+        $('adminMsg').classList.remove('d-none');
+      }
+    }
+
+    function renderAdmin(items){
+      if (!items.length) {
+        $('adminTable').innerHTML = `<tr><td colspan="7" class="text-center small-muted py-4">No hay reservas registradas.</td></tr>`;
+        return;
+      }
+      $('adminTable').innerHTML = items.map(r => `
+        <tr data-id="${escapeHtml(r.id)}">
+          <td><input class="form-control form-control-sm" data-field="fecha" value="${escapeAttr(r.fecha)}"></td>
+          <td><input class="form-control form-control-sm" data-field="grupo" value="${escapeAttr(r.grupo)}"></td>
+          <td><input class="form-control form-control-sm" data-field="horario" value="${escapeAttr(r.horario)}"></td>
+          <td><input class="form-control form-control-sm" data-field="nombre" value="${escapeAttr(r.nombre)}"></td>
+          <td><input class="form-control form-control-sm" data-field="apellido" value="${escapeAttr(r.apellido)}"></td>
+          <td><input class="form-control form-control-sm" data-field="email" value="${escapeAttr(r.email)}"></td>
+          <td class="text-nowrap">
+            <button class="btn btn-sm btn-outline-primary rounded-pill" onclick="adminActualizar('${escapeAttr(r.id)}')"><i class="fa-solid fa-floppy-disk"></i></button>
+            <button class="btn btn-sm btn-outline-danger rounded-pill" onclick="adminEliminar('${escapeAttr(r.id)}')"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        </tr>`).join('');
+    }
+
+    async function adminActualizar(id){
+      const tr = document.querySelector(`tr[data-id="${CSS.escape(id)}"]`);
+      const data = { id, adminPass: $('adminPass').value };
+      tr.querySelectorAll('[data-field]').forEach(input => data[input.dataset.field] = input.value.trim());
+      try {
+        await api('adminUpdate', data);
+        setStatus('Reserva modificada correctamente.', 'success');
+        await cargarEstado();
+        await cargarAdmin();
+      } catch (err) { alert(err.message); }
+    }
+
+    async function adminEliminar(id){
+      if (!confirm('¿Eliminar esta reserva?')) return;
+      try {
+        await api('adminDelete', { id, adminPass: $('adminPass').value });
+        setStatus('Reserva eliminada correctamente.', 'success');
+        await cargarEstado();
+        await cargarAdmin();
+      } catch (err) { alert(err.message); }
+    }
+
+    function showLoader(show){ $('loader').style.display = show ? 'block' : 'none'; }
+    function setStatus(msg, type='info', hide=false){
+      const el = $('status');
+      if (hide || !msg) { el.className = 'alert rounded-4 d-none'; el.textContent=''; return; }
+      el.className = `alert alert-${type} rounded-4`;
+      el.textContent = msg;
+    }
+    function escapeHtml(s){ return String(s ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+    function escapeAttr(s){ return escapeHtml(s).replace(/`/g, '&#96;'); }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
 </body>
 </html>
